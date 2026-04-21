@@ -3,86 +3,305 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mein Restaurant</title>
-
+  <meta
+    name="description"
+    content="Clauß - Flammkuchen in Bretten. Kontakt, Adresse, Öffnungszeiten und aktuelle Informationen zur Eröffnung."
+  />
   <style>
+    :root {
+      --bg: #f4f2ee;
+      --surface: rgba(255, 255, 255, 0.82);
+      --surface-strong: #ffffff;
+      --text: #161616;
+      --muted: #666666;
+      --line: rgba(0, 0, 0, 0.08);
+      --accent: #111111;
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+      --radius: 22px;
+      --max: 980px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #faf7f2;
-      color: #333;
-      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 40%),
+        linear-gradient(180deg, #f7f5f1 0%, #f2efea 100%);
+      line-height: 1.55;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
     }
 
     header {
-      padding: 40px 20px;
-      background: #2c2c2c;
-      color: white;
+      padding: 36px 0 10px;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 2.5rem;
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo img {
+      width: min(100%, 620px);
+      height: auto;
     }
 
     .hero {
-      padding: 40px 20px;
+      padding: 18px 0 26px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      margin-bottom: 18px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.9rem, 4.5vw, 3.8rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      width: min(700px, 100%);
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .cta-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
     }
 
     .btn {
       display: inline-block;
-      margin: 10px;
-      padding: 12px 20px;
-      background: #c59d5f;
-      color: white;
+      padding: 14px 20px;
+      border-radius: 999px;
       text-decoration: none;
-      border-radius: 6px;
+      font-weight: 700;
+      transition: 0.2s ease;
+      border: 1px solid var(--accent);
     }
 
-    .section {
-      padding: 40px 20px;
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .btn-secondary {
+      color: var(--accent);
+      background: transparent;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0,0,0,0.04);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin: 24px 0 18px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card p,
+    .card li,
+    .card a {
+      color: var(--text);
+      text-decoration: none;
+      margin: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin: 18px 0 48px;
+    }
+
+    .notice {
+      border-left: 4px solid var(--accent);
+      padding-left: 14px;
+      margin-top: 12px;
+      color: var(--muted);
+    }
+
+    .hours {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hours li + li {
+      margin-top: 8px;
     }
 
     footer {
-      padding: 20px;
-      background: #2c2c2c;
-      color: white;
-      font-size: 0.9rem;
+      padding: 0 0 36px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 820px) {
+      .info-grid,
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      header {
+        padding-top: 24px;
+      }
+
+      .wrap {
+        width: min(var(--max), calc(100% - 22px));
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
     }
   </style>
 </head>
-
 <body>
+  <header class="wrap">
+    <div class="logo">
+      <img src="logo.png" alt="Clauß - Flammkuchen Logo" />
+    </div>
+  </header>
 
-<header>
-  <h1>Restaurant Marea</h1>
-  <p>Mediterrane Küche in Köln</p>
-</header>
+  <main class="wrap">
+    <section class="hero">
+      <h1>Flammkuchen in Bretten</h1>
+      <p>
+        Willkommen bei Clauß - Flammkuchen. Unsere Website wird aktuell
+        aufgebaut. Bis zur Eröffnung folgen hier nach und nach weitere Infos,
+        die Speisekarte und aktuelle Neuigkeiten.
+      </p>
 
-<div class="hero">
-  <h2>Willkommen bei uns</h2>
-  <p>Genießen Sie frische Gerichte und eine entspannte Atmosphäre.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="tel:+491628467261">Jetzt anrufen</a>
+        <a
+          class="btn btn-secondary"
+          href="https://www.google.com/maps/search/?api=1&query=Hermann-Beuttenm%C3%BCllerstra%C3%9Fe+10,+75015+Bretten"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Standort öffnen
+        </a>
+      </div>
+    </section>
 
-  <a href="tel:+49123456789" class="btn">📞 Anrufen</a>
-  <a href="#menu" class="btn">🍽 Speisekarte</a>
-</div>
+    <section class="info-grid">
+      <article class="card">
+        <h2>Eröffnung</h2>
+        <p>
+          Der genaue Eröffnungstermin steht aktuell noch nicht fest.
+        </p>
+        <div class="notice">
+          Weitere Informationen folgen in Kürze. Schauen Sie bald wieder vorbei.
+        </div>
+      </article>
 
-<div id="menu" class="section">
-  <h2>Speisekarte</h2>
-  <p>🍝 Pasta – 12€</p>
-  <p>🍕 Pizza – 10€</p>
-  <p>🥗 Salat – 8€</p>
-</div>
+      <article class="card">
+        <h2>Kontakt</h2>
+        <p><a href="tel:+491628467261">+49 162 8467261</a></p>
+        <p class="muted" style="margin-top: 10px;">
+          Hermann-Beuttenmüllerstraße 10<br />
+          75015 Bretten
+        </p>
+      </article>
+    </section>
 
-<div class="section">
-  <h2>Öffnungszeiten</h2>
-  <p>Mo–So: 17:00 – 23:00</p>
-</div>
+    <section class="split">
+      <article class="card">
+        <h2>Speisekarte folgt bald</h2>
+        <p class="muted">
+          Unsere Speisekarte befindet sich aktuell noch in Arbeit.
+          Sobald sie fertig ist, finden Sie hier alle Flammkuchen und weitere
+          Informationen auf einen Blick.
+        </p>
+      </article>
 
-<footer>
-  <p>📍 Musterstraße 1, Köln</p>
-  <p>📞 +49 123 456789</p>
-</footer>
+      <article class="card">
+        <h2>Geplante Öffnungszeiten</h2>
+        <ul class="hours">
+          <li>Montag: 17:00 – 22:00 Uhr</li>
+          <li>Dienstag: Ruhetag</li>
+          <li>Mittwoch bis Sonntag: 17:00 – 22:00 Uhr</li>
+        </ul>
+      </article>
+    </section>
+  </main>
 
+  <footer class="wrap">
+    Clauß - Flammkuchen · Bretten
+  </footer>
 </body>
 </html>
