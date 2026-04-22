@@ -3,305 +3,381 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clauß - Flammkuchen</title>
   <meta
     name="description"
-    content="Clauß - Flammkuchen in Bretten. Kontakt, Adresse, Öffnungszeiten und aktuelle Informationen zur Eröffnung."
+    content="Clauß - Flammkuchen in Bretten. Adresse, Reservierung und aktuelle Informationen."
   />
   <style>
     :root {
-      --bg: #f4f2ee;
-      --surface: rgba(255, 255, 255, 0.82);
-      --surface-strong: #ffffff;
-      --text: #161616;
-      --muted: #666666;
-      --line: rgba(0, 0, 0, 0.08);
-      --accent: #111111;
-      --shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
-      --radius: 22px;
-      --max: 980px;
+      --bg: #efe9df;
+      --text: #111111;
+      --muted: #5f5a54;
+      --line: rgba(17, 17, 17, 0.22);
+      --line-strong: rgba(17, 17, 17, 0.32);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
 
     body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 40%),
-        linear-gradient(180deg, #f7f5f1 0%, #f2efea 100%);
-      line-height: 1.55;
+      padding: 0;
     }
 
-    img {
-      max-width: 100%;
-      display: block;
+    a {
+      color: inherit;
+    }
+
+    .site {
+      background: var(--bg);
+      min-height: 100svh;
     }
 
     .wrap {
-      width: min(var(--max), calc(100% - 32px));
+      width: min(1280px, calc(100% - 32px));
       margin: 0 auto;
     }
 
-    header {
-      padding: 36px 0 10px;
+    .topbar {
+      padding: 22px 0 18px;
+      background: var(--bg);
+    }
+
+    .topbar-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .left,
+    .right {
+      justify-self: center;
+      text-align: center;
+    }
+
+    .center {
+      justify-self: center;
+    }
+
+    .top-link-block {
+      display: inline-block;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .top-link-block:hover,
+    .info-box a:hover {
+      opacity: 0.65;
+    }
+
+    .top-link-main {
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.88rem;
+    }
+
+    .top-link-sub {
+      display: block;
+      margin-top: 3px;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
     .logo {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logo img {
-      width: min(100%, 620px);
+      display: block;
+      width: 310px;
+      max-width: 36vw;
       height: auto;
     }
 
     .hero {
-      padding: 18px 0 26px;
-      text-align: center;
+      padding-bottom: 32px;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 8px 14px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255,255,255,0.7);
-      font-size: 0.9rem;
-      letter-spacing: 0.02em;
-      color: var(--muted);
-      margin-bottom: 18px;
-      backdrop-filter: blur(8px);
+    .hero img {
+      display: block;
+      width: 100%;
+      height: calc(100svh - 190px);
+      min-height: 420px;
+      max-height: 920px;
+      object-fit: cover;
+      object-position: center center;
     }
 
-    .hero h1 {
-      margin: 0 0 12px;
-      font-size: clamp(1.9rem, 4.5vw, 3.8rem);
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-    }
-
-    .hero p {
-      width: min(700px, 100%);
-      margin: 0 auto;
-      color: var(--muted);
-      font-size: 1.08rem;
-    }
-
-    .cta-row {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 28px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 14px 20px;
-      border-radius: 999px;
-      text-decoration: none;
-      font-weight: 700;
-      transition: 0.2s ease;
-      border: 1px solid var(--accent);
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      opacity: 0.95;
-    }
-
-    .btn-secondary {
-      color: var(--accent);
-      background: transparent;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(0,0,0,0.04);
+    .info-section {
+      padding: 8px 0 56px;
+      background: var(--bg);
     }
 
     .info-grid {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 18px;
-      margin: 24px 0 18px;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 36px;
+      align-items: start;
     }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
-
-    .card h2 {
-      margin: 0 0 12px;
-      font-size: 1.2rem;
+    .intro-text h1 {
+      margin: 0 0 16px;
+      font-size: clamp(1.25rem, 2vw, 1.8rem);
+      line-height: 1.2;
       letter-spacing: -0.02em;
+      font-weight: 500;
     }
 
-    .card p,
-    .card li,
-    .card a {
-      color: var(--text);
+    .intro-text p {
+      margin: 0;
+      max-width: 560px;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .info-box {
+      position: relative;
+      padding: 28px;
+      background: transparent;
+      border: 1.5px solid var(--line-strong);
+    }
+
+    .info-box::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border: 1.5px solid var(--line-strong);
+      pointer-events: none;
+    }
+
+    .info-box-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .info-row + .info-row {
+      margin-top: 26px;
+    }
+
+    .info-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .info-value {
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .info-value a {
       text-decoration: none;
-      margin: 0;
     }
 
-    .muted {
-      color: var(--muted);
-    }
-
-    .split {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      margin: 18px 0 48px;
-    }
-
-    .notice {
-      border-left: 4px solid var(--accent);
-      padding-left: 14px;
-      margin-top: 12px;
-      color: var(--muted);
-    }
-
-    .hours {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .hours li + li {
-      margin-top: 8px;
-    }
-
-    footer {
-      padding: 0 0 36px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 820px) {
-      .info-grid,
-      .split {
-        grid-template-columns: 1fr;
+    @media (max-width: 1100px) {
+      .logo {
+        width: 285px;
+        max-width: 38vw;
       }
 
-      .card {
-        padding: 20px;
+      .hero img {
+        height: calc(100svh - 180px);
+      }
+    }
+
+    @media (max-width: 860px) {
+      .wrap {
+        width: min(1280px, calc(100% - 24px));
+      }
+
+      .topbar-inner {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 16px;
+      }
+
+      .left,
+      .center,
+      .right {
+        justify-self: center;
+      }
+
+      .logo {
+        width: 285px;
+        max-width: 74vw;
+      }
+
+      .hero img {
+        height: calc(100svh - 260px);
+        min-height: 340px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
       }
     }
 
     @media (max-width: 560px) {
-      header {
-        padding-top: 24px;
+      .topbar {
+        padding: 18px 0 14px;
       }
 
-      .wrap {
-        width: min(var(--max), calc(100% - 22px));
+      .logo {
+        width: 250px;
+        max-width: 80vw;
       }
 
-      .hero p {
-        font-size: 1rem;
+      .top-link-main {
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
       }
 
-      .btn {
-        width: 100%;
-        text-align: center;
+      .top-link-sub {
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+      }
+
+      .hero {
+        padding-bottom: 22px;
+      }
+
+      .hero img {
+        height: calc(100svh - 270px);
+        min-height: 280px;
+      }
+
+      .info-section {
+        padding-bottom: 40px;
+      }
+
+      .intro-text h1 {
+        font-size: 1.2rem;
+      }
+
+      .intro-text p,
+      .info-value {
+        font-size: 0.96rem;
+      }
+
+      .info-box {
+        padding: 22px;
+      }
+
+      .info-box::before {
+        inset: 8px;
+      }
+
+      .info-row + .info-row {
+        margin-top: 22px;
       }
     }
   </style>
 </head>
 <body>
-  <header class="wrap">
-    <div class="logo">
-      <img src="logo.png" alt="Clauß - Flammkuchen Logo" />
-    </div>
-  </header>
+  <div class="site">
+    <header class="topbar">
+      <div class="wrap">
+        <div class="topbar-inner">
+          <div class="left">
+            <a
+              class="top-link-block"
+              href="https://www.google.com/maps/search/?api=1&query=Hermann-Beuttenm%C3%BCllerstra%C3%9Fe+10,+75015+Bretten"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="top-link-main">Hermann-Beuttenmüllerstraße 10</span>
+              <span class="top-link-sub">75015 Bretten</span>
+            </a>
+          </div>
 
-  <main class="wrap">
-    <section class="hero">
-      <h1>Flammkuchen in Bretten</h1>
-      <p>
-        Willkommen bei Clauß - Flammkuchen. Unsere Website wird aktuell
-        aufgebaut. Bis zur Eröffnung folgen hier nach und nach weitere Infos,
-        die Speisekarte und aktuelle Neuigkeiten.
-      </p>
+          <div class="center">
+            <img src="logo.png" alt="Clauß - Flammkuchen" class="logo" />
+          </div>
 
-      <div class="cta-row">
-        <a class="btn btn-primary" href="tel:+491628467261">Jetzt anrufen</a>
-        <a
-          class="btn btn-secondary"
-          href="https://www.google.com/maps/search/?api=1&query=Hermann-Beuttenm%C3%BCllerstra%C3%9Fe+10,+75015+Bretten"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Standort öffnen
-        </a>
-      </div>
-    </section>
-
-    <section class="info-grid">
-      <article class="card">
-        <h2>Eröffnung</h2>
-        <p>
-          Der genaue Eröffnungstermin steht aktuell noch nicht fest.
-        </p>
-        <div class="notice">
-          Weitere Informationen folgen in Kürze. Schauen Sie bald wieder vorbei.
+          <div class="right">
+            <a class="top-link-block" href="tel:+491628467261">
+              <span class="top-link-main">Reservierungen</span>
+              <span class="top-link-sub">hier.</span>
+            </a>
+          </div>
         </div>
-      </article>
+      </div>
+    </header>
 
-      <article class="card">
-        <h2>Kontakt</h2>
-        <p><a href="tel:+491628467261">+49 162 8467261</a></p>
-        <p class="muted" style="margin-top: 10px;">
-          Hermann-Beuttenmüllerstraße 10<br />
-          75015 Bretten
-        </p>
-      </article>
-    </section>
+    <main>
+      <section class="hero">
+        <div class="wrap">
+          <img src="hero.png" alt="Terrasse von Clauß - Flammkuchen" />
+        </div>
+      </section>
 
-    <section class="split">
-      <article class="card">
-        <h2>Speisekarte folgt bald</h2>
-        <p class="muted">
-          Unsere Speisekarte befindet sich aktuell noch in Arbeit.
-          Sobald sie fertig ist, finden Sie hier alle Flammkuchen und weitere
-          Informationen auf einen Blick.
-        </p>
-      </article>
+      <section class="info-section">
+        <div class="wrap">
+          <div class="info-grid">
+            <div class="intro-text">
+              <h1>Ein neuer Ort für Flammkuchen in Bretten.</h1>
+              <p>
+                Unsere Website befindet sich aktuell noch im Aufbau. Weitere
+                Informationen zur Eröffnung, zur Speisekarte und zu allem
+                Weiteren folgen in Kürze.
+              </p>
+            </div>
 
-      <article class="card">
-        <h2>Geplante Öffnungszeiten</h2>
-        <ul class="hours">
-          <li>Montag: 17:00 – 22:00 Uhr</li>
-          <li>Dienstag: Ruhetag</li>
-          <li>Mittwoch bis Sonntag: 17:00 – 22:00 Uhr</li>
-        </ul>
-      </article>
-    </section>
-  </main>
+            <aside class="info-box">
+              <div class="info-box-inner">
+                <div class="info-row">
+                  <span class="info-label">Öffnungszeiten</span>
+                  <div class="info-value">
+                    Montag: 17:00 – 22:00 Uhr<br />
+                    Dienstag: Ruhetag<br />
+                    Mittwoch bis Sonntag: 17:00 – 22:00 Uhr
+                  </div>
+                </div>
 
-  <footer class="wrap">
-    Clauß - Flammkuchen · Bretten
-  </footer>
+                <div class="info-row">
+                  <span class="info-label">Kontakt</span>
+                  <div class="info-value">
+                    <a href="tel:+491628467261">+49 162 8467261</a><br />
+                    <a href="mailto:info@clauss-flammkuchen.de">info@clauss-flammkuchen.de</a>
+                  </div>
+                </div>
+
+                <div class="info-row">
+                  <span class="info-label">Instagram</span>
+                  <div class="info-value">
+                    <a
+                      href="https://instagram.com/clauss-flammkuchen"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      @clauss-flammkuchen
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
