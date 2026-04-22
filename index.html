@@ -6,7 +6,7 @@
   <title>Clauß - Flammkuchen</title>
   <meta
     name="description"
-    content="Clauß - Flammkuchen in Bretten. Adresse, Reservierung und aktuelle Informationen."
+    content="Clauß - Flammkuchen in Bretten. Adresse, Reservierung, Speisekarte und aktuelle Informationen."
   />
   <meta name="theme-color" content="#dfc3ca" />
 
@@ -19,7 +19,6 @@
       --muted: #655f58;
       --line: rgba(17, 17, 17, 0.18);
       --line-strong: rgba(17, 17, 17, 0.28);
-      --theme-rose: #dfc3ca;
     }
 
     * {
@@ -97,28 +96,28 @@
 
     .top-link-block:hover,
     .info-box a:hover,
-    .menu-item a:hover {
+    .address-map-link:hover {
       opacity: 0.65;
     }
 
     .top-link-main {
-    display: block;
-    font-size: 1.04rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    line-height: 1.1;
-    font-weight: 400;
+      display: block;
+      font-size: 1.04rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      font-weight: 400;
     }
 
     .top-link-sub {
-    display: block;
-    margin-top: 7px;
-    font-family: "Cormorant Garamond", Georgia, serif;
-    font-size: 1.28rem;
-    line-height: 1.02;
-    color: var(--muted);
-    text-transform: none;
-    letter-spacing: 0;
+      display: block;
+      margin-top: 7px;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.28rem;
+      line-height: 1.02;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: 0;
     }
 
     .logo {
@@ -140,9 +139,24 @@
       object-position: 42% center;
     }
 
+    .info-section,
+    .menu-section,
+    .drinks-section,
+    .about-section {
+      background: var(--bg);
+    }
+
     .info-section {
       padding: 8px 0 60px;
-      background: var(--bg);
+    }
+
+    .menu-section,
+    .drinks-section {
+      padding: 6px 0 80px;
+    }
+
+    .about-section {
+      padding: 6px 0 90px;
     }
 
     .info-grid {
@@ -161,9 +175,10 @@
       letter-spacing: -0.02em;
     }
 
-    .intro-text p {
+    .intro-text p,
+    .about-text p {
       margin: 0;
-      max-width: 560px;
+      max-width: 640px;
       font-size: 1rem;
       line-height: 1.75;
       color: var(--muted);
@@ -193,7 +208,8 @@
       margin-top: 26px;
     }
 
-    .info-label {
+    .info-label,
+    .list-group-title {
       display: block;
       margin-bottom: 8px;
       font-size: 0.76rem;
@@ -213,23 +229,22 @@
       line-height: 1.2;
     }
 
-    .menu-section {
-      padding: 6px 0 80px;
-      background: var(--bg);
+    .address-map-link {
+      display: inline-block;
     }
 
-    .menu-title-block {
+    .section-title-block {
       text-align: center;
       margin-bottom: 34px;
     }
 
-    .menu-line {
+    .section-line {
       width: 100%;
       height: 1.5px;
       background: var(--line-strong);
     }
 
-    .menu-title-block h2 {
+    .section-title-block h2 {
       margin: 22px 0;
       font-family: "Cormorant Garamond", Georgia, serif;
       font-size: clamp(2.4rem, 4vw, 3.6rem);
@@ -238,53 +253,48 @@
       line-height: 0.95;
     }
 
-    .menu-columns {
+    .list-columns {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 34px 42px;
     }
 
-    .menu-group-title {
-      display: block;
-      margin-bottom: 16px;
-      font-size: 0.76rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .menu-items {
+    .list-items {
       display: grid;
       gap: 18px;
     }
 
-    .menu-item {
+    .list-item {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 18px;
       align-items: start;
     }
 
-    .menu-item-name {
+    .item-name {
       font-family: "Cormorant Garamond", Georgia, serif;
       font-size: 1.7rem;
       line-height: 0.98;
       font-weight: 500;
     }
 
-    .menu-item-desc {
+    .item-desc {
       margin-top: 4px;
       font-size: 0.94rem;
       line-height: 1.55;
       color: var(--muted);
     }
 
-    .menu-item-price {
+    .item-price {
       font-family: "Cormorant Garamond", Georgia, serif;
       font-size: 1.55rem;
       line-height: 1;
       white-space: nowrap;
       padding-left: 8px;
+    }
+
+    .about-text {
+      max-width: 760px;
     }
 
     @media (max-width: 1100px) {
@@ -297,7 +307,7 @@
         height: calc(100svh - 195px);
       }
 
-      .menu-columns {
+      .list-columns {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -356,7 +366,7 @@
       }
 
       .info-grid,
-      .menu-columns {
+      .list-columns {
         grid-template-columns: 1fr;
       }
 
@@ -390,11 +400,11 @@
       .top-link-main {
         font-size: 0.94rem;
         letter-spacing: 0.08em;
-    }
+      }
 
-    .top-link-sub {
+      .top-link-sub {
         font-size: 1.08rem;
-    }
+      }
 
       .hero {
         padding-bottom: 24px;
@@ -409,7 +419,9 @@
         padding-bottom: 44px;
       }
 
-      .menu-section {
+      .menu-section,
+      .drinks-section,
+      .about-section {
         padding-bottom: 52px;
       }
 
@@ -418,7 +430,8 @@
       }
 
       .intro-text p,
-      .menu-item-desc {
+      .about-text p,
+      .item-desc {
         font-size: 0.96rem;
       }
 
@@ -442,28 +455,28 @@
         font-size: 1.2rem;
       }
 
-      .menu-title-block {
+      .section-title-block {
         margin-bottom: 26px;
       }
 
-      .menu-title-block h2 {
+      .section-title-block h2 {
         font-size: 2.5rem;
         margin: 18px 0;
       }
 
-      .menu-columns {
+      .list-columns {
         gap: 26px;
       }
 
-      .menu-item {
+      .list-item {
         gap: 10px;
       }
 
-      .menu-item-name {
+      .item-name {
         font-size: 1.45rem;
       }
 
-      .menu-item-price {
+      .item-price {
         font-size: 1.35rem;
       }
     }
@@ -522,18 +535,18 @@
             <aside class="info-box">
               <div class="info-box-inner">
                 <div class="info-row">
-                    <span class="info-label">Adresse</span>
-                    <div class="info-value small">
-                        <a
-                        class="address-map-link"
-                        href="https://www.google.com/maps/search/?api=1&query=Hermann-Beuttenm%C3%BCllerstra%C3%9Fe+10,+75015+Bretten"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        >
-                        Hermann-Beuttenmüllerstraße 10<br />
-                        75015 Bretten
-                        </a>
-                    </div>
+                  <span class="info-label">Adresse</span>
+                  <div class="info-value small">
+                    <a
+                      class="address-map-link"
+                      href="https://www.google.com/maps/search/?api=1&query=Hermann-Beuttenm%C3%BCllerstra%C3%9Fe+10,+75015+Bretten"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Hermann-Beuttenmüllerstraße 10<br />
+                      75015 Bretten
+                    </a>
+                  </div>
                 </div>
 
                 <div class="info-row">
@@ -573,147 +586,308 @@
 
       <section class="menu-section">
         <div class="wrap-content">
-          <div class="menu-title-block">
-            <div class="menu-line"></div>
+          <div class="section-title-block">
+            <div class="section-line"></div>
             <h2>Speisekarte</h2>
-            <div class="menu-line"></div>
+            <div class="section-line"></div>
           </div>
 
-          <div class="menu-columns">
-            <div class="menu-group">
-              <span class="menu-group-title">Klassisch</span>
-              <div class="menu-items">
-                <div class="menu-item">
+          <div class="list-columns">
+            <div class="list-group">
+              <span class="list-group-title">Klassisch</span>
+              <div class="list-items">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Elsässer Art</div>
-                    <div class="menu-item-desc">Speck, Zwiebeln, Crème fraîche</div>
+                    <div class="item-name">Elsässer Art</div>
+                    <div class="item-desc">Speck, Zwiebeln, Crème fraîche</div>
                   </div>
-                  <div class="menu-item-price">11,50 €</div>
+                  <div class="item-price">11,50 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Bauernstube</div>
-                    <div class="menu-item-desc">Schinken, Lauch, Bergkäse</div>
+                    <div class="item-name">Bauernstube</div>
+                    <div class="item-desc">Schinken, Lauch, Bergkäse</div>
                   </div>
-                  <div class="menu-item-price">12,50 €</div>
+                  <div class="item-price">12,50 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Münster</div>
-                    <div class="menu-item-desc">Münsterkäse, rote Zwiebeln, Pfeffer</div>
+                    <div class="item-name">Münster</div>
+                    <div class="item-desc">Münsterkäse, rote Zwiebeln, Pfeffer</div>
                   </div>
-                  <div class="menu-item-price">12,50 €</div>
+                  <div class="item-price">12,50 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Rauch & Zwiebel</div>
-                    <div class="menu-item-desc">Geräucherter Speck, Schalotten, Schnittlauch</div>
+                    <div class="item-name">Rauch & Zwiebel</div>
+                    <div class="item-desc">Geräucherter Speck, Schalotten, Schnittlauch</div>
                   </div>
-                  <div class="menu-item-price">12,00 €</div>
+                  <div class="item-price">12,00 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Klassik Extra</div>
-                    <div class="menu-item-desc">Speck, Zwiebeln, Emmentaler</div>
+                    <div class="item-name">Klassik Extra</div>
+                    <div class="item-desc">Speck, Zwiebeln, Emmentaler</div>
                   </div>
-                  <div class="menu-item-price">12,50 €</div>
+                  <div class="item-price">12,50 €</div>
                 </div>
               </div>
             </div>
 
-            <div class="menu-group">
-              <span class="menu-group-title">Herzhaft</span>
-              <div class="menu-items">
-                <div class="menu-item">
+            <div class="list-group">
+              <span class="list-group-title">Herzhaft</span>
+              <div class="list-items">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Ziegenkäse & Honig</div>
-                    <div class="menu-item-desc">Ziegenkäse, Honig, Walnüsse, Thymian</div>
+                    <div class="item-name">Ziegenkäse & Honig</div>
+                    <div class="item-desc">Ziegenkäse, Honig, Walnüsse, Thymian</div>
                   </div>
-                  <div class="menu-item-price">13,50 €</div>
+                  <div class="item-price">13,50 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Prosciutto</div>
-                    <div class="menu-item-desc">Rohschinken, Rucola, Parmesan</div>
+                    <div class="item-name">Prosciutto</div>
+                    <div class="item-desc">Rohschinken, Rucola, Parmesan</div>
                   </div>
-                  <div class="menu-item-price">13,50 €</div>
+                  <div class="item-price">13,50 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Salami Piccante</div>
-                    <div class="menu-item-desc">Pikante Salami, Chili, Mozzarella</div>
+                    <div class="item-name">Salami Piccante</div>
+                    <div class="item-desc">Pikante Salami, Chili, Mozzarella</div>
                   </div>
-                  <div class="menu-item-price">13,00 €</div>
+                  <div class="item-price">13,00 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Lachs & Lauch</div>
-                    <div class="menu-item-desc">Räucherlachs, Lauch, Dill</div>
+                    <div class="item-name">Lachs & Lauch</div>
+                    <div class="item-desc">Räucherlachs, Lauch, Dill</div>
                   </div>
-                  <div class="menu-item-price">14,00 €</div>
+                  <div class="item-price">14,00 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Hähnchen Curry</div>
-                    <div class="menu-item-desc">Hähnchenstreifen, milde Currynote, Frühlingszwiebeln</div>
+                    <div class="item-name">Hähnchen Curry</div>
+                    <div class="item-desc">Hähnchenstreifen, milde Currynote, Frühlingszwiebeln</div>
                   </div>
-                  <div class="menu-item-price">13,50 €</div>
+                  <div class="item-price">13,50 €</div>
                 </div>
               </div>
             </div>
 
-            <div class="menu-group">
-              <span class="menu-group-title">Vegetarisch & Süß</span>
-              <div class="menu-items">
-                <div class="menu-item">
+            <div class="list-group">
+              <span class="list-group-title">Vegetarisch & Süß</span>
+              <div class="list-items">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Mediterran</div>
-                    <div class="menu-item-desc">Zucchini, Tomaten, Feta, Kräuter</div>
+                    <div class="item-name">Mediterran</div>
+                    <div class="item-desc">Zucchini, Tomaten, Feta, Kräuter</div>
                   </div>
-                  <div class="menu-item-price">12,00 €</div>
+                  <div class="item-price">12,00 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Pilz & Kräuter</div>
-                    <div class="menu-item-desc">Champignons, Frühlingszwiebeln, Petersilie</div>
+                    <div class="item-name">Pilz & Kräuter</div>
+                    <div class="item-desc">Champignons, Frühlingszwiebeln, Petersilie</div>
                   </div>
-                  <div class="menu-item-price">12,00 €</div>
+                  <div class="item-price">12,00 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Birne & Gorgonzola</div>
-                    <div class="menu-item-desc">Birne, Gorgonzola, Walnüsse</div>
+                    <div class="item-name">Birne & Gorgonzola</div>
+                    <div class="item-desc">Birne, Gorgonzola, Walnüsse</div>
                   </div>
-                  <div class="menu-item-price">13,00 €</div>
+                  <div class="item-price">13,00 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Apfel & Zimt</div>
-                    <div class="menu-item-desc">Apfel, Zimt, leichter Puderzucker</div>
+                    <div class="item-name">Apfel & Zimt</div>
+                    <div class="item-desc">Apfel, Zimt, leichter Puderzucker</div>
                   </div>
-                  <div class="menu-item-price">9,50 €</div>
+                  <div class="item-price">9,50 €</div>
                 </div>
 
-                <div class="menu-item">
+                <div class="list-item">
                   <div>
-                    <div class="menu-item-name">Banane & Schokolade</div>
-                    <div class="menu-item-desc">Banane, Schokocreme, geröstete Mandeln</div>
+                    <div class="item-name">Banane & Schokolade</div>
+                    <div class="item-desc">Banane, Schokocreme, geröstete Mandeln</div>
                   </div>
-                  <div class="menu-item-price">10,50 €</div>
+                  <div class="item-price">10,50 €</div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="drinks-section">
+        <div class="wrap-content">
+          <div class="section-title-block">
+            <div class="section-line"></div>
+            <h2>Getränke</h2>
+            <div class="section-line"></div>
+          </div>
+
+          <div class="list-columns">
+            <div class="list-group">
+              <span class="list-group-title">Aperitif & Softdrinks</span>
+              <div class="list-items">
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Aperol Spritz</div>
+                    <div class="item-desc">Aperol, Prosecco, Soda</div>
+                  </div>
+                  <div class="item-price">7,50 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Lillet Wild Berry</div>
+                    <div class="item-desc">Lillet Blanc, Wild Berry, Beeren</div>
+                  </div>
+                  <div class="item-price">7,50 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Hausgemachte Limonade</div>
+                    <div class="item-desc">Zitrone, Minze, Soda</div>
+                  </div>
+                  <div class="item-price">4,90 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Cola / Cola Zero</div>
+                    <div class="item-desc">0,33 l</div>
+                  </div>
+                  <div class="item-price">3,50 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Mineralwasser</div>
+                    <div class="item-desc">still oder spritzig, 0,75 l</div>
+                  </div>
+                  <div class="item-price">5,20 €</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-group">
+              <span class="list-group-title">Bier & Wein</span>
+              <div class="list-items">
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Pils vom Fass</div>
+                    <div class="item-desc">0,3 l</div>
+                  </div>
+                  <div class="item-price">3,80 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Hefeweizen</div>
+                    <div class="item-desc">0,5 l</div>
+                  </div>
+                  <div class="item-price">4,90 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Riesling</div>
+                    <div class="item-desc">trocken, Glas 0,2 l</div>
+                  </div>
+                  <div class="item-price">6,50 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Rosé</div>
+                    <div class="item-desc">fruchtig, Glas 0,2 l</div>
+                  </div>
+                  <div class="item-price">6,80 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Spätburgunder</div>
+                    <div class="item-desc">Glas 0,2 l</div>
+                  </div>
+                  <div class="item-price">7,20 €</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-group">
+              <span class="list-group-title">Kaffee & Digestif</span>
+              <div class="list-items">
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Espresso</div>
+                    <div class="item-desc">einfach</div>
+                  </div>
+                  <div class="item-price">2,40 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Cappuccino</div>
+                    <div class="item-desc">mit Milchschaum</div>
+                  </div>
+                  <div class="item-price">3,60 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Café Crème</div>
+                    <div class="item-desc">große Tasse</div>
+                  </div>
+                  <div class="item-price">3,40 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Ramazzotti</div>
+                    <div class="item-desc">4 cl</div>
+                  </div>
+                  <div class="item-price">3,90 €</div>
+                </div>
+
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Williams Birne</div>
+                    <div class="item-desc">2 cl</div>
+                  </div>
+                  <div class="item-price">4,20 €</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-section">
+        <div class="wrap-content">
+          <div class="section-title-block">
+            <div class="section-line"></div>
+            <h2>Über uns</h2>
+            <div class="section-line"></div>
+          </div>
+
+          <div class="about-text">
+            <p>Hier werdet ihr bald mehr über uns erfahren!</p>
           </div>
         </div>
       </section>
