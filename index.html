@@ -10,15 +10,26 @@
   />
   <meta name="theme-color" content="#dfc3ca" />
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+  <link
+    rel="preload"
+    as="image"
+    href="hero.avif"
+    type="image/avif"
+    fetchpriority="high"
+  />
 
+  <style>
     :root {
       --bg: #efe9df;
       --text: #111111;
       --muted: #655f58;
       --line: rgba(17, 17, 17, 0.18);
       --line-strong: rgba(17, 17, 17, 0.28);
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Helvetica, Arial, sans-serif;
+      --font-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+        Palatino, Georgia, "Times New Roman", serif;
     }
 
     * {
@@ -34,9 +45,12 @@
     }
 
     body {
-      font-family: "Inter", Arial, Helvetica, sans-serif;
+      font-family: var(--font-sans);
       font-weight: 400;
       line-height: 1.5;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     a {
@@ -54,13 +68,11 @@
       background: var(--bg);
     }
 
-    /* Bild bleibt etwas weiter außen */
     .wrap-image {
       width: min(1280px, calc(100% - 32px));
       margin: 0 auto;
     }
 
-    /* Inhalte darüber und darunter etwas weiter eingerückt */
     .wrap-content {
       width: min(1180px, calc(100% - 96px));
       margin: 0 auto;
@@ -112,7 +124,7 @@
     .top-link-sub {
       display: block;
       margin-top: 7px;
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family: var(--font-serif);
       font-size: 1.28rem;
       line-height: 1.02;
       color: var(--muted);
@@ -137,6 +149,7 @@
       max-height: 920px;
       object-fit: cover;
       object-position: 42% center;
+      background: #e8e0d4;
     }
 
     .info-section,
@@ -168,7 +181,7 @@
 
     .intro-text h1 {
       margin: 0 0 14px;
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family: var(--font-serif);
       font-size: clamp(2rem, 3vw, 2.8rem);
       line-height: 0.98;
       font-weight: 500;
@@ -219,7 +232,7 @@
     }
 
     .info-value {
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family: var(--font-serif);
       font-size: 1.55rem;
       line-height: 1.15;
     }
@@ -231,6 +244,23 @@
 
     .address-map-link {
       display: inline-block;
+    }
+
+    .hours-list {
+      display: grid;
+      gap: 0.22em;
+    }
+
+    .hours-row {
+      display: grid;
+      grid-template-columns: 8.2em 1fr;
+      column-gap: 1.15em;
+      align-items: baseline;
+    }
+
+    .hours-day,
+    .hours-time {
+      display: block;
     }
 
     .section-title-block {
@@ -246,7 +276,7 @@
 
     .section-title-block h2 {
       margin: 22px 0;
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family: var(--font-serif);
       font-size: clamp(2.4rem, 4vw, 3.6rem);
       font-weight: 500;
       letter-spacing: -0.03em;
@@ -272,7 +302,7 @@
     }
 
     .item-name {
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family: var(--font-serif);
       font-size: 1.7rem;
       line-height: 0.98;
       font-weight: 500;
@@ -286,7 +316,7 @@
     }
 
     .item-price {
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family: var(--font-serif);
       font-size: 1.55rem;
       line-height: 1;
       white-space: nowrap;
@@ -317,169 +347,191 @@
     }
 
     @media (max-width: 860px) {
-      .wrap-image {
-        width: min(1280px, calc(100% - 24px));
-      }
+  .wrap-image {
+    width: min(1280px, calc(100% - 24px));
+  }
 
-      .wrap-content {
-        width: min(1180px, calc(100% - 48px));
-      }
+  .wrap-content {
+    width: min(1180px, calc(100% - 48px));
+  }
 
-      .topbar {
-        padding: 34px 0 30px;
-      }
+  .topbar {
+    --stack-space: 24px;
+    padding: var(--stack-space) 0;
+  }
 
-      .topbar-inner {
-        grid-template-columns: 1fr;
-        justify-items: center;
-        text-align: center;
-        gap: 24px;
-      }
+  .topbar-inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: var(--stack-space);
+  }
 
-      .left,
-      .center,
-      .right {
-        justify-self: center;
-      }
+  .left,
+  .center,
+  .right {
+    justify-self: center;
+  }
 
-      /* Nur mobil: Logo zuerst, dann Standort, dann Reservierungen */
-      .center {
-        order: 1;
-      }
+  .center {
+    order: 1;
+    width: 100%;
+    padding-bottom: 0;
+  }
 
-      .left {
-        order: 2;
-      }
+  .center::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: var(--line-strong);
+    margin-top: var(--stack-space);
+  }
 
-      .right {
-        order: 3;
-      }
+  .left {
+    order: 2;
+  }
 
-      .logo {
-        width: 285px;
-        max-width: 74vw;
-      }
+  .right {
+    order: 3;
+  }
 
-      .hero img {
-        height: calc(100svh - 308px);
-        min-height: 340px;
-      }
+  .logo {
+    width: 285px;
+    max-width: 74vw;
+    margin: 0 auto;
+  }
 
-      .info-grid,
-      .list-columns {
-        grid-template-columns: 1fr;
-      }
+  .hero img {
+    height: calc(100svh - 296px);
+    min-height: 340px;
+  }
 
-      .info-grid {
-        gap: 30px;
-      }
-    }
+  .info-grid,
+  .list-columns {
+    grid-template-columns: 1fr;
+  }
 
-    @media (max-width: 560px) {
-      .wrap-image {
-        width: min(1280px, calc(100% - 20px));
-      }
+  .info-grid {
+    gap: 30px;
+  }
+}
 
-      .wrap-content {
-        width: min(1180px, calc(100% - 32px));
-      }
+@media (max-width: 560px) {
+  .wrap-image {
+    width: min(1280px, calc(100% - 20px));
+  }
 
-      .topbar {
-        padding: 38px 0 34px;
-      }
+  .wrap-content {
+    width: min(1180px, calc(100% - 32px));
+  }
 
-      .topbar-inner {
-        gap: 28px;
-      }
+  .topbar {
+    --stack-space: 24px;
+    padding: var(--stack-space) 0;
+  }
 
-      .logo {
-        width: 250px;
-        max-width: 72vw;
-      }
+  .topbar-inner {
+    gap: var(--stack-space);
+  }
 
-      .top-link-main {
-        font-size: 0.94rem;
-        letter-spacing: 0.08em;
-      }
+  .center::after {
+    margin-top: var(--stack-space);
+  }
 
-      .top-link-sub {
-        font-size: 1.08rem;
-      }
+  .logo {
+    width: 250px;
+    max-width: 72vw;
+  }
 
-      .hero {
-        padding-bottom: 24px;
-      }
+  .top-link-main {
+    font-size: 0.94rem;
+    letter-spacing: 0.08em;
+  }
 
-      .hero img {
-        height: calc(100svh - 338px);
-        min-height: 280px;
-      }
+  .top-link-sub {
+    font-size: 1.08rem;
+  }
 
-      .info-section {
-        padding-bottom: 44px;
-      }
+  .hero {
+    padding-bottom: 24px;
+  }
 
-      .menu-section,
-      .drinks-section,
-      .about-section {
-        padding-bottom: 52px;
-      }
+  .hero img {
+    height: calc(100svh - 320px);
+    min-height: 280px;
+  }
 
-      .intro-text h1 {
-        font-size: 1.85rem;
-      }
+  .info-section {
+    padding-bottom: 44px;
+  }
 
-      .intro-text p,
-      .about-text p,
-      .item-desc {
-        font-size: 0.96rem;
-      }
+  .menu-section,
+  .drinks-section,
+  .about-section {
+    padding-bottom: 52px;
+  }
 
-      .info-box {
-        padding: 22px;
-      }
+  .intro-text h1 {
+    font-size: 1.85rem;
+  }
 
-      .info-box::before {
-        inset: 6px;
-      }
+  .intro-text p,
+  .about-text p,
+  .item-desc {
+    font-size: 0.96rem;
+  }
 
-      .info-row + .info-row {
-        margin-top: 22px;
-      }
+  .info-box {
+    padding: 22px;
+  }
 
-      .info-value {
-        font-size: 1.35rem;
-      }
+  .info-box::before {
+    inset: 6px;
+  }
 
-      .info-value.small {
-        font-size: 1.2rem;
-      }
+  .info-row + .info-row {
+    margin-top: 22px;
+  }
 
-      .section-title-block {
-        margin-bottom: 26px;
-      }
+  .info-value {
+    font-size: 1.35rem;
+  }
 
-      .section-title-block h2 {
-        font-size: 2.5rem;
-        margin: 18px 0;
-      }
+  .info-value.small {
+    font-size: 1.2rem;
+  }
 
-      .list-columns {
-        gap: 26px;
-      }
+  .hours-row {
+    grid-template-columns: 7.4em 1fr;
+    column-gap: 0.95em;
+  }
 
-      .list-item {
-        gap: 10px;
-      }
+  .section-title-block {
+    margin-bottom: 26px;
+  }
 
-      .item-name {
-        font-size: 1.45rem;
-      }
+  .section-title-block h2 {
+    font-size: 2.5rem;
+    margin: 18px 0;
+  }
 
-      .item-price {
-        font-size: 1.35rem;
-      }
-    }
+  .list-columns {
+    gap: 26px;
+  }
+
+  .list-item {
+    gap: 10px;
+  }
+
+  .item-name {
+    font-size: 1.45rem;
+  }
+
+  .item-price {
+    font-size: 1.35rem;
+  }
+}
   </style>
 </head>
 <body>
@@ -500,7 +552,7 @@
           </div>
 
           <div class="center">
-            <img src="logo.png" alt="Clauß - Flammkuchen" class="logo" />
+            <img src="ClaussLogo.svg" alt="Clauß - Flammkuchen" class="logo" />
           </div>
 
           <div class="right">
@@ -516,7 +568,12 @@
     <main>
       <section class="hero">
         <div class="wrap-image">
-          <img src="hero.png" alt="Terrasse von Clauß - Flammkuchen" />
+          <img
+            src="hero.avif"
+            alt="Terrasse von Clauß - Flammkuchen"
+            fetchpriority="high"
+            decoding="async"
+          />
         </div>
       </section>
 
@@ -551,16 +608,41 @@
 
                 <div class="info-row">
                   <span class="info-label">Öffnungszeiten</span>
-                  <div class="info-value small">
-                    Montag: 17:00 – 22:00 Uhr<br />
-                    Dienstag: Ruhetag<br />
-                    Mittwoch bis Sonntag: 17:00 – 22:00 Uhr
+                  <div class="info-value small hours-list">
+                    <div class="hours-row">
+                      <span class="hours-day">Montag</span>
+                      <span class="hours-time">17:00 – 22:00 Uhr</span>
+                    </div>
+                    <div class="hours-row">
+                      <span class="hours-day">Dienstag</span>
+                      <span class="hours-time">Ruhetag</span>
+                    </div>
+                    <div class="hours-row">
+                      <span class="hours-day">Mittwoch</span>
+                      <span class="hours-time">17:00 – 22:00 Uhr</span>
+                    </div>
+                    <div class="hours-row">
+                      <span class="hours-day">Donnerstag</span>
+                      <span class="hours-time">17:00 – 22:00 Uhr</span>
+                    </div>
+                    <div class="hours-row">
+                      <span class="hours-day">Freitag</span>
+                      <span class="hours-time">17:00 – 22:00 Uhr</span>
+                    </div>
+                    <div class="hours-row">
+                      <span class="hours-day">Samstag</span>
+                      <span class="hours-time">17:00 – 22:00 Uhr</span>
+                    </div>
+                    <div class="hours-row">
+                      <span class="hours-day">Sonntag</span>
+                      <span class="hours-time">17:00 – 22:00 Uhr</span>
+                    </div>
                   </div>
                 </div>
 
                 <div class="info-row">
                   <span class="info-label">Kontakt</span>
-                  <div class="info-value">
+                  <div class="info-value small">
                     <a href="tel:+491628467261">+49 162 8467261</a><br />
                     <a href="mailto:info@clauss-flammkuchen.de">info@clauss-flammkuchen.de</a>
                   </div>
@@ -568,7 +650,7 @@
 
                 <div class="info-row">
                   <span class="info-label">Instagram</span>
-                  <div class="info-value">
+                  <div class="info-value small">
                     <a
                       href="https://instagram.com/clauss-flammkuchen"
                       target="_blank"
