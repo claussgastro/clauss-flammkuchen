@@ -179,11 +179,15 @@
     }
 
     .info-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 40px;
-      align-items: start;
-    }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.info-grid > * {
+  min-width: 0;
+}
 
     .intro-text h1 {
       margin: 0 0 14px;
@@ -195,7 +199,9 @@
     }
 
     .intro-text p,
-    .about-text p {
+    .about-text p,
+    .menu-top-text p,
+    .menu-top-note p {
       margin: 0;
       max-width: 640px;
       font-size: 1rem;
@@ -203,7 +209,9 @@
       color: var(--muted);
     }
 
-    .about-text p + p {
+    .about-text p + p,
+    .menu-top-text p + p,
+    .menu-top-note p + p {
       margin-top: 1em;
     }
 
@@ -235,7 +243,7 @@
     .list-group-title {
       display: block;
       margin-bottom: 8px;
-      font-size: 0.76rem;
+      font-size: 0.84rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
@@ -261,7 +269,7 @@
     }
 
     .contact-links a + a {
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
     .hours-list {
@@ -299,6 +307,32 @@
       font-weight: 500;
       letter-spacing: -0.03em;
       line-height: 0.95;
+    }
+
+    .menu-top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 54px;
+}
+
+.menu-top-grid > * {
+  min-width: 0;
+}
+
+    .menu-top-left {
+      display: grid;
+      gap: 18px;
+    }
+
+    .menu-flatrate-item {
+      margin-top: 4px;
+    }
+
+    .menu-flatrate-item .item-name,
+    .menu-flatrate-item .item-price {
+      font-size: 1.55rem;
     }
 
     .menu-subsection + .menu-subsection {
@@ -467,12 +501,18 @@
       }
 
       .info-grid,
-      .list-columns {
+      .list-columns,
+      .menu-top-grid {
         grid-template-columns: 1fr;
       }
 
-      .info-grid {
+      .info-grid,
+      .menu-top-grid {
         gap: 30px;
+      }
+
+      .menu-top-grid {
+        margin-bottom: 42px;
       }
     }
 
@@ -537,6 +577,8 @@
 
       .intro-text p,
       .about-text p,
+      .menu-top-text p,
+      .menu-top-note p,
       .item-desc,
       .menu-subsection-note,
       .item-meta-line {
@@ -564,7 +606,7 @@
       }
 
       .contact-links a + a {
-        margin-top: 14px;
+        margin-top: 16px;
       }
 
       .hours-row {
@@ -602,6 +644,11 @@
       }
 
       .item-price {
+        font-size: 1.35rem;
+      }
+
+      .menu-flatrate-item .item-name,
+      .menu-flatrate-item .item-price {
         font-size: 1.35rem;
       }
     }
@@ -680,7 +727,7 @@
                 </div>
 
                 <div class="info-row">
-                  <span class="info-label">Öffnungszeiten</span>
+                  <span class="info-label">Öffnungszeiten ab Juni 2026</span>
                   <div class="info-value small hours-list">
                     <div class="hours-row">
                       <span class="hours-day">Montag</span>
@@ -746,6 +793,53 @@
             <div class="section-line"></div>
             <h2>Speisekarte</h2>
             <div class="section-line"></div>
+          </div>
+
+          <div class="menu-top-grid">
+            <div class="menu-top-left">
+              <aside class="info-box">
+                <div class="info-box-inner">
+                  <div class="info-row">
+                    <span class="info-label">All You Can Eat</span>
+
+                    <div class="list-item menu-flatrate-item">
+                      <div>
+                        <div class="item-name">Flammkuchen-Flatrate</div>
+                      </div>
+                      <div class="item-price">21</div>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+
+              <div class="menu-top-note">
+                <p>
+                  Ihr wählt selbst:<br />
+                  Flammkuchen-Flatrate für 21 € pro Person oder einzelne Flammkuchen nach Karte.
+                </p>
+                <p>Das Teilen-Prinzip gilt für beide Varianten.</p>
+              </div>
+            </div>
+
+            <div class="menu-top-text">
+              <h3 class="menu-subsection-title">Gemeinsam genießen</h3>
+
+              <p>
+                Unsere Flammkuchen werden am Tisch geteilt: frisch aus dem Ofen, heiß und knusprig direkt in die Mitte. So könnt ihr gemeinsam verschiedene Sorten probieren.
+              </p>
+
+              <p>
+                Damit alles frisch bleibt, servieren wir je nach Gruppengröße:<br />
+                1–4 Personen: 1 Flammkuchen gleichzeitig<br />
+                ab 5 Personen: 2 gleichzeitig<br />
+                ab 9 Personen: 3 gleichzeitig
+              </p>
+
+              <p>
+                <strong>Alleine oder zu zweit?</strong><br />
+                Dann könnt ihr natürlich auch einfach euren eigenen Flammkuchen bestellen, statt zu teilen.
+              </p>
+            </div>
           </div>
 
           <div class="menu-subsection">
@@ -932,7 +1026,7 @@
 
                   <div class="list-item">
                     <div>
-                      <div class="item-name">Döner/Gyros</div>
+                      <div class="item-name">Gyros</div>
                       <div class="item-desc">Gyros, Zwiebel, Knoblauch, Tsatsiki</div>
                     </div>
                     <div class="item-price">13</div>
@@ -985,8 +1079,24 @@
 
                   <div class="list-item">
                     <div>
-                      <div class="item-name">Avocado / Spiegelei</div>
+                      <div class="item-name">Avocado</div>
                       <div class="item-desc">Avocado, Spiegelei, Tomate</div>
+                    </div>
+                    <div class="item-price">13</div>
+                  </div>
+
+                  <div class="list-item">
+                    <div>
+                      <div class="item-name">Maultasche klassisch</div>
+                      <div class="item-desc">Maultaschen, Speck, Zwiebeln, Schnittlauch</div>
+                    </div>
+                    <div class="item-price">13</div>
+                  </div>
+
+                  <div class="list-item">
+                    <div>
+                      <div class="item-name">Maultasche vegetarisch</div>
+                      <div class="item-desc">Spinat-Maultaschen, rote Zwiebeln, Spinat, Feta, Walnüsse</div>
                     </div>
                     <div class="item-price">13</div>
                   </div>
@@ -1054,8 +1164,8 @@
 
                   <div class="list-item">
                     <div>
-                      <div class="item-name">Himbeere</div>
-                      <div class="item-desc">Himbeeren, Vanille-Soße</div>
+                      <div class="item-name">Heiße Liebe</div>
+                      <div class="item-desc">Himbeeren, Vanillesoße, Vanilleeis</div>
                     </div>
                     <div class="item-price">12</div>
                   </div>
@@ -1111,8 +1221,35 @@
                   <div class="item-price">8</div>
                 </div>
                 <div class="list-item">
-                  <div><div class="item-name">Crodino Spritz alkoholfrei</div></div>
+                  <div><div class="item-name">Maracuja Spritz alkoholfrei</div></div>
                   <div class="item-price">7</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-group">
+              <span class="list-group-title">Hausgemachte Limonaden</span>
+              <div class="list-items">
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Minze-Limette-Holunder</div>
+                    <div class="item-desc">0,5</div>
+                  </div>
+                  <div class="item-price">6</div>
+                </div>
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Himbeere-Granatapfel</div>
+                    <div class="item-desc">0,5</div>
+                  </div>
+                  <div class="item-price">6</div>
+                </div>
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Mango-Maracuja</div>
+                    <div class="item-desc">0,5</div>
+                  </div>
+                  <div class="item-price">6</div>
                 </div>
               </div>
             </div>
@@ -1167,33 +1304,6 @@
             </div>
 
             <div class="list-group">
-              <span class="list-group-title">Hausgemachte Limonaden</span>
-              <div class="list-items">
-                <div class="list-item">
-                  <div>
-                    <div class="item-name">Zitrone-Minze</div>
-                    <div class="item-desc">0,5</div>
-                  </div>
-                  <div class="item-price">6</div>
-                </div>
-                <div class="list-item">
-                  <div>
-                    <div class="item-name">Himbeer-Limette</div>
-                    <div class="item-desc">0,5</div>
-                  </div>
-                  <div class="item-price">6</div>
-                </div>
-                <div class="list-item">
-                  <div>
-                    <div class="item-name">Maracuja-Rosmarin</div>
-                    <div class="item-desc">0,5</div>
-                  </div>
-                  <div class="item-price">6</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="list-group">
               <span class="list-group-title">Bier · Vom Fass</span>
               <div class="list-items">
                 <div class="list-item">
@@ -1207,9 +1317,9 @@
                 <div class="list-item">
                   <div>
                     <div class="item-name">Weizen</div>
-                    <div class="item-desc">0,5</div>
+                    <div class="item-desc">0,3 | 0,5</div>
                   </div>
-                  <div class="item-price">5</div>
+                  <div class="item-price">4 | 5</div>
                 </div>
 
                 <div class="list-item">
@@ -1342,6 +1452,13 @@
                 <div class="list-item">
                   <div>
                     <div class="item-name">Williams</div>
+                    <div class="item-desc">2 cl</div>
+                  </div>
+                  <div class="item-price">4</div>
+                </div>
+                <div class="list-item">
+                  <div>
+                    <div class="item-name">Melonenschnaps</div>
                     <div class="item-desc">2 cl</div>
                   </div>
                   <div class="item-price">4</div>
