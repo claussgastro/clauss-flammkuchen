@@ -261,21 +261,23 @@
     .info-section,
     .menu-section,
     .drinks-section,
+    .team-section,
     .about-section {
       background: var(--bg);
     }
 
     .info-section {
-      padding: 8px 0 60px;
+      padding: 8px 0 80px;
     }
 
     .menu-section,
     .drinks-section {
-      padding: 6px 0 80px;
+      padding: 14px 0 80px;
     }
 
+    .team-section,
     .about-section {
-      padding: 6px 0 90px;
+      padding: 14px 0 90px;
     }
 
     .info-grid {
@@ -364,12 +366,18 @@
       display: inline-block;
     }
 
-    .contact-links a {
-      display: block;
+    .contact-links {
+      display: grid;
+      gap: 14px;
     }
 
-    .contact-links a + a {
-      margin-top: 14px;
+    .contact-links a {
+      display: inline;
+    }
+
+    .contact-links .contact-action {
+      text-decoration: underline;
+      text-underline-offset: 0.12em;
     }
 
     .hours-list {
@@ -413,6 +421,10 @@
       font-weight: 500;
       letter-spacing: -0.03em;
       line-height: 0.95;
+    }
+
+    section[id] {
+      scroll-margin-top: 88px;
     }
 
     .menu-top-grid {
@@ -524,6 +536,79 @@
       padding-left: 8px;
     }
 
+    .team-section .wrap-list,
+    .about-section .wrap-list {
+      width: min(840px, calc(100% - 220px));
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 42px 18px;
+      align-items: center;
+    }
+
+    .team-grid > * {
+      min-width: 0;
+    }
+
+    .team-photo {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+      background: transparent;
+      border: 0;
+    }
+
+    .team-lars-photo {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .team-lars-text {
+      grid-column: 2 / 4;
+      grid-row: 1;
+    }
+
+    .team-tobias-text {
+      grid-column: 1 / 3;
+      grid-row: 2;
+    }
+
+    .team-tobias-photo {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    .team-text {
+      max-width: none;
+    }
+
+    .team-text h3 {
+      margin: 0 0 12px;
+      font-family: var(--font-serif);
+      font-size: clamp(1.9rem, 3vw, 2.6rem);
+      line-height: 0.98;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .team-text p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    .team-lars-text {
+      padding-right: 28px;
+    }
+
+    .team-tobias-text {
+      padding-left: 28px;
+    }
+
     .about-text {
       max-width: 760px;
     }
@@ -534,6 +619,11 @@
     }
 
     @media (max-width: 1100px) {
+      .team-section .wrap-list,
+      .about-section .wrap-list {
+        width: min(720px, calc(100% - 160px));
+      }
+
       .logo {
         width: 290px;
         max-width: 38vw;
@@ -553,6 +643,11 @@
     }
 
     @media (max-width: 860px) {
+      .team-section .wrap-list,
+      .about-section .wrap-list {
+        width: min(680px, calc(100% - 48px));
+      }
+
       .wrap-image {
         width: min(1280px, calc(100% - 24px));
       }
@@ -627,9 +722,54 @@
       .menu-top-grid {
         margin-bottom: 42px;
       }
+
+      .team-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        align-items: start;
+      }
+
+      .team-photo {
+        width: 100%;
+        max-width: 420px;
+        height: auto;
+        justify-self: center;
+        object-fit: contain;
+      }
+
+      .team-lars-photo {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .team-lars-text {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .team-tobias-photo {
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      .team-tobias-text {
+        grid-column: 1;
+        grid-row: 4;
+      }
+
+      .team-lars-text,
+      .team-tobias-text {
+        padding-left: 0;
+        padding-right: 0;
+      }
     }
 
     @media (max-width: 560px) {
+      .team-section .wrap-list,
+      .about-section .wrap-list {
+        width: min(1180px, calc(100% - 32px));
+      }
+
       .wrap-image {
         width: min(1280px, calc(100% - 20px));
       }
@@ -685,8 +825,14 @@
 
       .menu-section,
       .drinks-section,
+      .team-section,
       .about-section {
+        padding-top: 12px;
         padding-bottom: 52px;
+      }
+
+      section[id] {
+        scroll-margin-top: 72px;
       }
 
       .intro-text h1 {
@@ -695,6 +841,7 @@
 
       .intro-text p,
       .about-text p,
+      .team-text p,
       .menu-top-text p,
       .menu-top-note p,
       .item-desc,
@@ -723,8 +870,8 @@
         font-size: 1.2rem;
       }
 
-      .contact-links a + a {
-        margin-top: 16px;
+      .contact-links {
+        gap: 16px;
       }
 
       .hours-row {
@@ -745,8 +892,17 @@
         margin-top: 42px;
       }
 
-      .menu-subsection-title {
+      .menu-subsection-title,
+      .team-text h3 {
         font-size: 1.8rem;
+      }
+
+      .team-grid {
+        gap: 18px;
+      }
+
+      .team-photo {
+        max-width: 360px;
       }
 
       .list-columns {
@@ -775,7 +931,7 @@
 <body>
   <div class="site">
     <div class="promo-bar">
-      Webseite in Arbeit...
+      Eröffnung am 28.05.2026!
       <a href="tel:+4972529009234">Hier reservieren!</a>
     </div>
 
@@ -790,7 +946,7 @@
               rel="noopener noreferrer"
             >
               <span class="top-link-main">Unser Standort</span>
-              <span class="top-link-sub">In Bretten.</span>
+              <span class="top-link-sub">Hier.</span>
             </a>
           </div>
 
@@ -801,7 +957,7 @@
           <div class="right">
             <a class="top-link-block" href="tel:+4972529009234">
               <span class="top-link-main">Reservierungen</span>
-              <span class="top-link-sub">Hier.</span>
+              <span class="top-link-sub">Gerne.</span>
             </a>
           </div>
         </div>
@@ -809,6 +965,11 @@
     </header>
 
     <main>
+      <!--
+        Direkte Abschnittslinks ohne sichtbares Menü:
+        /#speisekarte, /#getraenke, /#ueber-uns, /#jobs, /#kontakt
+        Für saubere URLs wie /speisekarte muss der Hoster diese Pfade auf die index.html weiterleiten.
+      -->
       <section class="hero">
         <div class="wrap-image">
           <img
@@ -820,7 +981,7 @@
         </div>
       </section>
 
-      <section class="info-section">
+      <section class="info-section" id="kontakt">
         <div class="wrap-list">
           <div class="info-grid">
             <div class="intro-text">
@@ -850,7 +1011,7 @@
                 </div>
 
                 <div class="info-row">
-                  <span class="info-label">Öffnungszeiten ab Juni 2026</span>
+                  <span class="info-label">Öffnungszeiten ab 28.05.2026</span>
                   <div class="info-value small hours-list">
                     <div class="hours-row"><span class="hours-day">Montag</span><span class="hours-time">17:00 – 22:00</span></div>
                     <div class="hours-row"><span class="hours-day">Dienstag</span><span class="hours-time">Ruhetag</span></div>
@@ -865,9 +1026,14 @@
                 <div class="info-row">
                   <span class="info-label">Kontakt</span>
                   <div class="info-value small contact-links">
-                    <a href="tel:+4972529009234">Telefon: 07252 9009234</a>
-                    <a href="mailto:info@clauss-flammkuchen.de">Email: info@clauss-flammkuchen.de</a>
-                    <a href="https://wa.me/4915227563589" target="_blank" rel="noopener noreferrer">WhatsApp: 01522 7563589</a>
+                    <div>
+                      <a class="contact-action" href="tel:+4972529009234">Telefon</a>
+                      &amp;
+                      <a class="contact-action" href="https://wa.me/4915227563589" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                    </div>
+                    <div>
+                      <a href="mailto:info@clauss-flammkuchen.de">info@clauss-flammkuchen.de</a>
+                    </div>
                   </div>
                 </div>
 
@@ -885,7 +1051,7 @@
         </div>
       </section>
 
-      <section class="menu-section">
+      <section class="menu-section" id="speisekarte">
         <div class="wrap-list">
           <div class="section-title-block full-bleed-lines">
             <div class="section-line"></div>
@@ -959,42 +1125,40 @@
               <div class="list-group">
                 <span class="list-group-title">Gemüse &amp; Mediterran</span>
                 <div class="list-items">
-                  <div class="list-item"><div><div class="item-name">Champignon</div><div class="item-desc">Champignon, Paprika, Zwiebel, Schnittlauch</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Caprese</div><div class="item-desc">Tomate, Mozzarella, Pesto, Basilikum</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Gemüse</div><div class="item-desc">Champignon, Zucchini, Paprika, Käse, Sonnenblumenkerne</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Mediterran</div><div class="item-desc">getrocknete Tomaten, Zucchini, Paprika, Rucola</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Feta Spinat</div><div class="item-desc">Feta, Spinat, Kürbiskerne</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Feta Peperoni</div><div class="item-desc">Feta, Peperoni, Oliven</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Champignon</div><div class="item-desc">Champignon, Paprika, Zwiebel, Schnittlauch</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Caprese</div><div class="item-desc">Tomate, Mozzarella, Pesto, Basilikum</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Gemüse</div><div class="item-desc">Champignon, Zucchini, Paprika, Käse, Sonnenblumenkerne</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Mediterran</div><div class="item-desc">getrocknete Tomaten, Zucchini, Paprika, Rucola</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Feta Spinat</div><div class="item-desc">Feta, Spinat, Kürbiskerne</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Feta Peperoni</div><div class="item-desc">Feta, Peperoni, Oliven</div></div><div class="item-price">13</div></div>
                 </div>
               </div>
 
               <div class="list-group">
                 <span class="list-group-title">Deftig &amp; Herzhaft</span>
                 <div class="list-items">
-                  <div class="list-item"><div><div class="item-name">Schinken-Champignon</div><div class="item-desc">Schinken, Champignon, Zwiebel, Schnittlauch</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Arrabiata</div><div class="item-desc">Speck, Oliven, Tomaten, Chili, Knoblauch</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Hawaii</div><div class="item-desc">Schinken, Ananas, Käse</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Raclette</div><div class="item-desc">Schinken, Champignon, Raclettekäse</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Thunfisch</div><div class="item-desc">Thunfisch, Oliven, rote Zwiebel</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Dattel Speck</div><div class="item-desc">Speck, Datteln, Zwiebel</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">BBQ</div><div class="item-desc">Speck, Zwiebel, Peperoni, BBQ-Soße</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Sucuk</div><div class="item-desc">Sucuk, Knoblauch, rote Zwiebel</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Gyros</div><div class="item-desc">Gyros, Zwiebel, Knoblauch, Tsatsiki</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Schinken-Champignon</div><div class="item-desc">Schinken, Champignon, Zwiebel, Schnittlauch</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Arrabiata</div><div class="item-desc">Speck, Oliven, Tomaten, Chili, Knoblauch</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Hawaii</div><div class="item-desc">Schinken, Ananas, Käse</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Raclette</div><div class="item-desc">Schinken, Champignon, Raclettekäse</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Thunfisch</div><div class="item-desc">Thunfisch, Oliven, rote Zwiebel</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Dattel Speck</div><div class="item-desc">Speck, Datteln, Zwiebel</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">BBQ</div><div class="item-desc">Speck, Zwiebel, Peperoni, BBQ-Soße</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Sucuk</div><div class="item-desc">Sucuk, Knoblauch, rote Zwiebel</div></div><div class="item-price">14</div></div>
                 </div>
               </div>
 
               <div class="list-group">
                 <span class="list-group-title">Fein &amp; Besonders</span>
                 <div class="list-items">
-                  <div class="list-item"><div><div class="item-name">Camembert</div><div class="item-desc">Camembert, Preiselbeeren, Walnüsse</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Ziegenkäse Honig</div><div class="item-desc">Ziegenkäse, Honig, Thymian</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Lachs Spinat</div><div class="item-desc">Lachs, Spinat, Kürbiskerne</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Lachs Rucola</div><div class="item-desc">Lachs, Zucchini, Rucola</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Lachs Feta</div><div class="item-desc">Lachs, Feta, Zwiebel</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Avocado</div><div class="item-desc">Avocado, Spiegelei, Tomate</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Maultasche klassisch</div><div class="item-desc">Maultaschen, Speck, Zwiebeln, Schnittlauch</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Maultasche vegetarisch</div><div class="item-desc">Spinat-Maultaschen, rote Zwiebeln, Spinat, Feta, Walnüsse</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Spargel</div><div class="item-desc">Spargel, Zucchini, frische Erdbeeren</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Camembert</div><div class="item-desc">Camembert, Preiselbeeren, Walnüsse</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Ziegenkäse Honig</div><div class="item-desc">Ziegenkäse, Honig, Thymian</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Lachs Spinat</div><div class="item-desc">Lachs, Spinat, Kürbiskerne</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Lachs Rucola</div><div class="item-desc">Lachs, Zucchini, Rucola</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Lachs Feta</div><div class="item-desc">Lachs, Feta, Zwiebel</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Avocado</div><div class="item-desc">Avocado, Spiegelei, Tomate</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Maultasche klassisch</div><div class="item-desc">Maultaschen, Speck, Zwiebeln, Schnittlauch</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Maultasche vegetarisch</div><div class="item-desc">Spinat-Maultaschen, rote Zwiebeln, Spinat, Feta, Walnüsse</div></div><div class="item-price">14</div></div>
                 </div>
               </div>
             </div>
@@ -1014,17 +1178,17 @@
                 <span class="list-group-title">Süße Klassiker</span>
                 <div class="list-items">
                   <div class="list-item"><div><div class="item-name">Apfel Zimt</div><div class="item-desc">Apfel, Zimt &amp; Zucker</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Apfel flambiert</div><div class="item-desc">Apfel, Zimt, Calvados</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Banane Nutella</div><div class="item-desc">Banane, Nutella</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Apfel flambiert</div><div class="item-desc">Apfel, Zimt, Calvados</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Banane Nutella</div><div class="item-desc">Banane, Nutella</div></div><div class="item-price">13</div></div>
                 </div>
               </div>
 
               <div class="list-group">
                 <span class="list-group-title">Fruchtig &amp; Süß</span>
                 <div class="list-items">
-                  <div class="list-item"><div><div class="item-name">Beeren Mischung</div><div class="item-desc">Beeren, weiße Schokolade</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Heiße Liebe</div><div class="item-desc">Himbeeren, Vanillesoße, Vanilleeis</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Nutella Erdbeere</div><div class="item-desc">Banane, Nutella, frische Erdbeeren</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Beeren Mischung</div><div class="item-desc">Beeren, weiße Schokolade</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Heiße Liebe</div><div class="item-desc">Himbeeren, Vanillesoße, Vanilleeis</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Nutella Erdbeere</div><div class="item-desc">Banane, Nutella, frische Erdbeeren</div></div><div class="item-price">14</div></div>
                 </div>
               </div>
             </div>
@@ -1032,7 +1196,7 @@
         </div>
       </section>
 
-      <section class="drinks-section">
+      <section class="drinks-section" id="getraenke">
         <div class="wrap-list">
           <div class="section-title-block full-bleed-lines">
             <div class="section-line"></div>
@@ -1184,7 +1348,49 @@
         </div>
       </section>
 
-      <section class="about-section">
+      <section class="team-section" id="ueber-uns">
+        <div class="wrap-list">
+          <div class="section-title-block full-bleed-lines">
+            <div class="section-line"></div>
+            <h2>Über uns</h2>
+            <div class="section-line"></div>
+          </div>
+
+          <div class="team-grid">
+            <img
+              class="team-photo team-lars-photo"
+              src="Lars.png"
+              alt="Lars von Clauß - Flammkuchen"
+              loading="lazy"
+              decoding="async"
+            />
+
+            <div class="team-text team-lars-text">
+              <h3>Lars</h3>
+              <p>
+                Lars ist einer der Köpfe hinter Clauß. Er kümmert sich darum, dass aus der Idee ein Ort wird, an dem man unkompliziert zusammenkommt, gut isst und sich wohlfühlt. Wichtig sind ihm ehrliche Gastfreundschaft, ein entspannter Abend und Flammkuchen, die frisch und knusprig auf den Tisch kommen.
+              </p>
+            </div>
+
+            <div class="team-text team-tobias-text">
+              <h3>Tobias</h3>
+              <p>
+                Tobias bringt Struktur, Ruhe und Liebe zum Detail mit. Ob Vorbereitung, Abläufe oder die vielen kleinen Entscheidungen im Alltag: Er achtet darauf, dass alles zusammenpasst und Clauß seinen eigenen Charakter bekommt – persönlich, herzlich und mit viel Freude am gemeinsamen Genuss.
+              </p>
+            </div>
+
+            <img
+              class="team-photo team-tobias-photo"
+              src="Tobias.png"
+              alt="Tobias von Clauß - Flammkuchen"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="about-section" id="jobs">
         <div class="wrap-list">
           <div class="section-title-block full-bleed-lines">
             <div class="section-line"></div>
@@ -1195,7 +1401,7 @@
           <div class="about-text">
             <p><strong>Lust auf Gastro in Bretten?</strong></p>
             <p>
-              Wir starten Anfang Juni.<br />
+              Wir starten Ende Mai.<br />
               Und du kannst von Anfang an Teil unseres Teams sein.
             </p>
             <p>
@@ -1212,5 +1418,30 @@
       </section>
     </main>
   </div>
+
+  <script>
+    (function () {
+      const routes = {
+        "/speisekarte": "speisekarte",
+        "/getraenke": "getraenke",
+        "/ueber-uns": "ueber-uns",
+        "/ueberuns": "ueber-uns",
+        "/jobs": "jobs",
+        "/kontakt": "kontakt"
+      };
+
+      const path = window.location.pathname.replace(/\/$/, "");
+      const targetId = routes[path];
+
+      if (targetId && !window.location.hash) {
+        window.addEventListener("load", function () {
+          const target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: "auto", block: "start" });
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
