@@ -309,6 +309,20 @@
       letter-spacing: -0.02em;
     }
 
+    .intro-text h4 {
+      margin: 24px 0 8px;
+      font-family: var(--font-serif);
+      font-size: 1.12rem;
+      line-height: 1.25;
+      font-weight: 550;
+      letter-spacing: 0.005em;
+      color: #3d3832;
+    }
+
+    .intro-text h1 + h4 {
+      margin-top: 16px;
+    }
+
     .intro-text p,
     .about-text p,
     .menu-top-text p,
@@ -745,6 +759,14 @@
         gap: 30px;
       }
 
+      .info-grid > .info-box {
+        order: -1;
+      }
+
+      .info-grid > .intro-text {
+        order: 1;
+      }
+
       .menu-top-grid {
         margin-bottom: 42px;
       }
@@ -1008,8 +1030,13 @@
           <div class="info-grid">
             <div class="intro-text">
               <h1>Flammkuchen in Bretten</h1>
+              <h4>Wir bieten die Basis, Ihr entscheidet über die Zutaten.</h4>
               <p>
-                Bei uns gibt es frisch gebackenen Flammkuchen mit knusprigem Boden und frischen Zutaten. Mit über 35 verschiedenen Sorten ist für jeden Geschmack etwas dabei – von klassisch bis kreativ belegt. Alle Flammkuchen werden frisch zubereitet und direkt aus dem Ofen serviert. Ob mit Freunden, Familie oder einfach zwischendurch – bei uns kann man entspannt essen und genießen.
+                Unsere Idee: Eine Grundlage zu schaffen, die vielfältig gestaltet werden kann. Einen Ort, an dem man sich wohl fühlt, an dem man nach Feierabend auf der Terrasse - oder in unserer gemütlichen Lounge - zusammenkommen kann, ob mit Kollegen, der besten Freundin oder der ganzen Familie. Ein einfaches Konzept, einen Ort mitten in Bretten, der zum verweilen einlädt.
+              </p>
+              <h4>Warum Flammkuchen? </h4>
+              <p>
+                Nachdem wir uns auf einen Ort inmitten unserer Heimatstadt festgelegt haben, fehlte nur noch eine Idee, was wir beitragen können, damit Ihr diesen Ort mit Leben füllt. Wir haben uns entschieden, die Idee der Gestaltung Euch zu überlassen und selbst nur die Grundzutaten zu stellen. Und eine Grundlage, mit der wohl jeder etwas anfangen kann, ist knuspriger Flammkuchenteig, frisch aus dem Ofen. Was dazukommt, entscheidet Ihr.
               </p>
             </div>
 
@@ -1134,11 +1161,11 @@
               <div class="list-group">
                 <span class="list-group-title">Klassisch</span>
                 <div class="list-items">
-                  <div class="list-item"><div><div class="item-name">Elsässer</div><div class="item-desc">Speck, Zwiebeln</div></div><div class="item-price">10</div></div>
-                  <div class="list-item"><div><div class="item-name">Elsässer Käse</div><div class="item-desc">Speck, Zwiebeln, Käse</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Elsässer Knoblauch</div><div class="item-desc">Speck, Zwiebeln, Knoblauch</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Elsässer Chili</div><div class="item-desc">Speck, Zwiebeln, Chili</div></div><div class="item-price">11</div></div>
-                  <div class="list-item"><div><div class="item-name">Elsässer Lauch</div><div class="item-desc">Speck, Lauchzwiebeln</div></div><div class="item-price">11</div></div>
+                  <div class="list-item"><div><div class="item-name">Elsäßer</div><div class="item-desc">Speck, Zwiebeln</div></div><div class="item-price">10</div></div>
+                  <div class="list-item"><div><div class="item-name">Elsäßer Käse</div><div class="item-desc">Speck, Zwiebeln, Käse</div></div><div class="item-price">11</div></div>
+                  <div class="list-item"><div><div class="item-name">Elsäßer Knoblauch</div><div class="item-desc">Speck, Zwiebeln, Knoblauch</div></div><div class="item-price">11</div></div>
+                  <div class="list-item"><div><div class="item-name">Elsäßer Chili</div><div class="item-desc">Speck, Zwiebeln, Chili</div></div><div class="item-price">11</div></div>
+                  <div class="list-item"><div><div class="item-name">Elsäßer Lauch</div><div class="item-desc">Speck, Lauchzwiebeln</div></div><div class="item-price">11</div></div>
                   <div class="list-item"><div><div class="item-name">Münster</div><div class="item-desc">Münsterkäse, Zwiebeln, Petersilie</div></div><div class="item-price">12</div></div>
                 </div>
               </div>
@@ -1146,9 +1173,9 @@
               <div class="list-group">
                 <span class="list-group-title">Gemüse &amp; Mediterran</span>
                 <div class="list-items">
-                  <div class="list-item"><div><div class="item-name">Champignon</div><div class="item-desc">Champignon, Paprika, Zwiebel, Schnittlauch</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Caprese</div><div class="item-desc">Tomate, Mozzarella, Basilikum</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Gemüse</div><div class="item-desc">Champignon, Zucchini, Paprika, Käse, Sonnenblumenkerne</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Champignon</div><div class="item-desc">Champignons, Paprika, Zwiebeln, Schnittlauch</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Caprese</div><div class="item-desc">Tomaten, Mozzarella, Basilikum</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Gemüse</div><div class="item-desc">Champignons, Zucchini, Paprika, Käse, Sonnenblumenkerne</div></div><div class="item-price">12</div></div>
                   <div class="list-item"><div><div class="item-name">Mediterran</div><div class="item-desc">getrocknete Tomaten, Zucchini, Paprika, Pesto, Rucola</div></div><div class="item-price">12</div></div>
                   <div class="list-item"><div><div class="item-name">Feta Spinat</div><div class="item-desc">Feta, Spinat, Kürbiskerne</div></div><div class="item-price">13</div></div>
                   <div class="list-item"><div><div class="item-name">Feta Peperoni</div><div class="item-desc">Feta, Peperoni, Oliven</div></div><div class="item-price">13</div></div>
@@ -1158,14 +1185,14 @@
               <div class="list-group">
                 <span class="list-group-title">Deftig &amp; Herzhaft</span>
                 <div class="list-items">
-                  <div class="list-item"><div><div class="item-name">Schinken-Champignon</div><div class="item-desc">Schinken, Champignon, Zwiebel, Schnittlauch</div></div><div class="item-price">12</div></div>
+                  <div class="list-item"><div><div class="item-name">Schinken-Champignon</div><div class="item-desc">Schinken, Champignons, Zwiebeln, Schnittlauch</div></div><div class="item-price">12</div></div>
                   <div class="list-item"><div><div class="item-name">Arrabiata</div><div class="item-desc">Tomaten, Oliven, Chili, Knoblauch</div></div><div class="item-price">12</div></div>
                   <div class="list-item"><div><div class="item-name">Hawaii</div><div class="item-desc">Schinken, Ananas, Käse</div></div><div class="item-price">12</div></div>
-                  <div class="list-item"><div><div class="item-name">Raclette</div><div class="item-desc">Schinken, Champignon, Raclettekäse</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Thunfisch</div><div class="item-desc">Thunfisch, Oliven, rote Zwiebel</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Dattel Speck</div><div class="item-desc">Speck, Datteln, Zwiebel, Schnittlauch</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">BBQ</div><div class="item-desc">Speck, Zwiebel, Peperoni, BBQ-Soße</div></div><div class="item-price">13</div></div>
-                  <div class="list-item"><div><div class="item-name">Sucuk</div><div class="item-desc">Sucuk, Knoblauch, rote Zwiebel</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Raclette</div><div class="item-desc">Schinken, Champignons, Raclettekäse</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Thunfisch</div><div class="item-desc">Thunfisch, Oliven, rote Zwiebeln</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Dattel Speck</div><div class="item-desc">Speck, Datteln, Zwiebeln, Schnittlauch</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">BBQ</div><div class="item-desc">Speck, Zwiebeln, Peperoni, BBQ-Soße</div></div><div class="item-price">13</div></div>
+                  <div class="list-item"><div><div class="item-name">Sucuk</div><div class="item-desc">Sucuk, Knoblauch, rote Zwiebeln</div></div><div class="item-price">14</div></div>
                 </div>
               </div>
 
@@ -1176,10 +1203,10 @@
                   <div class="list-item"><div><div class="item-name">Ziegenkäse Honig</div><div class="item-desc">Ziegenkäse, Honig, Thymian</div></div><div class="item-price">13</div></div>
                   <div class="list-item"><div><div class="item-name">Lachs Spinat</div><div class="item-desc">Lachs, Spinat, Kürbiskerne</div></div><div class="item-price">14</div></div>
                   <div class="list-item"><div><div class="item-name">Lachs Feldsalat</div><div class="item-desc">Lachs, Zucchini, Feldsalat, Dressing</div></div><div class="item-price">14</div></div>
-                  <div class="list-item"><div><div class="item-name">Lachs Feta</div><div class="item-desc">Lachs, Feta, rote Zwiebel, Schnittlauch</div></div><div class="item-price">14</div></div>
-                  <div class="list-item"><div><div class="item-name">Avocado</div><div class="item-desc">Avocado, Tomate, Mozzarella, Feldsalat, Dressing</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Lachs Feta</div><div class="item-desc">Lachs, Feta, rote Zwiebeln, Schnittlauch</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Avocado</div><div class="item-desc">Avocado, Tomaten, Mozzarella, Feldsalat, Dressing</div></div><div class="item-price">14</div></div>
                   <div class="list-item"><div><div class="item-name">Maultasche klassisch</div><div class="item-desc">Maultaschen, Speck, Zwiebeln, Schnittlauch</div></div><div class="item-price">14</div></div>
-                  <div class="list-item"><div><div class="item-name">Maultasche vegetarisch</div><div class="item-desc">Spinat-Maultaschen, rote Zwiebel, Spinat, Feta</div></div><div class="item-price">14</div></div>
+                  <div class="list-item"><div><div class="item-name">Maultasche vegetarisch</div><div class="item-desc">Spinat-Maultaschen, rote Zwiebeln, Feta, Spinat</div></div><div class="item-price">14</div></div>
                 </div>
               </div>
             </div>
