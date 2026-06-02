@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Flammkuchen-Ranking | Clauß</title>
-  <meta name="description" content="Wähle deine Top 10 Flammkuchen und sieh danach das aktuelle Gäste-Ranking.">
+  <meta name="description" content="Wähle deine Top 5 Flammkuchen und sieh danach das aktuelle Gäste-Ranking.">
   <style>
     :root {
       --bg: #f5efe5;
@@ -20,6 +20,8 @@
 
     * { box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       font-family: Georgia, 'Times New Roman', serif;
@@ -30,7 +32,15 @@
       min-height: 100vh;
     }
 
-    button, input { font: inherit; }
+    body.is-sorting {
+      user-select: none;
+      cursor: grabbing;
+    }
+
+    button, input {
+      font: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     .app {
       width: min(980px, calc(100% - 28px));
@@ -138,14 +148,58 @@
     }
 
     .top-item, .result-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 12px;
-      align-items: center;
       border: 1px solid var(--line);
       background: rgba(255, 255, 255, 0.48);
       border-radius: 16px;
       padding: 11px 12px;
+    }
+
+    .top-item {
+      display: grid;
+      grid-template-columns: 40px 34px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      min-height: 74px;
+      transition: background 120ms ease, box-shadow 120ms ease, transform 120ms ease, opacity 120ms ease;
+    }
+
+    .top-item.is-empty {
+      background: rgba(255, 255, 255, 0.28);
+      border-style: dashed;
+    }
+
+    .top-item.is-dragging {
+      opacity: 0.72;
+      transform: scale(0.995);
+      box-shadow: 0 10px 24px rgba(23, 21, 20, 0.10);
+      background: rgba(216, 160, 170, 0.16);
+      outline: 2px solid rgba(216, 160, 170, 0.55);
+    }
+
+    .drag-handle {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 250, 242, 0.84);
+      color: var(--muted);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .drag-handle:active { cursor: grabbing; }
+
+    .drag-handle.is-disabled,
+    .top-actions.is-placeholder-actions {
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .rank-number {
@@ -161,10 +215,18 @@
       font-weight: 800;
     }
 
+    .top-text { min-width: 0; }
+
     .item-name {
       font-size: 18px;
       line-height: 1.1;
       font-weight: 700;
+    }
+
+    .top-item .item-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .item-meta {
@@ -176,9 +238,10 @@
 
     .item-actions {
       display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+      gap: 8px;
+      flex-wrap: nowrap;
       justify-content: flex-end;
+      align-items: center;
     }
 
     .small-btn, .add-btn, .submit-btn, .secondary-btn {
@@ -191,12 +254,19 @@
     }
 
     .small-btn {
-      min-width: 36px;
-      height: 34px;
-      padding: 0 10px;
+      min-width: 44px;
+      height: 44px;
+      padding: 0 12px;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .remove-btn {
+      min-width: 44px;
+      padding: 0;
+      font-size: 24px;
     }
 
     .small-btn:hover, .add-btn:hover, .submit-btn:hover, .secondary-btn:hover {
@@ -228,7 +298,7 @@
 
     .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
       gap: 10px;
     }
 
@@ -249,7 +319,8 @@
     }
 
     .add-btn {
-      padding: 9px 12px;
+      min-width: 104px;
+      padding: 10px 12px;
       background: var(--card);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 14px;
@@ -287,6 +358,13 @@
       margin-top: 16px;
     }
 
+    .result-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
     .points {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-weight: 800;
@@ -302,19 +380,72 @@
     }
 
     @media (max-width: 620px) {
-      .top-item, .result-item {
-        grid-template-columns: auto 1fr;
-      }
-
-      .item-actions, .points {
-        grid-column: 1 / -1;
-        justify-content: flex-start;
-        margin-left: 46px;
+      .app {
+        width: min(100% - 20px, 980px);
+        padding-top: 16px;
       }
 
       .topbar {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .top-item {
+        grid-template-columns: 36px 30px minmax(0, 1fr) auto;
+        gap: 6px;
+        min-height: 68px;
+        padding: 9px;
+      }
+
+      .drag-handle {
+        width: 36px;
+        height: 40px;
+        border-radius: 13px;
+        font-size: 18px;
+      }
+
+      .rank-number {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+      }
+
+      .item-name { font-size: 17px; }
+      .item-meta { font-size: 12px; }
+
+      .item-actions {
+        gap: 5px;
+      }
+
+      .small-btn {
+        min-width: 40px;
+        height: 40px;
+        padding: 0 8px;
+        font-size: 17px;
+      }
+
+      .remove-btn {
+        min-width: 40px;
+        padding: 0;
+        font-size: 22px;
+      }
+
+      .menu-item {
+        grid-template-columns: 1fr auto;
+      }
+
+      .add-btn {
+        min-width: 96px;
+      }
+
+      .result-item {
+        grid-template-columns: auto 1fr;
+      }
+
+      .result-item .points {
+        grid-column: 1 / -1;
+        justify-self: start;
+        margin-left: 46px;
       }
     }
   </style>
@@ -326,7 +457,7 @@
     <header class="hero">
       <p class="eyebrow">Clauß · Flammkuchen in Bretten</p>
       <h1>Dein Flammkuchen-Ranking</h1>
-      <p class="lead">Wähle deine persönlichen Top 10. Nach dem Absenden siehst du, welche Sorten bei allen Gästen gerade vorne liegen.</p>
+      <p class="lead">Wähle deine persönlichen Top 5. Nach dem Absenden siehst du, welche Sorten bei allen Gästen gerade vorne liegen.</p>
     </header>
 
     <section id="configWarning" class="card hidden">
@@ -339,19 +470,19 @@
 
       <div class="topbar">
         <div>
-          <h2>Deine Top 10</h2>
-          <p class="muted">Erst auswählen, dann mit den Pfeilen sortieren.</p>
+          <h2>Deine Top 5</h2>
+          <p class="muted">Erst auswählen, dann per Ziehen oder mit den Pfeilen sortieren.</p>
         </div>
-        <div id="selectedCount" class="pill">0/10 gewählt</div>
+        <div id="selectedCount" class="pill">0/5 gewählt</div>
       </div>
 
       <div id="topList" class="top-list"></div>
-      <button id="submitBtn" class="submit-btn" disabled>Ranking absenden</button>
+      <button id="submitBtn" class="submit-btn" type="button" disabled>Ranking absenden</button>
     </section>
 
     <section id="menuSection" class="card">
       <h2>Alle Flammkuchen</h2>
-      <p class="muted">Tippe auf „Auswählen“, bis deine Top 10 vollständig sind.</p>
+      <p class="muted">Tippe auf „Auswählen“, bis deine Top 5 vollständig sind.</p>
       <div id="menuGroups"></div>
     </section>
 
@@ -366,15 +497,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // 1) In Supabase: Project Settings -> API
-    // 2) Project URL hier eintragen
-    // 3) public anon / publishable key hier eintragen. Niemals den service_role key verwenden.
+    // Öffentlich verwendbarer Supabase Publishable Key. Niemals den service_role oder secret key im Browser verwenden.
     const SUPABASE_URL = 'https://ssgmbeeezjznvvodhend.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_JQke52YXReRCm_sNDXQvWg_-58fYP_X';
 
+    const TOP_LIMIT = 5;
+    const RESULT_LIMIT = 10;
     const TABLE_CODE = new URLSearchParams(window.location.search).get('tisch') || null;
-    const SESSION_KEY = 'clauss_flammkuchen_ranking_session_id_v1';
-    const VOTED_AT_KEY = 'clauss_flammkuchen_ranking_voted_at_v1';
+    const SESSION_KEY = 'clauss_flammkuchen_ranking_session_id_top5_v2';
+    const VOTED_AT_KEY = 'clauss_flammkuchen_ranking_voted_at_top5_v2';
     const VOTE_BLOCK_MS = 6 * 60 * 60 * 1000;
 
     const els = {
@@ -395,6 +526,8 @@
     let flammkuchen = [];
     let selectedIds = [];
     let isSubmitting = false;
+    let draggedId = null;
+    let dragStartY = 0;
 
     function escapeHTML(value) {
       return String(value ?? '').replace(/[&<>"']/g, function (char) {
@@ -425,33 +558,62 @@
       return flammkuchen.find(function (item) { return item.id === id; });
     }
 
+    function preserveScroll(callback) {
+      const scrollY = window.scrollY;
+      callback();
+      requestAnimationFrame(function () {
+        window.scrollTo(0, scrollY);
+      });
+    }
+
     function renderTopList() {
-      els.selectedCount.textContent = selectedIds.length + '/10 gewählt';
-      els.submitBtn.disabled = selectedIds.length !== 10 || isSubmitting;
+      els.selectedCount.textContent = selectedIds.length + '/' + TOP_LIMIT + ' gewählt';
+      els.submitBtn.disabled = selectedIds.length !== TOP_LIMIT || isSubmitting;
 
-      if (selectedIds.length === 0) {
-        els.topList.innerHTML = '<div class="empty">Noch nichts gewählt. Starte unten mit deinem absoluten Lieblings-Flammkuchen.</div>';
-        return;
-      }
+      const slots = [];
+      for (let index = 0; index < TOP_LIMIT; index += 1) {
+        const id = selectedIds[index];
+        const item = id ? byId(id) : null;
 
-      els.topList.innerHTML = selectedIds.map(function (id, index) {
-        const item = byId(id);
-        if (!item) return '';
-        return `
-          <div class="top-item">
-            <span class="rank-number">${index + 1}</span>
-            <div>
-              <div class="item-name">${escapeHTML(item.name)}</div>
-              <div class="item-meta">${escapeHTML(item.category)} · ${Number(item.price).toFixed(0)} €</div>
+        if (!item) {
+          slots.push(`
+            <div class="top-item is-empty" data-slot="${index + 1}">
+              <span class="drag-handle is-disabled" aria-hidden="true">☰</span>
+              <span class="rank-number">${index + 1}</span>
+              <div class="top-text">
+                <div class="item-name">Platz ${index + 1} ist noch frei</div>
+                <div class="item-meta">Wähle unten einen Flammkuchen aus</div>
+              </div>
+              <div class="item-actions top-actions is-placeholder-actions" aria-hidden="true">
+                <button class="small-btn" type="button" disabled>↑</button>
+                <button class="small-btn" type="button" disabled>↓</button>
+                <button class="small-btn remove-btn" type="button" disabled>×</button>
+              </div>
             </div>
-            <div class="item-actions">
-              <button class="small-btn" data-action="up" data-id="${item.id}" ${index === 0 ? 'disabled' : ''}>↑</button>
-              <button class="small-btn" data-action="down" data-id="${item.id}" ${index === selectedIds.length - 1 ? 'disabled' : ''}>↓</button>
-              <button class="small-btn" data-action="remove" data-id="${item.id}">Entfernen</button>
+          `);
+          continue;
+        }
+
+        const safeName = escapeHTML(item.name);
+        const safeCategory = escapeHTML(item.category);
+        slots.push(`
+          <div class="top-item ${draggedId === item.id ? 'is-dragging' : ''}" data-id="${item.id}">
+            <button class="drag-handle" type="button" data-drag-id="${item.id}" aria-label="${safeName} ziehen und sortieren">☰</button>
+            <span class="rank-number">${index + 1}</span>
+            <div class="top-text" title="${safeName}">
+              <div class="item-name">${safeName}</div>
+              <div class="item-meta">${safeCategory} · ${Number(item.price).toFixed(0)} €</div>
+            </div>
+            <div class="item-actions top-actions">
+              <button class="small-btn" type="button" data-action="up" data-id="${item.id}" aria-label="${safeName} nach oben" ${index === 0 ? 'disabled' : ''}>↑</button>
+              <button class="small-btn" type="button" data-action="down" data-id="${item.id}" aria-label="${safeName} nach unten" ${index === selectedIds.length - 1 ? 'disabled' : ''}>↓</button>
+              <button class="small-btn remove-btn" type="button" data-action="remove" data-id="${item.id}" aria-label="${safeName} entfernen">×</button>
             </div>
           </div>
-        `;
-      }).join('');
+        `);
+      }
+
+      els.topList.innerHTML = slots.join('');
     }
 
     function renderMenu() {
@@ -468,14 +630,14 @@
             <div class="menu-grid">
               ${items.map(function (item) {
                 const selected = selectedIds.includes(item.id);
-                const disabled = !selected && selectedIds.length >= 10;
+                const disabled = !selected && selectedIds.length >= TOP_LIMIT;
                 return `
                   <div class="menu-item ${selected ? 'is-selected' : ''}">
                     <div>
                       <div class="item-name">${escapeHTML(item.name)}</div>
                       <div class="item-meta">${Number(item.price).toFixed(0)} €</div>
                     </div>
-                    <button class="add-btn" data-action="${selected ? 'remove' : 'add'}" data-id="${item.id}" ${disabled ? 'disabled' : ''}>
+                    <button class="add-btn" type="button" data-action="${selected ? 'remove' : 'add'}" data-id="${item.id}" ${disabled ? 'disabled' : ''}>
                       ${selected ? 'Gewählt' : 'Auswählen'}
                     </button>
                   </div>
@@ -487,26 +649,35 @@
       }).join('');
     }
 
-    function renderAll() {
-      renderTopList();
-      renderMenu();
+    function renderAll(options) {
+      const shouldPreserveScroll = options && options.preserveScroll;
+      const doRender = function () {
+        renderTopList();
+        renderMenu();
+      };
+
+      if (shouldPreserveScroll) {
+        preserveScroll(doRender);
+      } else {
+        doRender();
+      }
     }
 
     function addItem(id) {
       clearMessage();
       if (selectedIds.includes(id)) return;
-      if (selectedIds.length >= 10) {
-        showMessage('Du hast schon 10 Flammkuchen gewählt. Entferne erst einen, wenn du tauschen möchtest.');
+      if (selectedIds.length >= TOP_LIMIT) {
+        showMessage('Du hast schon ' + TOP_LIMIT + ' Flammkuchen gewählt. Entferne erst einen, wenn du tauschen möchtest.');
         return;
       }
       selectedIds.push(id);
-      renderAll();
+      renderAll({ preserveScroll: true });
     }
 
     function removeItem(id) {
       clearMessage();
       selectedIds = selectedIds.filter(function (selectedId) { return selectedId !== id; });
-      renderAll();
+      renderAll({ preserveScroll: true });
     }
 
     function moveItem(id, direction) {
@@ -519,7 +690,77 @@
       copy[index] = copy[newIndex];
       copy[newIndex] = temp;
       selectedIds = copy;
-      renderAll();
+      renderTopList();
+    }
+
+    function moveItemToIndex(id, targetIndex) {
+      const fromIndex = selectedIds.indexOf(id);
+      if (fromIndex < 0) return false;
+
+      const copy = selectedIds.slice();
+      const movedItems = copy.splice(fromIndex, 1);
+      if (targetIndex > fromIndex) targetIndex -= 1;
+      targetIndex = Math.max(0, Math.min(targetIndex, copy.length));
+      if (targetIndex === fromIndex) return false;
+      copy.splice(targetIndex, 0, movedItems[0]);
+
+      const changed = copy.join(',') !== selectedIds.join(',');
+      selectedIds = copy;
+      return changed;
+    }
+
+    function onDragMove(event) {
+      if (!draggedId) return;
+      event.preventDefault();
+
+      if (Math.abs(event.clientY - dragStartY) < 3) return;
+
+      const target = document.elementFromPoint(event.clientX, event.clientY);
+      const row = target && target.closest ? target.closest('.top-item[data-id]') : null;
+      if (!row || !els.topList.contains(row)) return;
+
+      const overId = Number(row.dataset.id);
+      if (!overId || overId === draggedId) return;
+
+      const rect = row.getBoundingClientRect();
+      const overIndex = selectedIds.indexOf(overId);
+      if (overIndex < 0) return;
+
+      const shouldPlaceAfter = event.clientY > rect.top + rect.height / 2;
+      const targetIndex = overIndex + (shouldPlaceAfter ? 1 : 0);
+
+      if (moveItemToIndex(draggedId, targetIndex)) {
+        renderTopList();
+      }
+    }
+
+    function endDrag() {
+      if (!draggedId) return;
+      draggedId = null;
+      document.body.classList.remove('is-sorting');
+      document.removeEventListener('pointermove', onDragMove);
+      document.removeEventListener('pointerup', endDrag);
+      document.removeEventListener('pointercancel', endDrag);
+      renderTopList();
+    }
+
+    function startDrag(event) {
+      const handle = event.target.closest('[data-drag-id]');
+      if (!handle) return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+      const id = Number(handle.dataset.dragId);
+      if (!selectedIds.includes(id)) return;
+
+      draggedId = id;
+      dragStartY = event.clientY;
+      document.body.classList.add('is-sorting');
+      renderTopList();
+      event.preventDefault();
+
+      document.addEventListener('pointermove', onDragMove, { passive: false });
+      document.addEventListener('pointerup', endDrag);
+      document.addEventListener('pointercancel', endDrag);
     }
 
     async function loadMenu() {
@@ -535,7 +776,7 @@
     }
 
     async function loadResults() {
-      const response = await db.rpc('get_flammkuchen_ranking', { p_limit: 10 });
+      const response = await db.rpc('get_flammkuchen_ranking', { p_limit: RESULT_LIMIT });
       if (response.error) throw response.error;
 
       const rows = response.data || [];
@@ -568,8 +809,8 @@
     async function submitVote() {
       clearMessage();
 
-      if (selectedIds.length !== 10) {
-        showMessage('Bitte wähle genau 10 Flammkuchen aus.');
+      if (selectedIds.length !== TOP_LIMIT) {
+        showMessage('Bitte wähle genau ' + TOP_LIMIT + ' Flammkuchen aus.');
         return;
       }
 
@@ -608,7 +849,7 @@
       localStorage.setItem(VOTED_AT_KEY, String(Date.now()));
       els.voteSection.classList.add('hidden');
       els.menuSection.classList.add('hidden');
-      await showResults('Danke! Deine Top 10 wurden gezählt.');
+      await showResults('Danke! Deine Top 5 wurden gezählt.');
     }
 
     els.menuGroups.addEventListener('click', function (event) {
@@ -627,6 +868,8 @@
       if (button.dataset.action === 'down') moveItem(id, 1);
       if (button.dataset.action === 'remove') removeItem(id);
     });
+
+    els.topList.addEventListener('pointerdown', startDrag);
 
     els.submitBtn.addEventListener('click', function () {
       submitVote().catch(function (error) {
