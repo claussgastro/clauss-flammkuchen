@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tagesabrechnung Trinkgeld</title>
+  <style>
+    :root {
+      --bg: #f8f2ed;
+      --card: #fffaf6;
+      --text: #1f1f1f;
+      --muted: #70635c;
+      --line: #decfc7;
+      --accent: #b76f7b;
+      --accent-soft: rgba(183, 111, 123, 0.12);
+      --danger-soft: #fff4d8;
+      --danger-line: #e2bd58;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .page {
+      width: min(1020px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 26px 0 42px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .cards-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .card,
+    .total {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .card-head,
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .money-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 750;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 9px 11px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    input:focus {
+      outline: 3px solid var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    .tip-input {
+      font-weight: 800;
+      border-color: rgba(183, 111, 123, 0.6);
+      background: #fffdfb;
+    }
+
+    .status {
+      min-height: 16px;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .total {
+      padding: 15px 16px;
+    }
+
+    .total span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .total strong {
+      display: block;
+      margin-top: 4px;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      letter-spacing: -0.04em;
+    }
+
+    .total.highlight {
+      background: var(--accent-soft);
+      border-color: rgba(183, 111, 123, 0.55);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      min-height: 38px;
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 13px;
+      color: #fff;
+      background: var(--accent);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:hover {
+      filter: brightness(0.95);
+    }
+
+    button.secondary {
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    button.remove {
+      width: 38px;
+      padding: 0;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--line);
+    }
+
+    .messages {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .warning {
+      border: 1px solid var(--danger-line);
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: var(--danger-soft);
+      font-size: 0.9rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 7px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    td input {
+      min-height: 39px;
+    }
+
+    .hours,
+    .payout {
+      font-weight: 900;
+      padding-top: 9px;
+      white-space: nowrap;
+    }
+
+    .note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    @media (max-width: 840px) {
+      header,
+      .card-head,
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .cards-2,
+      .money-grid,
+      .totals {
+        grid-template-columns: 1fr;
+      }
+
+      table,
+      thead,
+      tbody,
+      tr,
+      th,
+      td {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 10px;
+        margin-bottom: 10px;
+        background: #fff;
+      }
+
+      td {
+        border: 0;
+        padding: 6px 0;
+      }
+
+      td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 850;
+      }
+
+      .hours,
+      .payout {
+        padding-top: 0;
+      }
+
+      .right {
+        text-align: left;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .page {
+        width: 100%;
+        padding: 0;
+      }
+
+      .buttons,
+      button.remove {
+        display: none !important;
+      }
+
+      .card,
+      .total {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <h1>Tagesabrechnung</h1>
+        <div class="small">Trinkgeld erfassen, Küche abziehen, Mitarbeiter auszahlen.</div>
+      </div>
+    </header>
+
+    <section class="cards-2">
+      <article class="card">
+        <div class="card-head">
+          <h2>Bargeld</h2>
+        </div>
+        <div class="money-grid">
+          <div>
+            <label for="cashSoll">Soll</label>
+            <input id="cashSoll" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
+          </div>
+          <div>
+            <label for="cashCounted">Gezählt</label>
+            <input id="cashCounted" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
+          </div>
+          <div>
+            <label for="cashTip">Trinkgeld</label>
+            <input id="cashTip" class="tip-input" data-group="cash" type="text" inputmode="decimal" autocomplete="off" placeholder="auto / direkt">
+            <div id="cashStatus" class="status"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <h2>Karte</h2>
+        </div>
+        <div class="money-grid">
+          <div>
+            <label for="cardSoll">Soll</label>
+            <input id="cardSoll" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
+          </div>
+          <div>
+            <label for="cardCounted">Gezählt</label>
+            <input id="cardCounted" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
+          </div>
+          <div>
+            <label for="cardTip">Trinkgeld</label>
+            <input id="cardTip" class="tip-input" data-group="card" type="text" inputmode="decimal" autocomplete="off" placeholder="auto / direkt">
+            <div id="cardStatus" class="status"></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="totals">
+      <div class="total highlight">
+        <span>Trinkgeld gesamt</span>
+        <strong id="totalTip">0 €</strong>
+      </div>
+      <div class="total">
+        <span>Küche 15 %</span>
+        <strong id="kitchenShare">0 €</strong>
+      </div>
+      <div class="total">
+        <span>Zu verteilen</span>
+        <strong id="staffShare">0 €</strong>
+      </div>
+    </section>
+
+    <div id="messages" class="messages"></div>
+
+    <section class="card">
+      <div class="section-head">
+        <div>
+          <h2>Mitarbeiter</h2>
+          <div class="small">Bei mehr als 6 h werden automatisch 30 min Pause abgezogen.</div>
+        </div>
+        <div class="buttons">
+          <button id="addEmployee" type="button">+ Mitarbeiter</button>
+          <button id="printPage" class="secondary" type="button">Drucken</button>
+          <button id="resetAll" class="secondary" type="button">Leeren</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Beginn</th>
+            <th>Ende</th>
+            <th>h direkt</th>
+            <th>h</th>
+            <th class="right">Betrag</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="employeeBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    const euro = new Intl.NumberFormat("de-DE", {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+
+    const hours = new Intl.NumberFormat("de-DE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    const $ = (id) => document.getElementById(id);
+    const employeeBody = $("employeeBody");
+    const manualTip = { cash: false, card: false };
+
+    function parseDecimal(value) {
+      if (typeof value !== "string") return null;
+
+      let normalized = value.trim().replace(/\s/g, "");
+      if (!normalized) return null;
+
+      if (normalized.includes(",")) {
+        normalized = normalized.replace(/\./g, "").replace(",", ".");
+      }
+
+      const number = Number(normalized);
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function formatInputNumber(value) {
+      if (!Number.isFinite(value)) return "";
+      return value.toFixed(2).replace(".", ",");
+    }
+
+    function formatEuro(value) {
+      return euro.format(Math.round(Number(value) || 0));
+    }
+
+    function formatHours(value) {
+      return hours.format(Number(value) || 0) + " h";
+    }
+
+    function readPayment(group) {
+      const soll = parseDecimal($(group + "Soll").value);
+      const counted = parseDecimal($(group + "Counted").value);
+      const tipInput = $(group + "Tip");
+      const status = $(group + "Status");
+
+      const canCalculate = soll !== null && counted !== null;
+      const calculatedTip = canCalculate ? counted - soll : null;
+
+      if (!manualTip[group]) {
+        tipInput.value = canCalculate ? formatInputNumber(calculatedTip) : "";
+      }
+
+      const tip = parseDecimal(tipInput.value) || 0;
+
+      if (manualTip[group]) {
+        status.textContent = "manuell";
+      } else if (canCalculate) {
+        status.textContent = "berechnet";
+      } else {
+        status.textContent = "";
+      }
+
+      return tip;
+    }
+
+    function timeToMinutes(value) {
+      if (!value) return null;
+      const [hour, minute] = value.split(":").map(Number);
+      if (!Number.isFinite(hour) || !Number.isFinite(minute)) return null;
+      return hour * 60 + minute;
+    }
+
+    function getEmployeeHours(row) {
+      const direct = parseDecimal(row.querySelector(".direct-hours").value);
+
+      if (direct !== null && direct > 0) {
+        return {
+          value: direct,
+          note: "direkt"
+        };
+      }
+
+      const start = timeToMinutes(row.querySelector(".start-time").value);
+      const end = timeToMinutes(row.querySelector(".end-time").value);
+
+      if (start === null || end === null) {
+        return {
+          value: 0,
+          note: ""
+        };
+      }
+
+      let minutes = end - start;
+      if (minutes <= 0) minutes += 24 * 60;
+
+      const raw = minutes / 60;
+      const pause = raw > 6 ? 0.5 : 0;
+
+      return {
+        value: Math.max(0, raw - pause),
+        note: pause > 0 ? "-0,5 h Pause" : ""
+      };
+    }
+
+    function distribute(amount, employees) {
+      const roundedAmount = Math.max(0, Math.round(amount));
+      const payouts = new Array(employees.length).fill(0);
+      const totalHours = employees.reduce((sum, employee) => sum + employee.hours, 0);
+
+      if (roundedAmount <= 0 || totalHours <= 0 || employees.length === 0) {
+        return payouts;
+      }
+
+      const parts = employees.map((employee, index) => {
+        const ideal = roundedAmount * employee.hours / totalHours;
+        return {
+          index,
+          base: Math.floor(ideal),
+          rest: ideal - Math.floor(ideal),
+          hours: employee.hours
+        };
+      });
+
+      for (const part of parts) {
+        payouts[part.index] = part.base;
+      }
+
+      let remaining = roundedAmount - payouts.reduce((sum, value) => sum + value, 0);
+
+      parts.sort((a, b) => {
+        if (b.rest !== a.rest) return b.rest - a.rest;
+        if (b.hours !== a.hours) return b.hours - a.hours;
+        return a.index - b.index;
+      });
+
+      let index = 0;
+      while (remaining > 0) {
+        payouts[parts[index % parts.length].index] += 1;
+        remaining -= 1;
+        index += 1;
+      }
+
+      return payouts;
+    }
+
+    function calculate() {
+      const cashTip = readPayment("cash");
+      const cardTip = readPayment("card");
+      const rawTotal = cashTip + cardTip;
+      const totalTip = Math.max(0, Math.round(rawTotal));
+      const kitchenShare = Math.round(totalTip * 0.15);
+      const staffShare = totalTip - kitchenShare;
+
+      const rows = Array.from(employeeBody.querySelectorAll("tr"));
+      const employees = rows.map((row) => {
+        const result = getEmployeeHours(row);
+        row.querySelector(".hours").textContent = formatHours(result.value);
+        row.querySelector(".note").textContent = result.note;
+        return { row, hours: result.value };
+      });
+
+      const activeEmployees = employees.filter((employee) => employee.hours > 0);
+      const payouts = distribute(staffShare, activeEmployees);
+
+      let payoutIndex = 0;
+      let payoutSum = 0;
+
+      for (const employee of employees) {
+        let payout = 0;
+
+        if (employee.hours > 0) {
+          payout = payouts[payoutIndex] || 0;
+          payoutIndex += 1;
+        }
+
+        payoutSum += payout;
+        employee.row.querySelector(".payout").textContent = formatEuro(payout);
+      }
+
+      $("totalTip").textContent = formatEuro(totalTip);
+      $("kitchenShare").textContent = formatEuro(kitchenShare);
+      $("staffShare").textContent = formatEuro(staffShare);
+
+      renderMessages({
+        rawTotal,
+        staffShare,
+        activeEmployees,
+        payoutSum
+      });
+    }
+
+    function renderMessages(state) {
+      const messages = [];
+
+      if (state.rawTotal < 0) {
+        messages.push("Trinkgeld ist negativ. Auszahlung wird auf 0 € gesetzt.");
+      }
+
+      if (state.staffShare > 0 && state.activeEmployees.length === 0) {
+        messages.push("Noch keine Arbeitszeit eingetragen.");
+      }
+
+      $("messages").innerHTML = messages
+        .map((message) => `<div class="warning">${message}</div>`)
+        .join("");
+    }
+
+    function addEmployee() {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td data-label="Name">
+          <input class="employee-name" type="text" autocomplete="off" placeholder="Name">
+        </td>
+        <td data-label="Beginn">
+          <input class="start-time" type="time">
+        </td>
+        <td data-label="Ende">
+          <input class="end-time" type="time">
+        </td>
+        <td data-label="h direkt">
+          <input class="direct-hours" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 5,5">
+        </td>
+        <td data-label="h">
+          <div class="hours">0,00 h</div>
+          <div class="note"></div>
+        </td>
+        <td data-label="Betrag" class="right">
+          <div class="payout">0 €</div>
+        </td>
+        <td data-label="">
+          <button class="remove" type="button" aria-label="Mitarbeiter entfernen">×</button>
+        </td>
+      `;
+
+      row.querySelector(".remove").addEventListener("click", () => {
+        row.remove();
+        calculate();
+      });
+
+      employeeBody.appendChild(row);
+      calculate();
+    }
+
+    function resetAll() {
+      const clear = confirm("Alle Eingaben löschen?");
+      if (!clear) return;
+
+      document.querySelectorAll("input").forEach((input) => {
+        input.value = "";
+      });
+
+      manualTip.cash = false;
+      manualTip.card = false;
+      employeeBody.innerHTML = "";
+      addEmployee();
+      calculate();
+    }
+
+    document.addEventListener("input", (event) => {
+      const target = event.target;
+
+      if (target.classList.contains("tip-input")) {
+        const group = target.dataset.group;
+        manualTip[group] = target.value.trim() !== "";
+      }
+
+      if (target.matches("input")) {
+        calculate();
+      }
+    });
+
+    $("addEmployee").addEventListener("click", addEmployee);
+    $("printPage").addEventListener("click", () => window.print());
+    $("resetAll").addEventListener("click", resetAll);
+
+    addEmployee();
+  </script>
+</body>
+</html>
