@@ -12,15 +12,15 @@
     button:disabled{opacity:.35;cursor:not-allowed}
     .app{width:min(920px,calc(100% - 24px));margin:0 auto;padding:22px 0 44px}
     .hero,.card{border:1px solid var(--line);background:rgba(255,250,242,.78);border-radius:30px;box-shadow:var(--shadow)}
-    .hero{padding:clamp(24px,5vw,48px);margin-bottom:16px}
+    .hero{padding:clamp(24px,5vw,44px);margin-bottom:16px}
     .card{padding:clamp(18px,4vw,28px);margin-bottom:16px;border-radius:var(--radius);box-shadow:0 10px 30px rgba(23,21,20,.06)}
     h1,h2,h3,p{margin-top:0}
-    h1{font-size:clamp(30px,5.5vw,54px);line-height:.96;letter-spacing:-.04em;margin-bottom:10px}
+    h1{font-size:clamp(30px,5.2vw,52px);line-height:.98;letter-spacing:-.04em;margin-bottom:10px}
     h2{font-size:clamp(25px,4.5vw,40px);line-height:1;margin-bottom:14px;letter-spacing:-.03em}
     h3{font-size:21px;margin:24px 0 10px}
     .lead,.muted,.pill,.meta,.msg,.btn,.footer{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
     .lead{font-size:clamp(17px,3vw,21px);line-height:1.4;margin:0;color:#2b2825}
-    .muted,.meta,.footer{color:var(--muted)}
+    .muted,.meta{color:var(--muted)}
     .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
     .pill{padding:8px 12px;border-radius:999px;background:rgba(216,160,170,.22);font-weight:800;white-space:nowrap}
     .slots,.results{display:grid;gap:10px}
@@ -43,7 +43,7 @@
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
     .menu-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:13px}
     .menu-item.chosen{outline:2px solid rgba(216,160,170,.7);background:rgba(216,160,170,.11)}
-    .msg{display:none;margin-bottom:14px;padding:13px 15px;border:1px solid rgba(216,160,170,.45);border-radius:16px;background:rgba(216,160,170,.18);line-height:1.4}
+    .msg{display:none;margin-bottom:14px;padding:13px 15px;border:1px solid rgba(216,160,170,.45);border-radius:16px;background:rgba(216,160,170,.18);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.4}
     .msg.show{display:block}
     .result{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px}
     .points{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:850;white-space:nowrap}
@@ -87,14 +87,23 @@
     const SESSION_KEY='clauss_flammkuchen_ranking_session_id_top5_v2';
     const VOTED_KEY='clauss_flammkuchen_ranking_voted_at_top5_v2';
 
+    const MENU=[
+      ['Elsässer','Klassisch'],['Elsässer Käse','Klassisch'],['Elsässer Knoblauch','Klassisch'],['Elsässer Chili','Klassisch'],['Elsässer Lauch','Klassisch'],['Münster','Klassisch'],
+      ['Champignon','Gemüse & Mediterran'],['Caprese','Gemüse & Mediterran'],['Gemüse','Gemüse & Mediterran'],['Mediterran','Gemüse & Mediterran'],['Feta Spinat','Gemüse & Mediterran'],['Feta Peperoni','Gemüse & Mediterran'],
+      ['Schinken Champignon','Deftig & Herzhaft'],['Arrabiata','Deftig & Herzhaft'],['Hawaii','Deftig & Herzhaft'],['Raclette','Deftig & Herzhaft'],['Thunfisch','Deftig & Herzhaft'],['Dattel Speck','Deftig & Herzhaft'],['Dattel Feta','Deftig & Herzhaft'],['Sucuk','Deftig & Herzhaft'],
+      ['Camembert','Fein & Besonders'],['Ziegenkäse Honig','Fein & Besonders'],['Lachs Spinat','Fein & Besonders'],['Lachs Feldsalat','Fein & Besonders'],['Lachs Feta','Fein & Besonders'],['Avocado','Fein & Besonders'],['Maultasche klassisch','Fein & Besonders'],['Maultasche vegetarisch','Fein & Besonders'],
+      ['Apfel Zimt','Süße Klassiker'],['Banane Nutella','Süße Klassiker'],['Biscoff','Süße Klassiker'],['Rote Beeren','Fruchtig & Süß'],['Himbeere Oreo','Fruchtig & Süß'],['Heiße Liebe','Fruchtig & Süß']
+    ];
+
     const $=id=>document.getElementById(id);
     const e={vote:$('vote'),menu:$('menu'),msg:$('msg'),count:$('count'),slots:$('slots'),groups:$('groups'),submit:$('submit'),results:$('results'),summary:$('summary'),resultList:$('resultList')};
-    let db,all=[],pick=[],busy=false,dragId=null;
+    let db=null,all=MENU.map((m,i)=>({id:i+1,name:m[0],category:m[1],sort_order:(i+1)*10})),pick=[],busy=false,dragId=null;
 
     const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
     const item=id=>all.find(x=>x.id===id);
     const message=t=>{e.msg.textContent=t;e.msg.classList.toggle('show',!!t)};
     const session=()=>{let id=localStorage.getItem(SESSION_KEY);if(!id){id=crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();localStorage.setItem(SESSION_KEY,id)}return id};
+    const niceError=err=>String(err?.message||err||'').includes('fetch')?'Verbindung zur Abstimmung nicht möglich. Bitte später nochmal probieren.':(err?.message||'Das hat nicht geklappt.');
 
     function renderSlots(){
       e.count.textContent=pick.length+'/'+TOP;
@@ -105,7 +114,7 @@
         return `<div class="slot ${dragId===f.id?'dragging':''}" data-id="${f.id}">
           <button class="handle" type="button" data-drag="${f.id}" aria-label="Sortieren">☰</button>
           <span class="num">${i+1}</span>
-          <div><div class="name">${esc(f.name)}</div><div class="meta">${esc(f.category)} · ${Number(f.price).toFixed(0)} €</div></div>
+          <div><div class="name">${esc(f.name)}</div><div class="meta">${esc(f.category)}</div></div>
           <div class="actions">
             <button class="small" type="button" data-act="up" data-id="${f.id}" ${i===0?'disabled':''}>↑</button>
             <button class="small" type="button" data-act="down" data-id="${f.id}" ${i===pick.length-1?'disabled':''}>↓</button>
@@ -120,46 +129,35 @@
       all.forEach(f=>{if(!groups.has(f.category))groups.set(f.category,[]);groups.get(f.category).push(f)});
       e.groups.innerHTML=[...groups].map(([cat,rows])=>`<section><h3>${esc(cat)}</h3><div class="grid">${rows.map(f=>{
         const chosen=pick.includes(f.id),disabled=!chosen&&pick.length>=TOP;
-        return `<div class="menu-item ${chosen?'chosen':''}"><div><div class="name">${esc(f.name)}</div><div class="meta">${Number(f.price).toFixed(0)} €</div></div><button class="add" type="button" data-act="${chosen?'remove':'add'}" data-id="${f.id}" ${disabled?'disabled':''}>${chosen?'Gewählt':'Auswählen'}</button></div>`;
+        return `<div class="menu-item ${chosen?'chosen':''}"><div><div class="name">${esc(f.name)}</div></div><button class="add" type="button" data-act="${chosen?'remove':'add'}" data-id="${f.id}" ${disabled?'disabled':''}>${chosen?'Gewählt':'Auswählen'}</button></div>`;
       }).join('')}</div></section>`).join('');
     }
 
-    function render(keepScroll=false){
-      const y=scrollY;
-      renderSlots();
-      renderMenu();
-      if(keepScroll)requestAnimationFrame(()=>scrollTo(0,y));
-    }
-
+    function render(keepScroll=false){const y=scrollY;renderSlots();renderMenu();if(keepScroll)requestAnimationFrame(()=>scrollTo(0,y))}
     function add(id){if(pick.includes(id))return;if(pick.length>=TOP)return message('Du hast schon 5 Flammkuchen gewählt.');message('');pick.push(id);render(true)}
     function remove(id){message('');pick=pick.filter(x=>x!==id);render(true)}
     function move(id,dir){const i=pick.indexOf(id),j=i+dir;if(i<0||j<0||j>=pick.length)return;[pick[i],pick[j]]=[pick[j],pick[i]];renderSlots()}
     function moveTo(id,to){const from=pick.indexOf(id);if(from<0)return;const copy=pick.slice(),x=copy.splice(from,1)[0];if(to>from)to--;to=Math.max(0,Math.min(to,copy.length));if(to===from)return;copy.splice(to,0,x);pick=copy;renderSlots()}
 
-    function startDrag(ev){
-      const h=ev.target.closest('[data-drag]');
-      if(!h||ev.pointerType==='mouse'&&ev.button!==0)return;
-      dragId=Number(h.dataset.drag);ev.preventDefault();renderSlots();
-      document.addEventListener('pointermove',drag,{passive:false});
-      document.addEventListener('pointerup',stopDrag);
-      document.addEventListener('pointercancel',stopDrag);
-    }
-    function drag(ev){
-      if(!dragId)return;ev.preventDefault();
-      const row=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.slot[data-id]');
-      if(!row||!e.slots.contains(row))return;
-      const over=Number(row.dataset.id);if(!over||over===dragId)return;
-      const r=row.getBoundingClientRect();
-      moveTo(dragId,pick.indexOf(over)+(ev.clientY>r.top+r.height/2?1:0));
-    }
+    function startDrag(ev){const h=ev.target.closest('[data-drag]');if(!h||ev.pointerType==='mouse'&&ev.button!==0)return;dragId=Number(h.dataset.drag);ev.preventDefault();renderSlots();document.addEventListener('pointermove',drag,{passive:false});document.addEventListener('pointerup',stopDrag);document.addEventListener('pointercancel',stopDrag)}
+    function drag(ev){if(!dragId)return;ev.preventDefault();const row=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.slot[data-id]');if(!row||!e.slots.contains(row))return;const over=Number(row.dataset.id);if(!over||over===dragId)return;const r=row.getBoundingClientRect();moveTo(dragId,pick.indexOf(over)+(ev.clientY>r.top+r.height/2?1:0))}
     function stopDrag(){dragId=null;document.removeEventListener('pointermove',drag);document.removeEventListener('pointerup',stopDrag);document.removeEventListener('pointercancel',stopDrag);renderSlots()}
 
-    async function loadMenu(){
-      const {data,error}=await db.from('flammkuchen').select('id,name,category,price,sort_order').eq('active',true).order('sort_order');
-      if(error)throw error;all=data||[];render();
+    async function syncMenuIds(){
+      if(!db)return;
+      try{
+        const {data,error}=await db.rpc('get_flammkuchen_ranking',{p_limit:50});
+        if(error||!data?.length)return;
+        const selectedNames=pick.map(id=>item(id)?.name).filter(Boolean);
+        const byName=new Map(data.map(r=>[r.name,r]));
+        all=all.map(f=>{const r=byName.get(f.name);return r?{...f,id:r.flammkuchen_id,category:r.category}:f});
+        pick=selectedNames.map(name=>all.find(f=>f.name===name)?.id).filter(Boolean);
+        render();
+      }catch(_){/* Die feste Liste bleibt sichtbar. */}
     }
 
     async function loadResults(){
+      if(!db)throw new Error('Supabase konnte nicht geladen werden.');
       const {data,error}=await db.rpc('get_flammkuchen_ranking',{p_limit:RESULTS});
       if(error)throw error;
       const rows=data||[],total=rows[0]?.total_submissions||0;
@@ -176,6 +174,7 @@
 
     async function submit(){
       if(pick.length!==TOP)return message('Bitte wähle genau 5 Flammkuchen aus.');
+      if(!db)throw new Error('Supabase konnte nicht geladen werden.');
       if(Date.now()-Number(localStorage.getItem(VOTED_KEY)||0)<BLOCK){e.vote.classList.add('hidden');e.menu.classList.add('hidden');return showResults('Du hast schon abgestimmt.')}
       busy=true;e.submit.textContent='Speichert ...';renderSlots();
       const p_items=pick.map((id,i)=>({flammkuchen_id:id,rank_position:i+1}));
@@ -190,15 +189,12 @@
     e.groups.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(!b)return;const id=Number(b.dataset.id);b.dataset.act==='add'?add(id):remove(id)});
     e.slots.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(!b)return;const id=Number(b.dataset.id);if(b.dataset.act==='up')move(id,-1);if(b.dataset.act==='down')move(id,1);if(b.dataset.act==='remove')remove(id)});
     e.slots.addEventListener('pointerdown',startDrag);
-    e.submit.addEventListener('click',()=>submit().catch(err=>{busy=false;e.submit.textContent='Absenden';renderSlots();message(err.message||'Speichern hat nicht geklappt.')}));
+    e.submit.addEventListener('click',()=>submit().catch(err=>{busy=false;e.submit.textContent='Absenden';renderSlots();message(niceError(err))}));
 
-    (async()=>{
-      try{
-        db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-        await loadMenu();
-        if(Date.now()-Number(localStorage.getItem(VOTED_KEY)||0)<BLOCK){e.vote.classList.add('hidden');e.menu.classList.add('hidden');await showResults('Du hast schon abgestimmt.')}
-      }catch(err){message(err.message||'Die Seite konnte nicht geladen werden.')}
-    })();
+    render();
+    if(window.supabase)db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    syncMenuIds();
+    if(Date.now()-Number(localStorage.getItem(VOTED_KEY)||0)<BLOCK){e.vote.classList.add('hidden');e.menu.classList.add('hidden');showResults('Du hast schon abgestimmt.').catch(err=>message(niceError(err)))}
   </script>
 </body>
 </html>
