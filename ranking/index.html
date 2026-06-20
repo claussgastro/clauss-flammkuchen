@@ -3,922 +3,201 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flammkuchen-Ranking | Clauß</title>
-  <meta name="description" content="Wähle deine Top 5 Flammkuchen und sieh danach das aktuelle Gäste-Ranking.">
+  <title>Flammkuchen-Ranking</title>
   <style>
-    :root {
-      --bg: #f5efe5;
-      --card: #fffaf2;
-      --ink: #171514;
-      --muted: #706862;
-      --line: rgba(23, 21, 20, 0.15);
-      --accent: #d8a0aa;
-      --accent-strong: #b86f7d;
-      --shadow: 0 18px 45px rgba(23, 21, 20, 0.10);
-      --radius: 22px;
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      font-family: Georgia, 'Times New Roman', serif;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at top left, rgba(216, 160, 170, 0.22), transparent 34rem),
-        linear-gradient(180deg, #f8f1e8 0%, var(--bg) 100%);
-      min-height: 100vh;
-    }
-
-    body.is-sorting {
-      user-select: none;
-      cursor: grabbing;
-    }
-
-    button, input {
-      font: inherit;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .app {
-      width: min(980px, calc(100% - 28px));
-      margin: 0 auto;
-      padding: 22px 0 48px;
-    }
-
-    .back {
-      display: inline-flex;
-      color: var(--ink);
-      text-decoration: none;
-      border-bottom: 1px solid var(--ink);
-      margin-bottom: 24px;
-      font-size: 15px;
-    }
-
-    .hero {
-      border: 1px solid var(--line);
-      background: rgba(255, 250, 242, 0.76);
-      border-radius: 32px;
-      padding: clamp(24px, 5vw, 54px);
-      box-shadow: var(--shadow);
-      margin-bottom: 22px;
-    }
-
-    .eyebrow {
-      margin: 0 0 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-size: 12px;
-      color: var(--accent-strong);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-weight: 700;
-    }
-
-    h1, h2, h3, p { margin-top: 0; }
-
-    h1 {
-      font-size: clamp(32px, 6.4vw, 62px);
-      line-height: 0.96;
-      margin-bottom: 18px;
-      letter-spacing: -0.045em;
-    }
-
-    h2 {
-      font-size: clamp(26px, 5vw, 44px);
-      line-height: 1;
-      margin-bottom: 14px;
-      letter-spacing: -0.03em;
-    }
-
-    h3 {
-      font-size: 22px;
-      margin: 28px 0 12px;
-    }
-
-    .lead {
-      font-size: clamp(18px, 3vw, 22px);
-      line-height: 1.45;
-      max-width: 740px;
-      margin-bottom: 0;
-      color: #2b2825;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: clamp(18px, 4vw, 30px);
-      box-shadow: 0 10px 30px rgba(23, 21, 20, 0.06);
-      margin-bottom: 18px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      padding: 8px 12px;
-      background: rgba(216, 160, 170, 0.22);
-      color: var(--ink);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.5;
-    }
-
-    .top-list {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .top-item, .result-item {
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.48);
-      border-radius: 16px;
-      padding: 11px 12px;
-    }
-
-    .top-item {
-      display: grid;
-      grid-template-columns: 40px 34px minmax(0, 1fr) auto;
-      gap: 10px;
-      align-items: center;
-      min-height: 74px;
-      transition: background 120ms ease, box-shadow 120ms ease, transform 120ms ease, opacity 120ms ease;
-    }
-
-    .top-item.is-empty {
-      grid-template-columns: 40px 34px minmax(0, 1fr);
-      background: rgba(255, 255, 255, 0.28);
-      border-style: dashed;
-    }
-
-    .top-item.is-empty .item-name {
-      white-space: normal;
-      overflow: visible;
-      text-overflow: clip;
-    }
-
-    .top-item.is-dragging {
-      opacity: 0.72;
-      transform: scale(0.995);
-      box-shadow: 0 10px 24px rgba(23, 21, 20, 0.10);
-      background: rgba(216, 160, 170, 0.16);
-      outline: 2px solid rgba(216, 160, 170, 0.55);
-    }
-
-    .drag-handle {
-      display: inline-grid;
-      place-items: center;
-      width: 40px;
-      height: 44px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(255, 250, 242, 0.84);
-      color: var(--muted);
-      cursor: grab;
-      touch-action: none;
-      user-select: none;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 20px;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .drag-handle:active { cursor: grabbing; }
-
-    .drag-handle.is-disabled {
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .top-actions.is-placeholder-actions {
-      display: none;
-    }
-
-    .rank-number {
-      display: inline-grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: var(--ink);
-      color: var(--card);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .top-text { min-width: 0; }
-
-    .item-name {
-      font-size: 18px;
-      line-height: 1.1;
-      font-weight: 700;
-    }
-
-    .top-item .item-name {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .item-meta {
-      color: var(--muted);
-      margin-top: 3px;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 13px;
-    }
-
-    .item-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: nowrap;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .small-btn, .add-btn, .submit-btn, .secondary-btn {
-      border: 1px solid var(--ink);
-      background: transparent;
-      color: var(--ink);
-      border-radius: 999px;
-      cursor: pointer;
-      transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
-    }
-
-    .small-btn {
-      min-width: 44px;
-      height: 44px;
-      padding: 0 12px;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 17px;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .remove-btn {
-      min-width: 44px;
-      padding: 0;
-      font-size: 24px;
-    }
-
-    .small-btn:hover, .add-btn:hover, .submit-btn:hover, .secondary-btn:hover {
-      transform: translateY(-1px);
-      background: rgba(216, 160, 170, 0.16);
-    }
-
-    button:disabled {
-      opacity: 0.38;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    .submit-btn {
-      width: 100%;
-      padding: 15px 20px;
-      background: var(--ink);
-      color: var(--card);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-weight: 800;
-      font-size: 16px;
-    }
-
-    .secondary-btn {
-      padding: 12px 16px;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-weight: 750;
-    }
-
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-      gap: 10px;
-    }
-
-    .menu-item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 13px;
-      background: rgba(255, 255, 255, 0.42);
-    }
-
-    .menu-item.is-selected {
-      outline: 2px solid rgba(216, 160, 170, 0.72);
-      background: rgba(216, 160, 170, 0.11);
-    }
-
-    .add-btn {
-      min-width: 104px;
-      padding: 10px 12px;
-      background: var(--card);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 14px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .empty {
-      border: 1px dashed var(--line);
-      border-radius: 16px;
-      padding: 18px;
-      color: var(--muted);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.5;
-      background: rgba(255, 255, 255, 0.32);
-    }
-
-    .message {
-      display: none;
-      border-radius: 16px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.45;
-      background: rgba(216, 160, 170, 0.18);
-      border: 1px solid rgba(216, 160, 170, 0.45);
-    }
-
-    .message.is-visible { display: block; }
-    .hidden { display: none !important; }
-
-    .result-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .result-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .points {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .footer-note {
-      text-align: center;
-      margin-top: 22px;
-      color: var(--muted);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 13px;
-    }
-
-    @media (max-width: 620px) {
-      .app {
-        width: min(100% - 20px, 980px);
-        padding-top: 16px;
-      }
-
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .top-item {
-        grid-template-columns: 36px 30px minmax(0, 1fr) auto;
-        gap: 6px;
-        min-height: 68px;
-        padding: 9px;
-      }
-
-      .top-item.is-empty {
-        grid-template-columns: 36px 30px minmax(0, 1fr);
-      }
-
-      .drag-handle {
-        width: 36px;
-        height: 40px;
-        border-radius: 13px;
-        font-size: 18px;
-      }
-
-      .rank-number {
-        width: 30px;
-        height: 30px;
-        font-size: 13px;
-      }
-
-      .item-name { font-size: 17px; }
-      .item-meta { font-size: 12px; }
-
-      .item-actions {
-        gap: 5px;
-      }
-
-      .small-btn {
-        min-width: 40px;
-        height: 40px;
-        padding: 0 8px;
-        font-size: 17px;
-      }
-
-      .remove-btn {
-        min-width: 40px;
-        padding: 0;
-        font-size: 22px;
-      }
-
-      .menu-item {
-        grid-template-columns: 1fr auto;
-      }
-
-      .add-btn {
-        min-width: 96px;
-      }
-
-      .result-item {
-        grid-template-columns: auto 1fr;
-      }
-
-      .result-item .points {
-        grid-column: 1 / -1;
-        justify-self: start;
-        margin-left: 46px;
-      }
-    }
+    :root{--bg:#f5efe5;--card:#fffaf2;--ink:#171514;--muted:#706862;--line:rgba(23,21,20,.15);--rose:#d8a0aa;--shadow:0 18px 45px rgba(23,21,20,.1);--radius:22px}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,'Times New Roman',serif;background:radial-gradient(circle at top left,rgba(216,160,170,.22),transparent 34rem),linear-gradient(180deg,#f8f1e8,var(--bg))}
+    button{font:inherit;-webkit-tap-highlight-color:transparent;cursor:pointer}
+    button:disabled{opacity:.35;cursor:not-allowed}
+    .app{width:min(920px,calc(100% - 24px));margin:0 auto;padding:22px 0 44px}
+    .hero,.card{border:1px solid var(--line);background:rgba(255,250,242,.78);border-radius:30px;box-shadow:var(--shadow)}
+    .hero{padding:clamp(24px,5vw,48px);margin-bottom:16px}
+    .card{padding:clamp(18px,4vw,28px);margin-bottom:16px;border-radius:var(--radius);box-shadow:0 10px 30px rgba(23,21,20,.06)}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(30px,5.5vw,54px);line-height:.96;letter-spacing:-.04em;margin-bottom:10px}
+    h2{font-size:clamp(25px,4.5vw,40px);line-height:1;margin-bottom:14px;letter-spacing:-.03em}
+    h3{font-size:21px;margin:24px 0 10px}
+    .lead,.muted,.pill,.meta,.msg,.btn,.footer{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+    .lead{font-size:clamp(17px,3vw,21px);line-height:1.4;margin:0;color:#2b2825}
+    .muted,.meta,.footer{color:var(--muted)}
+    .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .pill{padding:8px 12px;border-radius:999px;background:rgba(216,160,170,.22);font-weight:800;white-space:nowrap}
+    .slots,.results{display:grid;gap:10px}
+    .slot,.result,.menu-item{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.45)}
+    .slot{display:grid;grid-template-columns:40px 34px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:70px;padding:10px;transition:background .12s,transform .12s,opacity .12s}
+    .slot.empty{grid-template-columns:34px minmax(0,1fr);border-style:dashed;background:rgba(255,255,255,.28)}
+    .slot.dragging{opacity:.72;transform:scale(.995);background:rgba(216,160,170,.16);outline:2px solid rgba(216,160,170,.55)}
+    .handle,.num,.small,.add,.submit{display:inline-grid;place-items:center;border-radius:999px}
+    .handle{width:40px;height:44px;border:1px solid var(--line);background:rgba(255,250,242,.85);color:var(--muted);font-size:20px;font-weight:900;touch-action:none;cursor:grab}
+    .num{width:34px;height:34px;background:var(--ink);color:var(--card);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;font-weight:900}
+    .name{min-width:0;font-size:18px;font-weight:700;line-height:1.12;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .empty .name{white-space:normal;overflow:visible;text-overflow:clip}
+    .meta{font-size:13px;margin-top:3px}
+    .actions{display:flex;gap:7px}
+    .small,.add,.submit{border:1px solid var(--ink);background:transparent;color:var(--ink);font-weight:850}
+    .small{min-width:44px;height:44px;padding:0 10px;font-size:17px}
+    .remove{font-size:24px;padding:0}
+    .add{min-width:100px;padding:10px 12px;background:var(--card);font-size:14px;white-space:nowrap}
+    .submit{width:100%;margin-top:14px;padding:15px 18px;background:var(--ink);color:var(--card);font-size:16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+    .menu-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:13px}
+    .menu-item.chosen{outline:2px solid rgba(216,160,170,.7);background:rgba(216,160,170,.11)}
+    .msg{display:none;margin-bottom:14px;padding:13px 15px;border:1px solid rgba(216,160,170,.45);border-radius:16px;background:rgba(216,160,170,.18);line-height:1.4}
+    .msg.show{display:block}
+    .result{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px}
+    .points{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:850;white-space:nowrap}
+    .hidden{display:none!important}
+    @media(max-width:620px){.app{width:min(100% - 20px,920px);padding-top:14px}.bar{align-items:flex-start}.slot{grid-template-columns:36px 30px minmax(0,1fr) auto;gap:6px;min-height:66px;padding:9px}.slot.empty{grid-template-columns:30px minmax(0,1fr)}.handle{width:36px;height:40px;font-size:18px}.num{width:30px;height:30px;font-size:13px}.name{font-size:17px}.meta{font-size:12px}.actions{gap:5px}.small{min-width:40px;height:40px;padding:0 8px}.add{min-width:94px}.result{grid-template-columns:auto 1fr}.points{grid-column:1/-1;margin-left:42px}}
   </style>
 </head>
 <body>
   <main class="app">
-    <a class="back" href="/">← Zurück zur Webseite</a>
-
     <header class="hero">
-      <p class="eyebrow">Clauß · Flammkuchen in Bretten</p>
       <h1>Dein Flammkuchen-Ranking</h1>
-      <p class="lead">Wähle deine persönlichen Top 5. Nach dem Absenden siehst du, welche Sorten bei allen Gästen gerade vorne liegen.</p>
+      <p class="lead">Wähle deine Top 5 und sieh danach das Gäste-Ranking.</p>
     </header>
 
-    <section id="configWarning" class="card hidden">
-      <h2>Noch nicht verbunden</h2>
-      <p class="muted">Bitte in dieser Datei oben im Script deine Supabase URL und deinen öffentlichen anon/publishable Key eintragen.</p>
+    <div id="msg" class="msg"></div>
+
+    <section id="vote" class="card">
+      <div class="bar"><h2>Top 5</h2><span id="count" class="pill">0/5</span></div>
+      <div id="slots" class="slots"></div>
+      <button id="submit" class="submit" type="button" disabled>Absenden</button>
     </section>
 
-    <section id="voteSection" class="card">
-      <div id="message" class="message"></div>
-
-      <div class="topbar">
-        <div>
-          <h2>Deine Top 5</h2>
-          <p class="muted">Erst auswählen, dann per Ziehen oder mit den Pfeilen sortieren.</p>
-        </div>
-        <div id="selectedCount" class="pill">0/5 gewählt</div>
-      </div>
-
-      <div id="topList" class="top-list"></div>
-      <button id="submitBtn" class="submit-btn" type="button" disabled>Ranking absenden</button>
+    <section id="menu" class="card">
+      <h2>Flammkuchen</h2>
+      <div id="groups"></div>
     </section>
 
-    <section id="menuSection" class="card">
-      <h2>Alle Flammkuchen</h2>
-      <p class="muted">Tippe auf „Auswählen“, bis deine Top 5 vollständig sind.</p>
-      <div id="menuGroups"></div>
-    </section>
-
-    <section id="resultSection" class="card hidden">
-      <p class="eyebrow">Meinung der Allgemeinheit</p>
-      <h2>Aktuelles Gäste-Ranking</h2>
-      <p id="resultSummary" class="muted"></p>
-      <div id="resultList" class="result-list"></div>
-      <p class="footer-note">Danke fürs Abstimmen. Das Ranking aktualisiert sich mit jeder neuen Stimme.</p>
+    <section id="results" class="card hidden">
+      <h2>Gäste-Ranking</h2>
+      <p id="summary" class="muted"></p>
+      <div id="resultList" class="results"></div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Öffentlich verwendbarer Supabase Publishable Key. Niemals den service_role oder secret key im Browser verwenden.
-    const SUPABASE_URL = 'https://ssgmbeeezjznvvodhend.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_JQke52YXReRCm_sNDXQvWg_-58fYP_X';
+    const SUPABASE_URL='https://ssgmbeeezjznvvodhend.supabase.co';
+    const SUPABASE_KEY='sb_publishable_JQke52YXReRCm_sNDXQvWg_-58fYP_X';
+    const TOP=5,RESULTS=10,BLOCK=6*60*60*1000;
+    const TABLE=new URLSearchParams(location.search).get('tisch')||null;
+    const SESSION_KEY='clauss_flammkuchen_ranking_session_id_top5_v2';
+    const VOTED_KEY='clauss_flammkuchen_ranking_voted_at_top5_v2';
 
-    const TOP_LIMIT = 5;
-    const RESULT_LIMIT = 10;
-    const TABLE_CODE = new URLSearchParams(window.location.search).get('tisch') || null;
-    const SESSION_KEY = 'clauss_flammkuchen_ranking_session_id_top5_v2';
-    const VOTED_AT_KEY = 'clauss_flammkuchen_ranking_voted_at_top5_v2';
-    const VOTE_BLOCK_MS = 6 * 60 * 60 * 1000;
+    const $=id=>document.getElementById(id);
+    const e={vote:$('vote'),menu:$('menu'),msg:$('msg'),count:$('count'),slots:$('slots'),groups:$('groups'),submit:$('submit'),results:$('results'),summary:$('summary'),resultList:$('resultList')};
+    let db,all=[],pick=[],busy=false,dragId=null;
 
-    const els = {
-      configWarning: document.getElementById('configWarning'),
-      voteSection: document.getElementById('voteSection'),
-      menuSection: document.getElementById('menuSection'),
-      resultSection: document.getElementById('resultSection'),
-      selectedCount: document.getElementById('selectedCount'),
-      topList: document.getElementById('topList'),
-      menuGroups: document.getElementById('menuGroups'),
-      submitBtn: document.getElementById('submitBtn'),
-      message: document.getElementById('message'),
-      resultSummary: document.getElementById('resultSummary'),
-      resultList: document.getElementById('resultList')
-    };
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+    const item=id=>all.find(x=>x.id===id);
+    const message=t=>{e.msg.textContent=t;e.msg.classList.toggle('show',!!t)};
+    const session=()=>{let id=localStorage.getItem(SESSION_KEY);if(!id){id=crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();localStorage.setItem(SESSION_KEY,id)}return id};
 
-    let db;
-    let flammkuchen = [];
-    let selectedIds = [];
-    let isSubmitting = false;
-    let draggedId = null;
-    let dragStartY = 0;
-
-    function escapeHTML(value) {
-      return String(value ?? '').replace(/[&<>"']/g, function (char) {
-        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char];
-      });
-    }
-
-    function getSessionId() {
-      let sessionId = localStorage.getItem(SESSION_KEY);
-      if (!sessionId) {
-        sessionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + '-' + Math.random().toString(16).slice(2);
-        localStorage.setItem(SESSION_KEY, sessionId);
-      }
-      return sessionId;
-    }
-
-    function showMessage(text) {
-      els.message.textContent = text;
-      els.message.classList.add('is-visible');
-    }
-
-    function clearMessage() {
-      els.message.textContent = '';
-      els.message.classList.remove('is-visible');
-    }
-
-    function byId(id) {
-      return flammkuchen.find(function (item) { return item.id === id; });
-    }
-
-    function preserveScroll(callback) {
-      const scrollY = window.scrollY;
-      callback();
-      requestAnimationFrame(function () {
-        window.scrollTo(0, scrollY);
-      });
-    }
-
-    function renderTopList() {
-      els.selectedCount.textContent = selectedIds.length + '/' + TOP_LIMIT + ' gewählt';
-      els.submitBtn.disabled = selectedIds.length !== TOP_LIMIT || isSubmitting;
-
-      const slots = [];
-      for (let index = 0; index < TOP_LIMIT; index += 1) {
-        const id = selectedIds[index];
-        const item = id ? byId(id) : null;
-
-        if (!item) {
-          slots.push(`
-            <div class="top-item is-empty" data-slot="${index + 1}">
-              <span class="drag-handle is-disabled" aria-hidden="true">☰</span>
-              <span class="rank-number">${index + 1}</span>
-              <div class="top-text">
-                <div class="item-name">Platz ${index + 1} ist noch frei</div>
-                <div class="item-meta">Wähle unten einen Flammkuchen aus</div>
-              </div>
-              <div class="item-actions top-actions is-placeholder-actions" aria-hidden="true">
-                <button class="small-btn" type="button" disabled>↑</button>
-                <button class="small-btn" type="button" disabled>↓</button>
-                <button class="small-btn remove-btn" type="button" disabled>×</button>
-              </div>
-            </div>
-          `);
-          continue;
-        }
-
-        const safeName = escapeHTML(item.name);
-        const safeCategory = escapeHTML(item.category);
-        slots.push(`
-          <div class="top-item ${draggedId === item.id ? 'is-dragging' : ''}" data-id="${item.id}">
-            <button class="drag-handle" type="button" data-drag-id="${item.id}" aria-label="${safeName} ziehen und sortieren">☰</button>
-            <span class="rank-number">${index + 1}</span>
-            <div class="top-text" title="${safeName}">
-              <div class="item-name">${safeName}</div>
-              <div class="item-meta">${safeCategory} · ${Number(item.price).toFixed(0)} €</div>
-            </div>
-            <div class="item-actions top-actions">
-              <button class="small-btn" type="button" data-action="up" data-id="${item.id}" aria-label="${safeName} nach oben" ${index === 0 ? 'disabled' : ''}>↑</button>
-              <button class="small-btn" type="button" data-action="down" data-id="${item.id}" aria-label="${safeName} nach unten" ${index === selectedIds.length - 1 ? 'disabled' : ''}>↓</button>
-              <button class="small-btn remove-btn" type="button" data-action="remove" data-id="${item.id}" aria-label="${safeName} entfernen">×</button>
-            </div>
+    function renderSlots(){
+      e.count.textContent=pick.length+'/'+TOP;
+      e.submit.disabled=pick.length!==TOP||busy;
+      e.slots.innerHTML=Array.from({length:TOP},(_,i)=>{
+        const f=item(pick[i]);
+        if(!f)return `<div class="slot empty"><span class="num">${i+1}</span><div class="name">Platz ${i+1} ist noch frei</div></div>`;
+        return `<div class="slot ${dragId===f.id?'dragging':''}" data-id="${f.id}">
+          <button class="handle" type="button" data-drag="${f.id}" aria-label="Sortieren">☰</button>
+          <span class="num">${i+1}</span>
+          <div><div class="name">${esc(f.name)}</div><div class="meta">${esc(f.category)} · ${Number(f.price).toFixed(0)} €</div></div>
+          <div class="actions">
+            <button class="small" type="button" data-act="up" data-id="${f.id}" ${i===0?'disabled':''}>↑</button>
+            <button class="small" type="button" data-act="down" data-id="${f.id}" ${i===pick.length-1?'disabled':''}>↓</button>
+            <button class="small remove" type="button" data-act="remove" data-id="${f.id}">×</button>
           </div>
-        `);
-      }
-
-      els.topList.innerHTML = slots.join('');
-    }
-
-    function renderMenu() {
-      const categories = [];
-      flammkuchen.forEach(function (item) {
-        if (!categories.includes(item.category)) categories.push(item.category);
-      });
-
-      els.menuGroups.innerHTML = categories.map(function (category) {
-        const items = flammkuchen.filter(function (item) { return item.category === category; });
-        return `
-          <section>
-            <h3>${escapeHTML(category)}</h3>
-            <div class="menu-grid">
-              ${items.map(function (item) {
-                const selected = selectedIds.includes(item.id);
-                const disabled = !selected && selectedIds.length >= TOP_LIMIT;
-                return `
-                  <div class="menu-item ${selected ? 'is-selected' : ''}">
-                    <div>
-                      <div class="item-name">${escapeHTML(item.name)}</div>
-                      <div class="item-meta">${Number(item.price).toFixed(0)} €</div>
-                    </div>
-                    <button class="add-btn" type="button" data-action="${selected ? 'remove' : 'add'}" data-id="${item.id}" ${disabled ? 'disabled' : ''}>
-                      ${selected ? 'Gewählt' : 'Auswählen'}
-                    </button>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </section>
-        `;
+        </div>`;
       }).join('');
     }
 
-    function renderAll(options) {
-      const shouldPreserveScroll = options && options.preserveScroll;
-      const doRender = function () {
-        renderTopList();
-        renderMenu();
-      };
-
-      if (shouldPreserveScroll) {
-        preserveScroll(doRender);
-      } else {
-        doRender();
-      }
+    function renderMenu(){
+      const groups=new Map();
+      all.forEach(f=>{if(!groups.has(f.category))groups.set(f.category,[]);groups.get(f.category).push(f)});
+      e.groups.innerHTML=[...groups].map(([cat,rows])=>`<section><h3>${esc(cat)}</h3><div class="grid">${rows.map(f=>{
+        const chosen=pick.includes(f.id),disabled=!chosen&&pick.length>=TOP;
+        return `<div class="menu-item ${chosen?'chosen':''}"><div><div class="name">${esc(f.name)}</div><div class="meta">${Number(f.price).toFixed(0)} €</div></div><button class="add" type="button" data-act="${chosen?'remove':'add'}" data-id="${f.id}" ${disabled?'disabled':''}>${chosen?'Gewählt':'Auswählen'}</button></div>`;
+      }).join('')}</div></section>`).join('');
     }
 
-    function addItem(id) {
-      clearMessage();
-      if (selectedIds.includes(id)) return;
-      if (selectedIds.length >= TOP_LIMIT) {
-        showMessage('Du hast schon ' + TOP_LIMIT + ' Flammkuchen gewählt. Entferne erst einen, wenn du tauschen möchtest.');
-        return;
-      }
-      selectedIds.push(id);
-      renderAll({ preserveScroll: true });
+    function render(keepScroll=false){
+      const y=scrollY;
+      renderSlots();
+      renderMenu();
+      if(keepScroll)requestAnimationFrame(()=>scrollTo(0,y));
     }
 
-    function removeItem(id) {
-      clearMessage();
-      selectedIds = selectedIds.filter(function (selectedId) { return selectedId !== id; });
-      renderAll({ preserveScroll: true });
+    function add(id){if(pick.includes(id))return;if(pick.length>=TOP)return message('Du hast schon 5 Flammkuchen gewählt.');message('');pick.push(id);render(true)}
+    function remove(id){message('');pick=pick.filter(x=>x!==id);render(true)}
+    function move(id,dir){const i=pick.indexOf(id),j=i+dir;if(i<0||j<0||j>=pick.length)return;[pick[i],pick[j]]=[pick[j],pick[i]];renderSlots()}
+    function moveTo(id,to){const from=pick.indexOf(id);if(from<0)return;const copy=pick.slice(),x=copy.splice(from,1)[0];if(to>from)to--;to=Math.max(0,Math.min(to,copy.length));if(to===from)return;copy.splice(to,0,x);pick=copy;renderSlots()}
+
+    function startDrag(ev){
+      const h=ev.target.closest('[data-drag]');
+      if(!h||ev.pointerType==='mouse'&&ev.button!==0)return;
+      dragId=Number(h.dataset.drag);ev.preventDefault();renderSlots();
+      document.addEventListener('pointermove',drag,{passive:false});
+      document.addEventListener('pointerup',stopDrag);
+      document.addEventListener('pointercancel',stopDrag);
+    }
+    function drag(ev){
+      if(!dragId)return;ev.preventDefault();
+      const row=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.slot[data-id]');
+      if(!row||!e.slots.contains(row))return;
+      const over=Number(row.dataset.id);if(!over||over===dragId)return;
+      const r=row.getBoundingClientRect();
+      moveTo(dragId,pick.indexOf(over)+(ev.clientY>r.top+r.height/2?1:0));
+    }
+    function stopDrag(){dragId=null;document.removeEventListener('pointermove',drag);document.removeEventListener('pointerup',stopDrag);document.removeEventListener('pointercancel',stopDrag);renderSlots()}
+
+    async function loadMenu(){
+      const {data,error}=await db.from('flammkuchen').select('id,name,category,price,sort_order').eq('active',true).order('sort_order');
+      if(error)throw error;all=data||[];render();
     }
 
-    function moveItem(id, direction) {
-      clearMessage();
-      const index = selectedIds.indexOf(id);
-      const newIndex = index + direction;
-      if (index < 0 || newIndex < 0 || newIndex >= selectedIds.length) return;
-      const copy = selectedIds.slice();
-      const temp = copy[index];
-      copy[index] = copy[newIndex];
-      copy[newIndex] = temp;
-      selectedIds = copy;
-      renderTopList();
+    async function loadResults(){
+      const {data,error}=await db.rpc('get_flammkuchen_ranking',{p_limit:RESULTS});
+      if(error)throw error;
+      const rows=data||[],total=rows[0]?.total_submissions||0;
+      e.summary.textContent=total?`${total} Abstimmung${total===1?'':'en'} bisher.`:'Noch keine Abstimmungen.';
+      e.resultList.innerHTML=rows.map(r=>`<div class="result"><span class="num">${r.rank_number}</span><div><div class="name">${esc(r.name)}</div><div class="meta">${esc(r.category)} · ${r.votes_count} Nennung${r.votes_count===1?'':'en'} · ${r.first_places}× Platz 1</div></div><div class="points">${r.total_points} Punkte</div></div>`).join('');
     }
 
-    function moveItemToIndex(id, targetIndex) {
-      const fromIndex = selectedIds.indexOf(id);
-      if (fromIndex < 0) return false;
-
-      const copy = selectedIds.slice();
-      const movedItems = copy.splice(fromIndex, 1);
-      if (targetIndex > fromIndex) targetIndex -= 1;
-      targetIndex = Math.max(0, Math.min(targetIndex, copy.length));
-      if (targetIndex === fromIndex) return false;
-      copy.splice(targetIndex, 0, movedItems[0]);
-
-      const changed = copy.join(',') !== selectedIds.join(',');
-      selectedIds = copy;
-      return changed;
-    }
-
-    function onDragMove(event) {
-      if (!draggedId) return;
-      event.preventDefault();
-
-      if (Math.abs(event.clientY - dragStartY) < 3) return;
-
-      const target = document.elementFromPoint(event.clientX, event.clientY);
-      const row = target && target.closest ? target.closest('.top-item[data-id]') : null;
-      if (!row || !els.topList.contains(row)) return;
-
-      const overId = Number(row.dataset.id);
-      if (!overId || overId === draggedId) return;
-
-      const rect = row.getBoundingClientRect();
-      const overIndex = selectedIds.indexOf(overId);
-      if (overIndex < 0) return;
-
-      const shouldPlaceAfter = event.clientY > rect.top + rect.height / 2;
-      const targetIndex = overIndex + (shouldPlaceAfter ? 1 : 0);
-
-      if (moveItemToIndex(draggedId, targetIndex)) {
-        renderTopList();
-      }
-    }
-
-    function endDrag() {
-      if (!draggedId) return;
-      draggedId = null;
-      document.body.classList.remove('is-sorting');
-      document.removeEventListener('pointermove', onDragMove);
-      document.removeEventListener('pointerup', endDrag);
-      document.removeEventListener('pointercancel', endDrag);
-      renderTopList();
-    }
-
-    function startDrag(event) {
-      const handle = event.target.closest('[data-drag-id]');
-      if (!handle) return;
-      if (event.pointerType === 'mouse' && event.button !== 0) return;
-
-      const id = Number(handle.dataset.dragId);
-      if (!selectedIds.includes(id)) return;
-
-      draggedId = id;
-      dragStartY = event.clientY;
-      document.body.classList.add('is-sorting');
-      renderTopList();
-      event.preventDefault();
-
-      document.addEventListener('pointermove', onDragMove, { passive: false });
-      document.addEventListener('pointerup', endDrag);
-      document.addEventListener('pointercancel', endDrag);
-    }
-
-    async function loadMenu() {
-      const response = await db
-        .from('flammkuchen')
-        .select('id,name,category,price,sort_order')
-        .eq('active', true)
-        .order('sort_order', { ascending: true });
-
-      if (response.error) throw response.error;
-      flammkuchen = response.data || [];
-      renderAll();
-    }
-
-    async function loadResults() {
-      const response = await db.rpc('get_flammkuchen_ranking', { p_limit: RESULT_LIMIT });
-      if (response.error) throw response.error;
-
-      const rows = response.data || [];
-      const total = rows[0] ? rows[0].total_submissions : 0;
-      els.resultSummary.textContent = total > 0
-        ? total + ' Abstimmung' + (total === 1 ? '' : 'en') + ' wurden bisher abgegeben.'
-        : 'Noch keine Abstimmungen vorhanden.';
-
-      els.resultList.innerHTML = rows.map(function (row) {
-        return `
-          <div class="result-item">
-            <span class="rank-number">${row.rank_number}</span>
-            <div>
-              <div class="item-name">${escapeHTML(row.name)}</div>
-              <div class="item-meta">${escapeHTML(row.category)} · ${row.votes_count} Nennung${row.votes_count === 1 ? '' : 'en'} · ${row.first_places}× Platz 1</div>
-            </div>
-            <div class="points">${row.total_points} Punkte</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    async function showResults(message) {
-      if (message) showMessage(message);
-      els.resultSection.classList.remove('hidden');
+    async function showResults(text){
+      message(text||'');
+      e.results.classList.remove('hidden');
       await loadResults();
-      els.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      e.results.scrollIntoView({behavior:'smooth',block:'start'});
     }
 
-    async function submitVote() {
-      clearMessage();
-
-      if (selectedIds.length !== TOP_LIMIT) {
-        showMessage('Bitte wähle genau ' + TOP_LIMIT + ' Flammkuchen aus.');
-        return;
-      }
-
-      const votedAt = Number(localStorage.getItem(VOTED_AT_KEY) || 0);
-      if (votedAt && Date.now() - votedAt < VOTE_BLOCK_MS) {
-        await showResults('Du hast mit diesem Gerät vor kurzem schon abgestimmt. Hier ist das aktuelle Ranking.');
-        return;
-      }
-
-      isSubmitting = true;
-      els.submitBtn.textContent = 'Wird gespeichert ...';
-      renderTopList();
-
-      const items = selectedIds.map(function (id, index) {
-        return { flammkuchen_id: id, rank_position: index + 1 };
-      });
-
-      const response = await db.rpc('submit_flammkuchen_vote', {
-        p_table_code: TABLE_CODE,
-        p_session_id: getSessionId(),
-        p_items: items
-      });
-
-      isSubmitting = false;
-      els.submitBtn.textContent = 'Ranking absenden';
-      renderTopList();
-
-      if (response.error) throw response.error;
-
-      if (response.data && response.data.ok === false && response.data.reason === 'already_voted') {
-        localStorage.setItem(VOTED_AT_KEY, String(Date.now()));
-        await showResults('Du hast mit diesem Gerät vor kurzem schon abgestimmt. Hier ist das aktuelle Ranking.');
-        return;
-      }
-
-      localStorage.setItem(VOTED_AT_KEY, String(Date.now()));
-      els.voteSection.classList.add('hidden');
-      els.menuSection.classList.add('hidden');
-      await showResults('Danke! Deine Top 5 wurden gezählt.');
+    async function submit(){
+      if(pick.length!==TOP)return message('Bitte wähle genau 5 Flammkuchen aus.');
+      if(Date.now()-Number(localStorage.getItem(VOTED_KEY)||0)<BLOCK){e.vote.classList.add('hidden');e.menu.classList.add('hidden');return showResults('Du hast schon abgestimmt.')}
+      busy=true;e.submit.textContent='Speichert ...';renderSlots();
+      const p_items=pick.map((id,i)=>({flammkuchen_id:id,rank_position:i+1}));
+      const {data,error}=await db.rpc('submit_flammkuchen_vote',{p_table_code:TABLE,p_session_id:session(),p_items});
+      busy=false;e.submit.textContent='Absenden';renderSlots();
+      if(error)throw error;
+      localStorage.setItem(VOTED_KEY,String(Date.now()));
+      e.vote.classList.add('hidden');e.menu.classList.add('hidden');
+      await showResults(data?.ok===false?'Du hast schon abgestimmt.':'Danke! Deine Top 5 wurden gezählt.');
     }
 
-    els.menuGroups.addEventListener('click', function (event) {
-      const button = event.target.closest('[data-action]');
-      if (!button) return;
-      const id = Number(button.dataset.id);
-      if (button.dataset.action === 'add') addItem(id);
-      if (button.dataset.action === 'remove') removeItem(id);
-    });
+    e.groups.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(!b)return;const id=Number(b.dataset.id);b.dataset.act==='add'?add(id):remove(id)});
+    e.slots.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(!b)return;const id=Number(b.dataset.id);if(b.dataset.act==='up')move(id,-1);if(b.dataset.act==='down')move(id,1);if(b.dataset.act==='remove')remove(id)});
+    e.slots.addEventListener('pointerdown',startDrag);
+    e.submit.addEventListener('click',()=>submit().catch(err=>{busy=false;e.submit.textContent='Absenden';renderSlots();message(err.message||'Speichern hat nicht geklappt.')}));
 
-    els.topList.addEventListener('click', function (event) {
-      const button = event.target.closest('[data-action]');
-      if (!button) return;
-      const id = Number(button.dataset.id);
-      if (button.dataset.action === 'up') moveItem(id, -1);
-      if (button.dataset.action === 'down') moveItem(id, 1);
-      if (button.dataset.action === 'remove') removeItem(id);
-    });
-
-    els.topList.addEventListener('pointerdown', startDrag);
-
-    els.submitBtn.addEventListener('click', function () {
-      submitVote().catch(function (error) {
-        isSubmitting = false;
-        els.submitBtn.textContent = 'Ranking absenden';
-        renderTopList();
-        showMessage(error.message || 'Leider gab es ein Problem beim Speichern. Bitte versuche es nochmal.');
-      });
-    });
-
-    (async function init() {
-      if (SUPABASE_URL.includes('DEINE_') || SUPABASE_ANON_KEY.includes('DEIN_')) {
-        els.configWarning.classList.remove('hidden');
-        els.voteSection.classList.add('hidden');
-        els.menuSection.classList.add('hidden');
-        return;
-      }
-
-      const clientFactory = window.supabase && window.supabase.createClient;
-      if (!clientFactory) {
-        showMessage('Supabase konnte nicht geladen werden. Bitte Internetverbindung prüfen.');
-        return;
-      }
-
-      db = clientFactory(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-      try {
+    (async()=>{
+      try{
+        db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
         await loadMenu();
-        const votedAt = Number(localStorage.getItem(VOTED_AT_KEY) || 0);
-        if (votedAt && Date.now() - votedAt < VOTE_BLOCK_MS) {
-          await showResults('Du hast mit diesem Gerät vor kurzem schon abgestimmt. Hier ist das aktuelle Ranking.');
-        }
-      } catch (error) {
-        showMessage(error.message || 'Die Ranking-Seite konnte nicht geladen werden.');
-      }
+        if(Date.now()-Number(localStorage.getItem(VOTED_KEY)||0)<BLOCK){e.vote.classList.add('hidden');e.menu.classList.add('hidden');await showResults('Du hast schon abgestimmt.')}
+      }catch(err){message(err.message||'Die Seite konnte nicht geladen werden.')}
     })();
   </script>
 </body>
