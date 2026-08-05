@@ -1,0 +1,1519 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171513">
+  <title>Küchenvorbereitung – Clauß Flammkuchen</title>
+  <style>
+    :root {
+      --ink: #171513;
+      --muted: #6f6964;
+      --paper: #f6f1eb;
+      --card: #fffdf9;
+      --rose: #c97d82;
+      --rose-dark: #8f4c53;
+      --rose-soft: #eed9da;
+      --green: #39745a;
+      --green-soft: #dceadf;
+      --amber: #9d6822;
+      --amber-soft: #f1e3c9;
+      --line: #ddd4cb;
+      --shadow: 0 14px 38px rgba(48, 39, 32, .10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(201, 125, 130, .17), transparent 28rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .app {
+      width: min(100% - 28px, 980px);
+      margin: 0 auto;
+      padding: 28px 0 72px;
+    }
+
+    .topline {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--rose-dark);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 7vw, 3.6rem);
+      font-weight: 500;
+      line-height: .98;
+      letter-spacing: -.035em;
+    }
+
+    .reset-button, .text-button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .reset-button {
+      flex: none;
+      padding: 8px 0;
+      font-size: .88rem;
+    }
+
+    .panel {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 253, 249, .78);
+      box-shadow: 0 8px 30px rgba(48, 39, 32, .05);
+      backdrop-filter: blur(10px);
+    }
+
+    .level-panel { margin-bottom: 18px; }
+
+    .panel-label {
+      display: block;
+      margin: 0 0 12px;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .levels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .level-button {
+      min-height: 58px;
+      padding: 10px 8px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .level-button strong, .level-button small { display: block; }
+    .level-button strong { font-size: .98rem; }
+    .level-button small { margin-top: 2px; color: var(--muted); font-size: .72rem; }
+    .level-button.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+      transform: translateY(-1px);
+    }
+    .level-button.active small { color: rgba(255,255,255,.68); }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 2px 14px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e5ddd4;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--rose);
+      transition: width .25s ease;
+    }
+
+    .ingredient-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-flow: dense;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .ingredient-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 148px;
+      padding: 17px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: 0 6px 22px rgba(48, 39, 32, .06);
+      cursor: pointer;
+      text-align: left;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .ingredient-card:hover {
+      transform: translateY(-3px);
+      border-color: #bdb1a7;
+      box-shadow: var(--shadow);
+    }
+
+    .ingredient-card:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid rgba(201, 125, 130, .55);
+      outline-offset: 3px;
+    }
+
+    .ingredient-card::after {
+      content: "";
+      position: absolute;
+      right: -36px;
+      bottom: -47px;
+      width: 120px;
+      height: 90px;
+      border: 1px solid rgba(201, 125, 130, .27);
+      border-radius: 50%;
+      transform: rotate(-22deg);
+    }
+
+    .size-long-large { grid-column: span 4; min-height: 152px; }
+    .size-long-small { grid-column: span 3; min-height: 142px; }
+    .size-large { grid-column: span 3; min-height: 158px; }
+    .size-medium { grid-column: span 2; min-height: 166px; }
+    .size-small { grid-column: span 2; min-height: 138px; }
+    .size-none { grid-column: span 2; min-height: 138px; border-style: dashed; }
+
+    .box-tag {
+      align-self: flex-start;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--rose-soft);
+      color: var(--rose-dark);
+      font-size: .72rem;
+      font-weight: 750;
+    }
+
+    .ingredient-name {
+      position: relative;
+      z-index: 1;
+      margin: 20px 0 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.35rem, 3vw, 1.85rem);
+      font-weight: 500;
+      line-height: 1.05;
+    }
+
+    .card-action {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 36px 18px;
+      border: 1px dashed var(--line);
+      border-radius: 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .summary {
+      display: none;
+      margin-top: 18px;
+      padding: clamp(20px, 5vw, 34px);
+      border-radius: 24px;
+      background: var(--ink);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .summary.visible { display: block; animation: rise .3s ease both; }
+    .summary h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.8rem, 5vw, 2.7rem);
+      font-weight: 500;
+    }
+    .summary-intro { margin: 7px 0 22px; color: rgba(255,255,255,.66); }
+    .prep-list, .checked-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+    .prep-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 15px;
+      background: rgba(255,255,255,.09);
+    }
+    .prep-item.done { opacity: .55; }
+    .prep-check {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      gap: 13px;
+      cursor: pointer;
+    }
+    .prep-check input {
+      width: 24px;
+      height: 24px;
+      flex: none;
+      margin: 0;
+      accent-color: var(--rose);
+      cursor: pointer;
+    }
+    .prep-item.done .prep-text { text-decoration: line-through; }
+    .prep-number {
+      display: grid;
+      flex: none;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--rose);
+      font-weight: 850;
+    }
+    .all-good {
+      padding: 17px;
+      border-radius: 15px;
+      background: rgba(84, 153, 113, .22);
+      color: #d9f4e2;
+    }
+    .checked-wrap { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.16); }
+    .checked-title { margin: 0 0 10px; color: rgba(255,255,255,.64); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+    .checked-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .checked-item:last-child { border-bottom: 0; }
+    .checked-meta { color: rgba(255,255,255,.6); font-size: .82rem; }
+    .edit-button {
+      border: 0;
+      background: transparent;
+      color: #efb7bb;
+      cursor: pointer;
+      font-size: .84rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 20;
+      inset: 0;
+      display: none;
+      align-items: end;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(23, 21, 19, .58);
+      backdrop-filter: blur(5px);
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: min(100%, 580px);
+      max-height: min(90vh, 760px);
+      overflow: auto;
+      padding: 23px;
+      border-radius: 25px 25px 18px 18px;
+      background: var(--card);
+      box-shadow: 0 28px 90px rgba(0,0,0,.3);
+      animation: rise .22s ease both;
+    }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(15px); } }
+
+    .modal-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 15px;
+    }
+    .modal h2 {
+      margin: 4px 0 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.15rem;
+      font-weight: 500;
+      line-height: 1;
+    }
+    .modal-box-label { margin: 8px 0 0; color: var(--muted); font-size: .86rem; }
+    .close-button {
+      display: grid;
+      flex: none;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .rule-note {
+      margin: 20px 0;
+      padding: 13px 15px;
+      border-radius: 14px;
+      background: #f0ebe5;
+      color: #504b47;
+      font-size: .9rem;
+      line-height: 1.45;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 13px;
+      font-weight: 760;
+    }
+    .field-label output { color: var(--rose-dark); font-size: 1.25rem; }
+    .slider { width: 100%; accent-color: var(--rose-dark); cursor: pointer; }
+    .slider-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .reserve-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 25px;
+      padding-top: 19px;
+      border-top: 1px solid var(--line);
+    }
+    .reserve-row strong, .reserve-row small { display: block; }
+    .reserve-row small { margin-top: 3px; color: var(--muted); }
+    .stepper { display: flex; align-items: center; gap: 10px; }
+    .step-button {
+      display: grid;
+      width: 39px;
+      height: 39px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      font-size: 1.25rem;
+    }
+    .step-value { min-width: 24px; text-align: center; font-size: 1.1rem; font-weight: 800; }
+
+    .binary-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stock-check {
+      margin-top: 22px;
+      padding-top: 19px;
+      border-top: 1px solid var(--line);
+    }
+    .stock-check .field-label { margin-bottom: 10px; }
+    .choice-button {
+      min-height: 62px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: white;
+      cursor: pointer;
+      font-weight: 750;
+    }
+    .choice-button.selected {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
+    .live-result {
+      margin: 22px 0 14px;
+      padding: 14px 15px;
+      border-radius: 14px;
+      background: var(--green-soft);
+      color: #21543d;
+      line-height: 1.35;
+    }
+    .live-result.needs-prep { background: var(--amber-soft); color: #75480d; }
+    .live-result strong { display: block; margin-bottom: 2px; }
+
+    .confirm-button {
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      border-radius: 15px;
+      background: var(--rose-dark);
+      color: white;
+      cursor: pointer;
+      font-weight: 820;
+      box-shadow: 0 7px 18px rgba(143, 76, 83, .2);
+    }
+
+    @media (min-width: 700px) {
+      .modal-backdrop { align-items: center; }
+      .modal { border-radius: 25px; }
+    }
+
+    @media (max-width: 620px) {
+      .app { width: min(100% - 20px, 980px); padding-top: 20px; }
+      .topline { align-items: center; }
+      .reset-button { max-width: 84px; }
+      .panel { padding: 13px; border-radius: 18px; }
+      .level-button { min-height: 61px; }
+      .level-button small { font-size: .66rem; }
+      .ingredient-grid { grid-template-columns: repeat(2, 1fr); gap: 9px; }
+      .size-long-large, .size-long-small, .size-large { grid-column: span 2; min-height: 128px; }
+      .size-medium, .size-small, .size-none { grid-column: span 1; min-height: 145px; }
+      .ingredient-card { padding: 14px; border-radius: 17px; }
+      .ingredient-name { font-size: 1.35rem; }
+      .box-tag { font-size: .66rem; }
+      .modal { padding: 19px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="topline">
+      <div>
+        <p class="eyebrow">Clauß · Flammkuchen</p>
+        <h1>Küchen&shy;vorbereitung</h1>
+      </div>
+      <button class="reset-button" id="resetButton" type="button">Neu beginnen</button>
+    </div>
+
+    <section class="panel level-panel" aria-labelledby="levelLabel">
+      <span class="panel-label" id="levelLabel">Wie wird der Abend?</span>
+      <div class="levels" role="group" aria-label="Erwartete Gästezahl">
+        <button class="level-button" type="button" data-level="wenig">
+          <strong>Wenig</strong><small>ruhiger Abend</small>
+        </button>
+        <button class="level-button" type="button" data-level="normal">
+          <strong>Normal</strong><small>normaler Betrieb</small>
+        </button>
+        <button class="level-button" type="button" data-level="hustle">
+          <strong>Hustle</strong><small>volles Haus</small>
+        </button>
+      </div>
+    </section>
+
+    <div class="progress-row" aria-live="polite">
+      <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+      <span id="progressText">0 von 36 geprüft</span>
+    </div>
+
+    <section class="ingredient-grid" id="ingredientGrid" aria-label="Noch zu prüfende Zutaten"></section>
+
+    <section class="summary" id="summary" aria-live="polite">
+      <h2>Alles geprüft.</h2>
+      <p class="summary-intro" id="summaryIntro"></p>
+      <ul class="prep-list" id="prepList"></ul>
+      <div class="checked-wrap">
+        <p class="checked-title">Geprüfte Bestände</p>
+        <ul class="checked-list" id="checkedList"></ul>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle"></h2>
+          <p class="modal-box-label" id="modalBoxLabel"></p>
+        </div>
+        <button class="close-button" id="closeModal" type="button" aria-label="Schließen">×</button>
+      </div>
+
+      <p class="rule-note" id="ruleNote"></p>
+
+      <div id="sliderArea">
+        <label class="field-label" for="fillSlider">
+          <span id="fillLabel">Aktuelle Box gefüllt</span>
+          <output id="fillOutput">100 %</output>
+        </label>
+        <input class="slider" id="fillSlider" type="range" min="0" max="100" step="5" value="100">
+        <div class="slider-scale" id="sliderScale" aria-hidden="true"><span>leer</span><span>halbvoll</span><span>voll</span></div>
+
+        <div class="reserve-row" id="reserveRow">
+          <div><strong>Weitere Box vorhanden?</strong><small>Bereits vorbereiteter Vorrat</small></div>
+          <div class="stepper" aria-label="Anzahl weiterer Boxen">
+            <button class="step-button" id="reserveMinus" type="button" aria-label="Eine Box weniger">−</button>
+            <span class="step-value" id="reserveValue">0</span>
+            <button class="step-button" id="reservePlus" type="button" aria-label="Eine weitere Box">+</button>
+          </div>
+        </div>
+
+        <div class="stock-check" id="stockCheck" hidden>
+          <p class="field-label" id="stockCheckLabel"></p>
+          <div class="binary-choice">
+            <button class="choice-button" type="button" data-stock-ready="true">Ja, liegt bereit</button>
+            <button class="choice-button" type="button" data-stock-ready="false">Nein</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="binaryArea" hidden>
+        <p class="field-label">Liegt eine Packung bereit?</p>
+        <div class="binary-choice">
+          <button class="choice-button" id="readyYes" type="button" data-ready="true">Ja, bereit</button>
+          <button class="choice-button" id="readyNo" type="button" data-ready="false">Nein</button>
+        </div>
+      </div>
+
+      <div class="live-result" id="liveResult"></div>
+      <button class="confirm-button" id="confirmButton" type="button">Prüfung bestätigen</button>
+    </section>
+  </div>
+
+  <script>
+    const INGREDIENTS = [
+      {
+        id: "speck",
+        name: "Speck",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Speck",
+        rules: {
+          wenig: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist.",
+          normal: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist.",
+          hustle: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "schinken",
+        name: "Schinken",
+        box: "Box mittel · 200-g-Pack",
+        size: "medium",
+        unit: "mittlere Box Schinken (1 × 200-g-Pack)",
+        thresholds: { wenig: 50, normal: 75, hustle: 95 },
+        rules: {
+          wenig: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 75 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Bei 95 % oder weniger wird eine volle Nachfüllbox vorbereitet."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "sucuk",
+        name: "Sucuk",
+        box: "Keine GN-Box · Packung",
+        size: "none",
+        binary: true,
+        unit: "Packung Sucuk bereitstellen",
+        rules: {
+          wenig: "Prüfen, ob eine Packung Sucuk im Kühlschrank bereitliegt.",
+          normal: "Prüfen, ob eine Packung Sucuk im Kühlschrank bereitliegt.",
+          hustle: "Prüfen, ob eine Packung Sucuk im Kühlschrank bereitliegt."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "thunfisch",
+        name: "Thunfisch",
+        box: "Box klein · 2 Dosen",
+        size: "small",
+        unit: "kleine Box Thunfisch (2 Dosen)",
+        thresholds: { wenig: 25, normal: 50, hustle: 75 },
+        rules: {
+          wenig: "Bei 25 % oder weniger wird eine volle Box aus 2 Dosen vorbereitet.",
+          normal: "Bei 50 % oder weniger wird eine volle Box aus 2 Dosen vorbereitet.",
+          hustle: "Bei 75 % oder weniger wird eine volle Box aus 2 Dosen vorbereitet."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "lachs",
+        name: "Lachs",
+        box: "Box lang klein · 1 ganzer Lachs",
+        size: "long-small",
+        unit: "lange kleine Box Lachs (1 ganzer Lachs)",
+        rules: {
+          wenig: "Bei 75 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Unabhängig vom Füllstand wird eine volle Nachfüllbox benötigt.",
+          hustle: "Unabhängig vom Füllstand wird eine volle Nachfüllbox benötigt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = level === "wenig" ? (fill <= 75 ? 1 : 0) : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "maultaschen",
+        name: "Maultaschen klassisch",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Maultaschen klassisch",
+        pluralUnit: "mittlere Boxen Maultaschen klassisch",
+        rules: {
+          wenig: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 75 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Bei 95 % oder weniger: 1 Box. Bei 25 % oder weniger: insgesamt 2 Boxen."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target = 0;
+          if (level === "wenig") target = fill <= 50 ? 1 : 0;
+          if (level === "normal") target = fill <= 75 ? 1 : 0;
+          if (level === "hustle") target = fill <= 25 ? 2 : (fill <= 95 ? 1 : 0);
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "maultaschen-vegetarisch",
+        name: "Maultaschen vegetarisch",
+        box: "Box klein",
+        size: "small",
+        unit: "kleine Box Maultaschen vegetarisch",
+        thresholds: { wenig: 25, normal: 50, hustle: 90 },
+        rules: {
+          wenig: "Bei 25 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Bei 90 % oder weniger wird eine volle Nachfüllbox vorbereitet."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "kaese",
+        name: "Käse",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Käse",
+        stockCheck: "Liegt eine Packung Käse im Küchen-Kühlschrank?",
+        rules: {
+          wenig: "Eine neue Box nur bei leerer Box. Bei 50 % oder weniger muss zusätzlich eine Packung Käse im Küchen-Kühlschrank liegen.",
+          normal: "Eine neue Box nur bei leerer Box. Bei 50 % oder weniger muss zusätzlich eine Packung Käse im Küchen-Kühlschrank liegen.",
+          hustle: "Eine neue Box nur bei leerer Box. Bei 50 % oder weniger muss zusätzlich eine Packung Käse im Küchen-Kühlschrank liegen."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ fill, stockReady }) => fill <= 50 && !stockReady
+          ? [{ code: "pack", text: "1 neue Packung Käse in den Küchen-Kühlschrank legen" }]
+          : []
+      },
+      {
+        id: "muensterkaese",
+        name: "Münsterkäse",
+        box: "Box klein · 2 Münsterkäse",
+        size: "small",
+        unit: "kleine Box Münsterkäse (2 Münsterkäse schneiden)",
+        thresholds: { wenig: 25, normal: 50, hustle: 90 },
+        rules: {
+          wenig: "Bei 25 % oder weniger werden 2 Münsterkäse für eine volle Box geschnitten.",
+          normal: "Bei 50 % oder weniger werden 2 Münsterkäse für eine volle Box geschnitten.",
+          hustle: "Bei 90 % oder weniger werden 2 Münsterkäse für eine volle Box geschnitten."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "mozzarella",
+        name: "Mozzarella",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Mozzarella",
+        stockCheck: "Liegt eine Packung Mozzarella als Vorrat im Kühlschrank?",
+        rules: {
+          wenig: "Eine neue Box nur vorbereiten, wenn die aktuelle Box leer ist. Zusätzlich muss immer eine Packung Mozzarella im Kühlschrank liegen.",
+          normal: "Eine neue Box nur vorbereiten, wenn die aktuelle Box leer ist. Zusätzlich muss immer eine Packung Mozzarella im Kühlschrank liegen.",
+          hustle: "Eine neue Box nur vorbereiten, wenn die aktuelle Box leer ist. Zusätzlich muss immer eine Packung Mozzarella im Kühlschrank liegen."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Packung Mozzarella als Vorrat in den Kühlschrank legen" }]
+          : []
+      },
+      {
+        id: "feta",
+        name: "Feta",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Feta",
+        pluralUnit: "lange große Boxen Feta",
+        rules: {
+          wenig: "Bei 60 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 90 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Immer 1 neue Box; bei 10 % oder weniger insgesamt 2 neue Boxen."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target = 0;
+          if (level === "wenig") target = fill <= 60 ? 1 : 0;
+          if (level === "normal") target = fill <= 90 ? 1 : 0;
+          if (level === "hustle") target = fill <= 10 ? 2 : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "raclettekaese",
+        name: "Raclettekäse",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Raclettekäse",
+        thresholds: { wenig: 50, normal: 70, hustle: 95 },
+        rules: {
+          wenig: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 70 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Bei 95 % oder weniger wird eine volle Nachfüllbox vorbereitet."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "camembert",
+        name: "Camembert",
+        box: "Box mittel · 4 Camembert",
+        size: "medium",
+        unit: "mittlere Box Camembert (4 Camembert schneiden)",
+        thresholds: { wenig: 20, normal: 30, hustle: 50 },
+        rules: {
+          wenig: "Bei 20 % oder weniger werden 4 Camembert für eine volle Box geschnitten.",
+          normal: "Bei 30 % oder weniger werden 4 Camembert für eine volle Box geschnitten.",
+          hustle: "Bei 50 % oder weniger werden 4 Camembert für eine volle Box geschnitten."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "ziegenkaese",
+        name: "Ziegenkäse",
+        box: "Box mittel · 1 Packung",
+        size: "medium",
+        unit: "mittlere Box Ziegenkäse (1 ganze Packung schneiden)",
+        rules: {
+          wenig: "Bei 50 % oder weniger wird eine ganze Packung Ziegenkäse für eine neue Box geschnitten.",
+          normal: "Bei 80 % oder weniger wird eine ganze Packung Ziegenkäse für eine neue Box geschnitten.",
+          hustle: "Unabhängig vom Füllstand wird eine ganze Packung Ziegenkäse für eine neue Box geschnitten."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = level === "wenig" ? (fill <= 50 ? 1 : 0) :
+            level === "normal" ? (fill <= 80 ? 1 : 0) : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "zwiebeln",
+        name: "Zwiebeln",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Zwiebeln",
+        pluralUnit: "lange große Boxen Zwiebeln",
+        rules: {
+          wenig: "Über 50 % werden 2 neue Boxen vorbereitet, bei 50 % oder weniger 3 Boxen.",
+          normal: "Über 25 % werden 3 neue Boxen vorbereitet, bei 25 % oder weniger 4 Boxen.",
+          hustle: "Über 90 % werden 4 neue Boxen vorbereitet, sonst 3 Boxen."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target;
+          if (level === "wenig") target = fill > 50 ? 2 : 3;
+          if (level === "normal") target = fill > 25 ? 3 : 4;
+          if (level === "hustle") target = fill > 90 ? 4 : 3;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "rote-zwiebeln",
+        name: "Rote Zwiebeln",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box rote Zwiebeln",
+        pluralUnit: "lange große Boxen rote Zwiebeln",
+        rules: {
+          wenig: "1 neue Box vorbereiten, bei 50 % oder weniger 2 Boxen.",
+          normal: "Bei 90 % oder weniger 1 neue Box vorbereiten, sonst 2 Boxen.",
+          hustle: "Immer 2 neue Boxen vorbereiten, bei 30 % oder weniger 3 Boxen."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target;
+          if (level === "wenig") target = fill <= 50 ? 2 : 1;
+          if (level === "normal") target = fill <= 90 ? 1 : 2;
+          if (level === "hustle") target = fill <= 30 ? 3 : 2;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "lauchzwiebeln",
+        name: "Lauchzwiebeln",
+        box: "Box klein · 1 Bund = ½ Box",
+        size: "small",
+        unit: "Bund Lauchzwiebeln schneiden",
+        pluralUnit: "Bund Lauchzwiebeln schneiden",
+        rules: {
+          wenig: "Über 20 % muss nichts gemacht werden; bei 20 % oder weniger 1 Bund schneiden.",
+          normal: "Über 35 % muss nichts gemacht werden; bei 35 % oder weniger 1 Bund schneiden.",
+          hustle: "Immer 1 Bund schneiden; bei 25 % oder weniger 2 Bund schneiden."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target = 0;
+          if (level === "wenig") target = fill <= 20 ? 1 : 0;
+          if (level === "normal") target = fill <= 35 ? 1 : 0;
+          if (level === "hustle") target = fill <= 25 ? 2 : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "champignons",
+        name: "Champignons",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Champignons",
+        pluralUnit: "mittlere Boxen Champignons",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 Boxen ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 2 Boxen ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 1, normal: 1.5, hustle: 2 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "paprika",
+        name: "Paprika",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Paprika",
+        pluralUnit: "mittlere Boxen Paprika",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,75 Boxen ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 Boxen ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 0.75, normal: 1, hustle: 1.5 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "zucchini",
+        name: "Zucchini",
+        box: "Box lang klein",
+        size: "long-small",
+        unit: "Zucchini in eine neue lange kleine Box schneiden",
+        pluralUnit: "Zucchini in eine neue lange kleine Box schneiden",
+        rules: {
+          wenig: "Bei 30 % oder weniger 2 Zucchini in eine neue Box schneiden, sonst nichts.",
+          normal: "Bei 50 % oder weniger 3 Zucchini schneiden, sonst 2 Zucchini in eine neue Box schneiden.",
+          hustle: "Bei 25 % oder weniger 4 Zucchini schneiden, sonst 3 Zucchini in eine neue Box schneiden."
+        },
+        demand: ({ fill, reserve, level }) => {
+          if (reserve > 0) return 0;
+          if (level === "wenig") return fill <= 30 ? 2 : 0;
+          if (level === "normal") return fill <= 50 ? 3 : 2;
+          return fill <= 25 ? 4 : 3;
+        }
+      },
+      {
+        id: "tomaten",
+        name: "Tomaten",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Tomaten",
+        pluralUnit: "lange große Boxen Tomaten",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,5 Boxen ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 Boxen ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 0.5, normal: 1, hustle: 1.5 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "spinat",
+        name: "Spinat",
+        box: "Nachfülltüte · TK-Truhe",
+        size: "none",
+        binary: true,
+        unit: "Neue Nachfülltüte Spinat in die TK-Truhe legen",
+        readyQuestion: "Liegt eine neue Nachfülltüte in der TK-Truhe?",
+        rules: {
+          wenig: "Nur prüfen, ob eine neue Nachfülltüte Spinat in der TK-Truhe liegt.",
+          normal: "Nur prüfen, ob eine neue Nachfülltüte Spinat in der TK-Truhe liegt.",
+          hustle: "Nur prüfen, ob eine neue Nachfülltüte Spinat in der TK-Truhe liegt."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "knoblauch",
+        name: "Knoblauch",
+        box: "Vorratspackung",
+        size: "none",
+        binary: true,
+        unit: "Neue Packung Knoblauch bereitlegen",
+        readyQuestion: "Liegt eine neue Packung zum Nachfüllen bereit?",
+        rules: {
+          wenig: "Nur prüfen, ob eine neue Packung Knoblauch zum Nachfüllen bereitliegt.",
+          normal: "Nur prüfen, ob eine neue Packung Knoblauch zum Nachfüllen bereitliegt.",
+          hustle: "Nur prüfen, ob eine neue Packung Knoblauch zum Nachfüllen bereitliegt."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "chili",
+        name: "Chili",
+        box: "Box klein · 1,5 Chili je Flammkuchen",
+        size: "small",
+        coverage: true,
+        unit: "Chili schneiden",
+        pluralUnit: "Chilis schneiden",
+        targets: { wenig: 4, normal: 6, hustle: 8 },
+        rules: {
+          wenig: "Der Bestand soll für insgesamt 4 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Chili gerechnet und auf ganze Chilis aufgerundet.",
+          normal: "Der Bestand soll für insgesamt 6 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Chili gerechnet und auf ganze Chilis aufgerundet.",
+          hustle: "Der Bestand soll für insgesamt 8 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Chili gerechnet und auf ganze Chilis aufgerundet."
+        },
+        demand: ({ coverage, reserve, level, ingredient }) => reserve > 0
+          ? 0
+          : Math.ceil(Math.max(ingredient.targets[level] - coverage, 0) * 1.5)
+      },
+      {
+        id: "peperoni",
+        name: "Peperoni",
+        box: "Box klein · 1,5 Peperoni je Flammkuchen",
+        size: "small",
+        coverage: true,
+        unit: "Peperoni schneiden",
+        pluralUnit: "Peperoni schneiden",
+        targets: { wenig: 2, normal: 4, hustle: 6 },
+        rules: {
+          wenig: "Der Bestand soll für insgesamt 2 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Peperoni gerechnet und auf ganze Peperoni aufgerundet.",
+          normal: "Der Bestand soll für insgesamt 4 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Peperoni gerechnet und auf ganze Peperoni aufgerundet.",
+          hustle: "Der Bestand soll für insgesamt 6 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Peperoni gerechnet und auf ganze Peperoni aufgerundet."
+        },
+        demand: ({ coverage, reserve, level, ingredient }) => reserve > 0
+          ? 0
+          : Math.ceil(Math.max(ingredient.targets[level] - coverage, 0) * 1.5)
+      },
+      {
+        id: "oliven",
+        name: "Oliven",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Oliven",
+        rules: {
+          wenig: "Nur bei leerer Box wird eine neue Box vorbereitet.",
+          normal: "Nur bei leerer Box wird eine neue Box vorbereitet.",
+          hustle: "Bei 25 % oder weniger wird eine neue Box vorbereitet."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = level === "hustle" ? (fill <= 25 ? 1 : 0) : (fill === 0 ? 1 : 0);
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "ananas",
+        name: "Ananas",
+        box: "Box mittel · Geschmacksprobe",
+        size: "medium",
+        binary: true,
+        binaryLabels: { yes: "Noch gut", no: "Nicht mehr gut" },
+        unit: "Ananas wegwerfen und eine neue kleine Box auffüllen",
+        readyQuestion: "Mach eine Geschmacksprobe: Ist die Ananas noch gut?",
+        checkedText: ({ ready }) => ready ? "Geschmacksprobe: noch gut" : "Geschmacksprobe: nicht mehr gut",
+        rules: {
+          wenig: "Geschmacksprobe machen. Wenn die Ananas nicht mehr gut ist: wegwerfen und eine neue kleine Box auffüllen.",
+          normal: "Geschmacksprobe machen. Wenn die Ananas nicht mehr gut ist: wegwerfen und eine neue kleine Box auffüllen.",
+          hustle: "Geschmacksprobe machen. Wenn die Ananas nicht mehr gut ist: wegwerfen und eine neue kleine Box auffüllen."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "datteln",
+        name: "Datteln",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Datteln",
+        pluralUnit: "mittlere Boxen Datteln",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,5 Boxen ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,75 Boxen ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 0.5, normal: 0.75, hustle: 1 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "apfel",
+        name: "Apfel",
+        box: "Box mittel · fein geschnitten",
+        size: "medium",
+        unit: "mittlere Box Apfel fein schneiden",
+        pluralUnit: "mittlere Boxen Apfel fein schneiden",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,75 fein geschnittene Boxen ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 fein geschnittene Boxen ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 2 fein geschnittene Boxen ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 0.75, normal: 1.5, hustle: 2 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "banane",
+        name: "Banane",
+        box: "1 Staude · Kühlschrank",
+        size: "none",
+        binary: true,
+        unit: "1 Staude Bananen in den Kühlschrank bzw. griffbereit legen",
+        readyQuestion: "Liegt eine Staude Bananen im Kühlschrank bzw. griffbereit?",
+        checkedText: ({ ready }) => ready ? "1 Staude liegt griffbereit" : "Keine Staude griffbereit",
+        rules: {
+          wenig: "Prüfen, ob eine Staude Bananen im Kühlschrank bzw. griffbereit liegt.",
+          normal: "Prüfen, ob eine Staude Bananen im Kühlschrank bzw. griffbereit liegt.",
+          hustle: "Prüfen, ob eine Staude Bananen im Kühlschrank bzw. griffbereit liegt."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "beerenmischung",
+        name: "Beerenmischung",
+        box: "Box klein · TK",
+        size: "small",
+        unit: "kleine Box Beerenmischung auffüllen",
+        stockCheck: "Liegt ein Nachfüllpack Beerenmischung im TK?",
+        rules: {
+          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Nachfüllpack Beerenmischung in den TK legen" }]
+          : []
+      },
+      {
+        id: "himbeeren",
+        name: "Himbeeren",
+        box: "Box mittel · TK",
+        size: "medium",
+        unit: "mittlere Box Himbeeren auffüllen",
+        stockCheck: "Liegt ein Nachfüllpack Himbeeren im TK?",
+        rules: {
+          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Nachfüllpack Himbeeren in den TK legen" }]
+          : []
+      },
+      {
+        id: "biscoff-creme",
+        name: "Biscoff-Creme",
+        box: "Tube",
+        size: "none",
+        noReserve: true,
+        unit: "Tube Biscoff-Creme vollständig auffüllen",
+        rules: {
+          wenig: "Bei 80 % oder weniger wird die Tube vollständig aufgefüllt.",
+          normal: "Bei 80 % oder weniger wird die Tube vollständig aufgefüllt.",
+          hustle: "Bei 80 % oder weniger wird die Tube vollständig aufgefüllt."
+        },
+        demand: ({ fill }) => fill <= 80 ? 1 : 0
+      },
+      {
+        id: "weisse-schokolade",
+        name: "Weiße Schokolade",
+        box: "Box klein",
+        size: "small",
+        unit: "kleine Box weiße Schokolade auffüllen",
+        stockCheck: "Liegt ein Nachfüllpack weiße Schokolade bereit?",
+        rules: {
+          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack bereitliegt.",
+          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack bereitliegt.",
+          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack bereitliegt."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Nachfüllpack weiße Schokolade bereitstellen" }]
+          : []
+      },
+      {
+        id: "haehnchenkebab",
+        name: "Hähnchenkebab",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Hähnchenkebab vorbereiten",
+        rules: {
+          wenig: "Eine neue große Box vorbereiten, außer die aktuelle Box ist noch zu mindestens 80 % gefüllt.",
+          normal: "Unabhängig vom Füllstand eine neue große Box vorbereiten.",
+          hustle: "Unabhängig vom Füllstand eine neue große Box vorbereiten."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = level === "wenig" && fill >= 80 ? 0 : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "mango",
+        name: "Mango",
+        box: "Box klein · TK",
+        size: "small",
+        unit: "kleine Box Mango auffüllen",
+        stockCheck: "Liegt ein Nachfüllpack Mango im TK?",
+        rules: {
+          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Nachfüllpack Mango in den TK legen" }]
+          : []
+      }
+    ];
+
+    const STORAGE_KEY = "clauss-kuechenvorbereitung-test-v1";
+    const defaultState = () => ({ level: "normal", checks: {}, tasksDone: {} });
+    let state = loadState();
+    let activeId = null;
+    let draft = { fill: 100, reserve: 0, ready: true };
+
+    const grid = document.querySelector("#ingredientGrid");
+    const summary = document.querySelector("#summary");
+    const progressBar = document.querySelector("#progressBar");
+    const progressText = document.querySelector("#progressText");
+    const modalBackdrop = document.querySelector("#modalBackdrop");
+    const modalTitle = document.querySelector("#modalTitle");
+    const modalBoxLabel = document.querySelector("#modalBoxLabel");
+    const ruleNote = document.querySelector("#ruleNote");
+    const sliderArea = document.querySelector("#sliderArea");
+    const binaryArea = document.querySelector("#binaryArea");
+    const stockCheck = document.querySelector("#stockCheck");
+    const stockCheckLabel = document.querySelector("#stockCheckLabel");
+    const fillLabel = document.querySelector("#fillLabel");
+    const fillSlider = document.querySelector("#fillSlider");
+    const fillOutput = document.querySelector("#fillOutput");
+    const sliderScale = document.querySelector("#sliderScale");
+    const reserveRow = document.querySelector("#reserveRow");
+    const reserveValue = document.querySelector("#reserveValue");
+    const liveResult = document.querySelector("#liveResult");
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && ["wenig", "normal", "hustle"].includes(saved.level) && saved.checks) {
+          saved.tasksDone = saved.tasksDone || {};
+          return saved;
+        }
+      } catch (_) {}
+      return defaultState();
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function ingredientById(id) {
+      return INGREDIENTS.find(item => item.id === id);
+    }
+
+    function neededFor(ingredient, values) {
+      return ingredient.demand({ ...values, level: state.level, ingredient });
+    }
+
+    function quantityText(quantity, ingredient) {
+      if (!quantity) return "Nichts vorzubereiten";
+      if (ingredient.binary) return ingredient.unit;
+      const rounded = Math.round((quantity + Number.EPSILON) * 100) / 100;
+      const formatted = rounded.toLocaleString("de-DE", { maximumFractionDigits: 2 });
+      return `${formatted} ${rounded > 1 && ingredient.pluralUnit ? ingredient.pluralUnit : ingredient.unit}`;
+    }
+
+    function preparationsFor(ingredient, values) {
+      const actions = [];
+      const quantity = neededFor(ingredient, values);
+      if (quantity > 0) actions.push({
+        key: `${ingredient.id}:box`,
+        text: quantityText(quantity, ingredient)
+      });
+      if (ingredient.extraActions) {
+        ingredient.extraActions(values).forEach(action => actions.push({
+          key: `${ingredient.id}:${action.code}`,
+          text: action.text
+        }));
+      }
+      return actions;
+    }
+
+    function checkedDescription(ingredient, check) {
+      if (ingredient.checkedText) return ingredient.checkedText(check);
+      if (ingredient.binary) return check.ready ? "Packung liegt bereit" : "Keine Packung bereit";
+      if (ingredient.coverage) {
+        const reserveText = check.reserve === 1 ? "1 Vorratsbox" : `${check.reserve} Vorratsboxen`;
+        return `Bestand reicht für ${check.coverage} Flammkuchen · ${reserveText}`;
+      }
+      const reserveText = ingredient.noReserve
+        ? ""
+        : ` · ${check.reserve === 1 ? "1 Vorratsbox" : `${check.reserve} Vorratsboxen`}`;
+      const stockText = ingredient.stockCheck
+        ? ` · Vorratspackung ${check.stockReady ? "vorhanden" : "fehlt"}`
+        : "";
+      return `${check.fill} %${reserveText}${stockText}`;
+    }
+
+    function render() {
+      document.querySelectorAll("[data-level]").forEach(button => {
+        const active = button.dataset.level === state.level;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+
+      const completed = Object.keys(state.checks).filter(id => ingredientById(id)).length;
+      progressText.textContent = `${completed} von ${INGREDIENTS.length} geprüft`;
+      progressBar.style.width = `${completed / INGREDIENTS.length * 100}%`;
+
+      const remaining = INGREDIENTS.filter(item => !state.checks[item.id]);
+      grid.innerHTML = "";
+      remaining.forEach(ingredient => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = `ingredient-card size-${ingredient.size}`;
+        card.dataset.ingredient = ingredient.id;
+        card.innerHTML = `
+          <span class="box-tag">${ingredient.box}</span>
+          <span class="ingredient-name">${ingredient.name}</span>
+          <span class="card-action">Jetzt prüfen →</span>
+        `;
+        card.addEventListener("click", () => openIngredient(ingredient.id));
+        grid.appendChild(card);
+      });
+
+      const complete = completed === INGREDIENTS.length;
+      summary.classList.toggle("visible", complete);
+      if (complete) renderSummary();
+    }
+
+    function renderSummary() {
+      const preparations = INGREDIENTS.flatMap(ingredient =>
+        preparationsFor(ingredient, state.checks[ingredient.id])
+      );
+      const doneCount = preparations.filter(item => state.tasksDone[item.key]).length;
+
+      document.querySelector("#summaryIntro").textContent = preparations.length
+        ? `${levelSummary(state.level)} ist Folgendes vorzubereiten (${doneCount} von ${preparations.length} erledigt):`
+        : "Die vorhandenen Bestände reichen für den erwarteten Abend aus.";
+
+      const prepList = document.querySelector("#prepList");
+      prepList.innerHTML = "";
+      if (!preparations.length) {
+        prepList.innerHTML = '<li class="all-good">✓ Aktuell muss nichts zusätzlich vorbereitet werden.</li>';
+      } else {
+        preparations.forEach((preparation, index) => {
+          const li = document.createElement("li");
+          const done = Boolean(state.tasksDone[preparation.key]);
+          li.className = `prep-item${done ? " done" : ""}`;
+          li.innerHTML = `
+            <label class="prep-check">
+              <input type="checkbox" data-task="${preparation.key}" ${done ? "checked" : ""}>
+              <span class="prep-number">${done ? "✓" : index + 1}</span>
+              <strong class="prep-text">${preparation.text}</strong>
+            </label>
+          `;
+          li.querySelector("input").addEventListener("change", event => {
+            state.tasksDone[preparation.key] = event.target.checked;
+            saveState();
+            renderSummary();
+          });
+          prepList.appendChild(li);
+        });
+      }
+
+      const checkedList = document.querySelector("#checkedList");
+      checkedList.innerHTML = "";
+      INGREDIENTS.forEach(ingredient => {
+        const li = document.createElement("li");
+        li.className = "checked-item";
+        li.innerHTML = `
+          <span><strong>${ingredient.name}</strong><br><span class="checked-meta">${checkedDescription(ingredient, state.checks[ingredient.id])}</span></span>
+          <button class="edit-button" type="button" data-edit="${ingredient.id}">Ändern</button>
+        `;
+        li.querySelector("button").addEventListener("click", () => openIngredient(ingredient.id));
+        checkedList.appendChild(li);
+      });
+    }
+
+    function levelName(level) {
+      return ({ wenig: "Wenig", normal: "Normal", hustle: "Hustle" })[level];
+    }
+
+    function levelSummary(level) {
+      return ({
+        wenig: "Für einen ruhigen Abend",
+        normal: "Für einen normalen Abend",
+        hustle: "Für einen Hustle-Abend"
+      })[level];
+    }
+
+    function openIngredient(id) {
+      const ingredient = ingredientById(id);
+      const saved = state.checks[id];
+      activeId = id;
+      draft = ingredient.binary
+        ? { ready: saved ? saved.ready : true }
+        : ingredient.coverage
+          ? {
+              coverage: saved ? saved.coverage : ingredient.targets[state.level],
+              reserve: saved ? (saved.reserve ?? 0) : 0
+            }
+        : {
+            fill: saved ? saved.fill : 100,
+            reserve: saved ? saved.reserve : 0,
+            stockReady: ingredient.stockCheck ? (saved ? saved.stockReady !== false : true) : undefined
+          };
+
+      modalTitle.textContent = ingredient.name;
+      modalBoxLabel.textContent = ingredient.box;
+      ruleNote.textContent = `${levelName(state.level)}: ${ingredient.rules[state.level]}`;
+      sliderArea.hidden = Boolean(ingredient.binary);
+      binaryArea.hidden = !ingredient.binary;
+      document.querySelector("#binaryArea .field-label").textContent = ingredient.readyQuestion || "Liegt eine Packung bereit?";
+      document.querySelector("#readyYes").textContent = ingredient.binaryLabels?.yes || "Ja, bereit";
+      document.querySelector("#readyNo").textContent = ingredient.binaryLabels?.no || "Nein";
+      stockCheck.hidden = !ingredient.stockCheck;
+      stockCheckLabel.textContent = ingredient.stockCheck || "";
+      const isCoverage = Boolean(ingredient.coverage);
+      fillLabel.textContent = isCoverage ? "Wie viele Flammkuchen kannst du noch belegen?" : "Aktuelle Box gefüllt";
+      fillSlider.min = "0";
+      fillSlider.max = isCoverage ? String(Math.max(ingredient.targets[state.level] + 4, 10)) : "100";
+      fillSlider.step = isCoverage ? "1" : "5";
+      fillSlider.value = isCoverage ? draft.coverage : (draft.fill ?? 100);
+      sliderScale.innerHTML = isCoverage
+        ? `<span>0</span><span>Soll: ${ingredient.targets[state.level]}</span><span>${fillSlider.max}</span>`
+        : "<span>leer</span><span>halbvoll</span><span>voll</span>";
+      reserveRow.hidden = Boolean(ingredient.noReserve);
+      reserveValue.textContent = draft.reserve ?? 0;
+      updateModal();
+      modalBackdrop.classList.add("open");
+      document.body.style.overflow = "hidden";
+      document.querySelector("#closeModal").focus();
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove("open");
+      document.body.style.overflow = "";
+      activeId = null;
+    }
+
+    function updateModal() {
+      const ingredient = ingredientById(activeId);
+      if (!ingredient) return;
+      fillOutput.textContent = ingredient.coverage
+        ? `${draft.coverage ?? 0} Flammkuchen`
+        : `${draft.fill ?? 100} %`;
+      reserveValue.textContent = draft.reserve ?? 0;
+      document.querySelectorAll("[data-ready]").forEach(button => {
+        button.classList.toggle("selected", String(draft.ready) === button.dataset.ready);
+      });
+      document.querySelectorAll("[data-stock-ready]").forEach(button => {
+        button.classList.toggle("selected", String(draft.stockReady) === button.dataset.stockReady);
+      });
+      const preparations = preparationsFor(ingredient, draft);
+      liveResult.classList.toggle("needs-prep", preparations.length > 0);
+      liveResult.innerHTML = preparations.length > 0
+        ? `<strong>Vorbereiten:</strong>${preparations.map(item => item.text).join("<br>")}`
+        : "<strong>Bestand reicht aus.</strong>Für diese Zutat ist nichts zusätzlich vorzubereiten.";
+    }
+
+    document.querySelectorAll("[data-level]").forEach(button => {
+      button.addEventListener("click", () => {
+        state.level = button.dataset.level;
+        state.tasksDone = {};
+        saveState();
+        render();
+      });
+    });
+
+    fillSlider.addEventListener("input", () => {
+      const ingredient = ingredientById(activeId);
+      if (ingredient.coverage) draft.coverage = Number(fillSlider.value);
+      else draft.fill = Number(fillSlider.value);
+      updateModal();
+    });
+
+    document.querySelector("#reserveMinus").addEventListener("click", () => {
+      draft.reserve = Math.max(0, (draft.reserve ?? 0) - 1);
+      updateModal();
+    });
+
+    document.querySelector("#reservePlus").addEventListener("click", () => {
+      draft.reserve = Math.min(9, (draft.reserve ?? 0) + 1);
+      updateModal();
+    });
+
+    document.querySelectorAll("[data-ready]").forEach(button => {
+      button.addEventListener("click", () => {
+        draft.ready = button.dataset.ready === "true";
+        updateModal();
+      });
+    });
+
+    document.querySelectorAll("[data-stock-ready]").forEach(button => {
+      button.addEventListener("click", () => {
+        draft.stockReady = button.dataset.stockReady === "true";
+        updateModal();
+      });
+    });
+
+    document.querySelector("#confirmButton").addEventListener("click", () => {
+      Object.keys(state.tasksDone).forEach(key => {
+        if (key.startsWith(`${activeId}:`)) delete state.tasksDone[key];
+      });
+      state.checks[activeId] = { ...draft };
+      saveState();
+      closeModal();
+      render();
+    });
+
+    document.querySelector("#closeModal").addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", event => {
+      if (event.target === modalBackdrop) closeModal();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && modalBackdrop.classList.contains("open")) closeModal();
+    });
+
+    document.querySelector("#resetButton").addEventListener("click", () => {
+      if (!confirm("Alle Eingaben löschen und neu beginnen?")) return;
+      state = defaultState();
+      saveState();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
