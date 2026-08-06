@@ -20,6 +20,14 @@
       --amber-soft: #f1e3c9;
       --line: #ddd4cb;
       --shadow: 0 14px 38px rgba(48, 39, 32, .10);
+      --meat: #9b5d58;
+      --meat-soft: #f4e4e1;
+      --cheese: #9a7120;
+      --cheese-soft: #f5ecd3;
+      --vegetable: #4f7657;
+      --vegetable-soft: #e1eee2;
+      --sweet: #8a5f86;
+      --sweet-soft: #efe3ef;
     }
 
     * { box-sizing: border-box; }
@@ -140,6 +148,46 @@
       font-size: .9rem;
     }
 
+    .filter-wrap { margin: 0 0 14px; }
+
+    .filter-label {
+      display: block;
+      margin: 0 0 8px 2px;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding: 2px 2px 6px;
+      scrollbar-width: thin;
+    }
+
+    .filter-button {
+      flex: none;
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 253, 249, .76);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .78rem;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .filter-button.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
     .progress-track {
       flex: 1;
       height: 8px;
@@ -158,9 +206,9 @@
 
     .ingredient-grid {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(8, 1fr);
       grid-auto-flow: dense;
-      gap: 12px;
+      gap: 10px;
       align-items: stretch;
     }
 
@@ -169,8 +217,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 148px;
-      padding: 17px;
+      min-height: 128px;
+      padding: 14px;
       overflow: hidden;
       border: 1px solid var(--line);
       border-radius: 20px;
@@ -204,12 +252,22 @@
       transform: rotate(-22deg);
     }
 
-    .size-long-large { grid-column: span 4; min-height: 152px; }
-    .size-long-small { grid-column: span 3; min-height: 142px; }
-    .size-large { grid-column: span 3; min-height: 158px; }
-    .size-medium { grid-column: span 2; min-height: 166px; }
-    .size-small { grid-column: span 2; min-height: 138px; }
-    .size-none { grid-column: span 2; min-height: 138px; border-style: dashed; }
+    .size-long-large { grid-column: span 4; min-height: 136px; }
+    .size-long-small { grid-column: span 3; min-height: 128px; }
+    .size-large { grid-column: span 3; min-height: 136px; }
+    .size-medium { grid-column: span 2; min-height: 138px; }
+    .size-small { grid-column: span 2; min-height: 122px; }
+    .size-none { grid-column: span 2; min-height: 122px; border-style: dashed; }
+
+    .ingredient-card.category-meat { background: var(--meat-soft); border-color: #dfc5c1; }
+    .ingredient-card.category-cheese { background: var(--cheese-soft); border-color: #e2d2a7; }
+    .ingredient-card.category-vegetable { background: var(--vegetable-soft); border-color: #c4d9c6; }
+    .ingredient-card.category-sweet { background: var(--sweet-soft); border-color: #d9c3d7; }
+
+    .ingredient-card.category-meat .box-tag { background: rgba(155, 93, 88, .14); color: #77423e; }
+    .ingredient-card.category-cheese .box-tag { background: rgba(154, 113, 32, .14); color: #76530f; }
+    .ingredient-card.category-vegetable .box-tag { background: rgba(79, 118, 87, .14); color: #355c3d; }
+    .ingredient-card.category-sweet .box-tag { background: rgba(138, 95, 134, .14); color: #694665; }
 
     .box-tag {
       align-self: flex-start;
@@ -226,7 +284,7 @@
       z-index: 1;
       margin: 20px 0 0;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.35rem, 3vw, 1.85rem);
+      font-size: clamp(1.18rem, 2.4vw, 1.62rem);
       font-weight: 500;
       line-height: 1.05;
     }
@@ -266,6 +324,14 @@
       font-weight: 500;
     }
     .summary-intro { margin: 7px 0 22px; color: rgba(255,255,255,.66); }
+    .summary-filter-wrap { margin: 0 0 14px; }
+    .summary .filter-label { color: rgba(255,255,255,.58); }
+    .summary .filter-button {
+      border-color: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.76);
+    }
+    .summary .filter-button.active { border-color: white; background: white; color: var(--ink); }
     .prep-list, .checked-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
     .prep-item {
       display: flex;
@@ -275,6 +341,10 @@
       border-radius: 15px;
       background: rgba(255,255,255,.09);
     }
+    .prep-item.category-meat { box-shadow: inset 4px 0 0 var(--meat); }
+    .prep-item.category-cheese { box-shadow: inset 4px 0 0 #c69a3c; }
+    .prep-item.category-vegetable { box-shadow: inset 4px 0 0 #6a9a74; }
+    .prep-item.category-sweet { box-shadow: inset 4px 0 0 #a679a2; }
     .prep-item.done { opacity: .55; }
     .prep-check {
       display: flex;
@@ -497,7 +567,7 @@
       .size-long-large, .size-long-small, .size-large { grid-column: span 2; min-height: 128px; }
       .size-medium, .size-small, .size-none { grid-column: span 1; min-height: 145px; }
       .ingredient-card { padding: 14px; border-radius: 17px; }
-      .ingredient-name { font-size: 1.35rem; }
+      .ingredient-name { font-size: 1.22rem; }
       .box-tag { font-size: .66rem; }
       .modal { padding: 19px; }
     }
@@ -533,11 +603,20 @@
       <span id="progressText">0 von 36 geprüft</span>
     </div>
 
+    <div class="filter-wrap">
+      <span class="filter-label">Zutaten filtern</span>
+      <div class="filter-bar" id="checkFilters" role="group" aria-label="Noch zu prüfende Zutaten filtern"></div>
+    </div>
+
     <section class="ingredient-grid" id="ingredientGrid" aria-label="Noch zu prüfende Zutaten"></section>
 
     <section class="summary" id="summary" aria-live="polite">
       <h2>Alles geprüft.</h2>
       <p class="summary-intro" id="summaryIntro"></p>
+      <div class="filter-wrap summary-filter-wrap" id="todoFilterWrap">
+        <span class="filter-label">To-dos filtern</span>
+        <div class="filter-bar" id="todoFilters" role="group" aria-label="Vorbereitungsaufgaben filtern"></div>
+      </div>
       <ul class="prep-list" id="prepList"></ul>
       <div class="checked-wrap">
         <p class="checked-title">Geprüfte Bestände</p>
@@ -615,9 +694,9 @@
       {
         id: "schinken",
         name: "Schinken",
-        box: "Box mittel · 200-g-Pack",
+        box: "Box mittel · 500-g-Pack",
         size: "medium",
-        unit: "mittlere Box Schinken (1 × 200-g-Pack)",
+        unit: "mittlere Box Schinken (1 × 500-g-Pack)",
         thresholds: { wenig: 50, normal: 75, hustle: 95 },
         rules: {
           wenig: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
@@ -673,10 +752,10 @@
       {
         id: "maultaschen",
         name: "Maultaschen klassisch",
-        box: "Box mittel",
-        size: "medium",
-        unit: "mittlere Box Maultaschen klassisch",
-        pluralUnit: "mittlere Boxen Maultaschen klassisch",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Maultaschen klassisch",
+        pluralUnit: "große Boxen Maultaschen klassisch",
         rules: {
           wenig: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
           normal: "Bei 75 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
@@ -880,10 +959,10 @@
       {
         id: "champignons",
         name: "Champignons",
-        box: "Box mittel",
-        size: "medium",
-        unit: "mittlere Box Champignons",
-        pluralUnit: "mittlere Boxen Champignons",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Champignons",
+        pluralUnit: "große Boxen Champignons",
         rules: {
           wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt.",
           normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 Boxen ergänzt.",
@@ -897,10 +976,10 @@
       {
         id: "paprika",
         name: "Paprika",
-        box: "Box mittel",
-        size: "medium",
-        unit: "mittlere Box Paprika",
-        pluralUnit: "mittlere Boxen Paprika",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Paprika",
+        pluralUnit: "große Boxen Paprika",
         rules: {
           wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,75 Boxen ergänzt.",
           normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt.",
@@ -1196,13 +1275,41 @@
       }
     ];
 
+    const FILTERS = [
+      { id: "all", label: "Alle" },
+      { id: "meat", label: "Fleisch/Fisch" },
+      { id: "cheese", label: "Käse" },
+      { id: "vegetable", label: "Gemüse" },
+      { id: "sweet", label: "Süß" }
+    ];
+
+    const CATEGORY_IDS = {
+      meat: ["speck", "schinken", "sucuk", "thunfisch", "lachs", "maultaschen", "haehnchenkebab"],
+      cheese: ["kaese", "muensterkaese", "mozzarella", "feta", "raclettekaese", "camembert", "ziegenkaese"],
+      vegetable: ["maultaschen-vegetarisch", "zwiebeln", "rote-zwiebeln", "lauchzwiebeln", "champignons", "paprika", "zucchini", "tomaten", "spinat", "knoblauch", "chili", "peperoni", "oliven"],
+      sweet: ["ananas", "datteln", "apfel", "banane", "beerenmischung", "himbeeren", "biscoff-creme", "weisse-schokolade", "mango"]
+    };
+
+    const CATEGORY_BY_ID = Object.fromEntries(
+      Object.entries(CATEGORY_IDS).flatMap(([category, ids]) => ids.map(id => [id, category]))
+    );
+
     const STORAGE_KEY = "clauss-kuechenvorbereitung-test-v1";
-    const defaultState = () => ({ level: "normal", checks: {}, tasksDone: {} });
+    const defaultState = () => ({
+      level: "normal",
+      checks: {},
+      tasksDone: {},
+      checkFilter: "all",
+      todoFilter: "all"
+    });
     let state = loadState();
     let activeId = null;
     let draft = { fill: 100, reserve: 0, ready: true };
 
     const grid = document.querySelector("#ingredientGrid");
+    const checkFilters = document.querySelector("#checkFilters");
+    const todoFilters = document.querySelector("#todoFilters");
+    const todoFilterWrap = document.querySelector("#todoFilterWrap");
     const summary = document.querySelector("#summary");
     const progressBar = document.querySelector("#progressBar");
     const progressText = document.querySelector("#progressText");
@@ -1227,6 +1334,8 @@
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
         if (saved && ["wenig", "normal", "hustle"].includes(saved.level) && saved.checks) {
           saved.tasksDone = saved.tasksDone || {};
+          saved.checkFilter = FILTERS.some(filter => filter.id === saved.checkFilter) ? saved.checkFilter : "all";
+          saved.todoFilter = FILTERS.some(filter => filter.id === saved.todoFilter) ? saved.todoFilter : "all";
           return saved;
         }
       } catch (_) {}
@@ -1239,6 +1348,28 @@
 
     function ingredientById(id) {
       return INGREDIENTS.find(item => item.id === id);
+    }
+
+    function categoryFor(ingredientOrId) {
+      const id = typeof ingredientOrId === "string" ? ingredientOrId : ingredientOrId.id;
+      return CATEGORY_BY_ID[id];
+    }
+
+    function matchesFilter(category, filter) {
+      return filter === "all" || category === filter;
+    }
+
+    function renderFilterButtons(container, activeFilter, onSelect) {
+      container.innerHTML = "";
+      FILTERS.forEach(filter => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `filter-button${filter.id === activeFilter ? " active" : ""}`;
+        button.textContent = filter.label;
+        button.setAttribute("aria-pressed", String(filter.id === activeFilter));
+        button.addEventListener("click", () => onSelect(filter.id));
+        container.appendChild(button);
+      });
     }
 
     function neededFor(ingredient, values) {
@@ -1258,12 +1389,14 @@
       const quantity = neededFor(ingredient, values);
       if (quantity > 0) actions.push({
         key: `${ingredient.id}:box`,
-        text: quantityText(quantity, ingredient)
+        text: quantityText(quantity, ingredient),
+        category: categoryFor(ingredient)
       });
       if (ingredient.extraActions) {
         ingredient.extraActions(values).forEach(action => actions.push({
           key: `${ingredient.id}:${action.code}`,
-          text: action.text
+          text: action.text,
+          category: categoryFor(ingredient)
         }));
       }
       return actions;
@@ -1296,12 +1429,19 @@
       progressText.textContent = `${completed} von ${INGREDIENTS.length} geprüft`;
       progressBar.style.width = `${completed / INGREDIENTS.length * 100}%`;
 
+      renderFilterButtons(checkFilters, state.checkFilter, filter => {
+        state.checkFilter = filter;
+        saveState();
+        render();
+      });
+
       const remaining = INGREDIENTS.filter(item => !state.checks[item.id]);
+      const visibleIngredients = remaining.filter(item => matchesFilter(categoryFor(item), state.checkFilter));
       grid.innerHTML = "";
-      remaining.forEach(ingredient => {
+      visibleIngredients.forEach(ingredient => {
         const card = document.createElement("button");
         card.type = "button";
-        card.className = `ingredient-card size-${ingredient.size}`;
+        card.className = `ingredient-card size-${ingredient.size} category-${categoryFor(ingredient)}`;
         card.dataset.ingredient = ingredient.id;
         card.innerHTML = `
           <span class="box-tag">${ingredient.box}</span>
@@ -1311,6 +1451,13 @@
         card.addEventListener("click", () => openIngredient(ingredient.id));
         grid.appendChild(card);
       });
+
+      if (!visibleIngredients.length && remaining.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = "In dieser Kategorie sind keine Zutaten mehr offen.";
+        grid.appendChild(empty);
+      }
 
       const complete = completed === INGREDIENTS.length;
       summary.classList.toggle("visible", complete);
@@ -1322,6 +1469,14 @@
         preparationsFor(ingredient, state.checks[ingredient.id])
       );
       const doneCount = preparations.filter(item => state.tasksDone[item.key]).length;
+      const visiblePreparations = preparations.filter(item => matchesFilter(item.category, state.todoFilter));
+
+      todoFilterWrap.hidden = preparations.length === 0;
+      renderFilterButtons(todoFilters, state.todoFilter, filter => {
+        state.todoFilter = filter;
+        saveState();
+        renderSummary();
+      });
 
       document.querySelector("#summaryIntro").textContent = preparations.length
         ? `${levelSummary(state.level)} ist Folgendes vorzubereiten (${doneCount} von ${preparations.length} erledigt):`
@@ -1331,11 +1486,13 @@
       prepList.innerHTML = "";
       if (!preparations.length) {
         prepList.innerHTML = '<li class="all-good">✓ Aktuell muss nichts zusätzlich vorbereitet werden.</li>';
+      } else if (!visiblePreparations.length) {
+        prepList.innerHTML = '<li class="all-good">In dieser Kategorie gibt es aktuell keine Aufgaben.</li>';
       } else {
-        preparations.forEach((preparation, index) => {
+        visiblePreparations.forEach((preparation, index) => {
           const li = document.createElement("li");
           const done = Boolean(state.tasksDone[preparation.key]);
-          li.className = `prep-item${done ? " done" : ""}`;
+          li.className = `prep-item category-${preparation.category}${done ? " done" : ""}`;
           li.innerHTML = `
             <label class="prep-check">
               <input type="checkbox" data-task="${preparation.key}" ${done ? "checked" : ""}>
