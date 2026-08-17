@@ -345,6 +345,7 @@
     .prep-item.category-cheese { box-shadow: inset 4px 0 0 #c69a3c; }
     .prep-item.category-vegetable { box-shadow: inset 4px 0 0 #6a9a74; }
     .prep-item.category-sweet { box-shadow: inset 4px 0 0 #a679a2; }
+    .prep-item.category-toppings { box-shadow: inset 4px 0 0 #d39a59; }
     .prep-item.done { opacity: .55; }
     .prep-check {
       display: flex;
@@ -380,6 +381,7 @@
     }
     .checked-wrap { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.16); }
     .checked-title { margin: 0 0 10px; color: rgba(255,255,255,.64); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+    .toppings-wrap { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.16); }
     .checked-item {
       display: flex;
       align-items: center;
@@ -618,6 +620,10 @@
         <div class="filter-bar" id="todoFilters" role="group" aria-label="Vorbereitungsaufgaben filtern"></div>
       </div>
       <ul class="prep-list" id="prepList"></ul>
+      <div class="toppings-wrap">
+        <p class="checked-title">Toppings</p>
+        <ul class="prep-list" id="toppingsList"></ul>
+      </div>
       <div class="checked-wrap">
         <p class="checked-title">Geprüfte Bestände</p>
         <ul class="checked-list" id="checkedList"></ul>
@@ -906,13 +912,13 @@
         rules: {
           wenig: "Über 50 % werden 2 neue Boxen vorbereitet, bei 50 % oder weniger 3 Boxen.",
           normal: "Über 25 % werden 3 neue Boxen vorbereitet, bei 25 % oder weniger 4 Boxen.",
-          hustle: "Über 90 % werden 4 neue Boxen vorbereitet, sonst 3 Boxen."
+          hustle: "Über 90 % werden 3 neue Boxen vorbereitet, sonst 4 Boxen."
         },
         demand: ({ fill, reserve, level }) => {
           let target;
           if (level === "wenig") target = fill > 50 ? 2 : 3;
           if (level === "normal") target = fill > 25 ? 3 : 4;
-          if (level === "hustle") target = fill > 90 ? 4 : 3;
+          if (level === "hustle") target = fill > 90 ? 3 : 4;
           return Math.max(target - reserve, 0);
         }
       },
@@ -1294,6 +1300,13 @@
       Object.entries(CATEGORY_IDS).flatMap(([category, ids]) => ids.map(id => [id, category]))
     );
 
+    const TOPPINGS = [
+      "Sonnenblumenkerne", "Kürbiskerne", "Walnüsse", "Preiselbeeren", "Honig", "Pesto",
+      "Dressing", "getrocknete Tomaten", "Avocado", "Schnittlauch", "Petersilie", "Basilikum",
+      "Thymian", "Rucola", "Feldsalat", "Zimt & Zucker", "Nutella", "Lotus Kekse",
+      "Schokoraspeln", "Oreo Kekse", "Vanillesoße", "Vanilleeis", "Schokoeis", "Kokosraspeln"
+    ];
+
     const STORAGE_KEY = "clauss-kuechenvorbereitung-test-v1";
     const defaultState = () => ({
       level: "normal",
@@ -1508,6 +1521,27 @@
           prepList.appendChild(li);
         });
       }
+
+      const toppingsList = document.querySelector("#toppingsList");
+      toppingsList.innerHTML = "";
+      TOPPINGS.forEach(topping => {
+        const key = `topping:${topping}`;
+        const done = Boolean(state.tasksDone[key]);
+        const li = document.createElement("li");
+        li.className = `prep-item category-toppings${done ? " done" : ""}`;
+        li.innerHTML = `
+          <label class="prep-check">
+            <input type="checkbox" data-task="${key}" ${done ? "checked" : ""}>
+            <strong class="prep-text">${topping}</strong>
+          </label>
+        `;
+        li.querySelector("input").addEventListener("change", event => {
+          state.tasksDone[key] = event.target.checked;
+          saveState();
+          renderSummary();
+        });
+        toppingsList.appendChild(li);
+      });
 
       const checkedList = document.querySelector("#checkedList");
       checkedList.innerHTML = "";
