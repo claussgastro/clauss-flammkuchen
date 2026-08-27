@@ -3,848 +3,2139 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tagesabrechnung</title>
+  <meta name="theme-color" content="#171513">
+  <title>Clauß Arbeitsabläufe – Testversion</title>
   <style>
-    :root{
-      --bg:#f8f2ed;
-      --card:#fffaf6;
-      --text:#1f1f1f;
-      --muted:#6d625c;
-      --line:#dfd0c8;
-      --accent:#b76f7b;
-      --accent2:#8f4f5d;
-      --soft:#f0e2dc;
-      --red:#b83333;
-      --green:#2d7a45;
-      --radius:18px;
-      --shadow:0 12px 34px rgba(60,40,30,.08);
+    :root {
+      --ink: #171513;
+      --muted: #6f6964;
+      --paper: #f6f1eb;
+      --card: #fffdf9;
+      --rose: #c97d82;
+      --rose-dark: #8f4c53;
+      --rose-soft: #eed9da;
+      --green: #39745a;
+      --green-soft: #dceadf;
+      --amber: #9d6822;
+      --amber-soft: #f1e3c9;
+      --line: #ddd4cb;
+      --shadow: 0 14px 38px rgba(48, 39, 32, .10);
+      --meat: #9b5d58;
+      --meat-soft: #f4e4e1;
+      --cheese: #9a7120;
+      --cheese-soft: #f5ecd3;
+      --vegetable: #4f7657;
+      --vegetable-soft: #e1eee2;
+      --sweet: #8a5f86;
+      --sweet-soft: #efe3ef;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:var(--bg);
-      color:var(--text);
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(201, 125, 130, .17), transparent 28rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    .page{
-      width:min(1000px,calc(100% - 26px));
-      margin:auto;
-      padding:24px 0 44px;
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .screen[hidden] { display: none !important; }
+    .menu-intro { max-width: 620px; margin: 10px 0 28px; color: var(--muted); line-height: 1.55; }
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .menu-card {
+      min-height: 170px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 6px 22px rgba(48, 39, 32, .06);
+      cursor: pointer;
+      text-align: left;
+      transition: transform .16s ease, box-shadow .16s ease;
     }
-    h1,h2,h3,p{margin-top:0}
-    h1{font-size:clamp(1.6rem,4vw,2.45rem);letter-spacing:-.045em;margin-bottom:6px}
-    h2{font-size:clamp(1.35rem,3vw,2rem);letter-spacing:-.04em;margin-bottom:8px}
-    h3{font-size:1rem;margin-bottom:8px}
-    .muted{color:var(--muted)}
-    .top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:14px;
+    .menu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .menu-card strong { display: block; font-family: Georgia, "Times New Roman", serif; font-size: 1.55rem; font-weight: 500; }
+    .menu-card span { display: block; margin-top: 10px; color: var(--muted); line-height: 1.4; }
+    .menu-card.ready { border-color: #c7d9ca; background: var(--vegetable-soft); }
+    .back-button { align-self: flex-start; border: 0; background: transparent; color: var(--rose-dark); cursor: pointer; font-weight: 800; }
+    .standalone-panel { padding: clamp(20px, 5vw, 34px); border-radius: 24px; background: var(--ink); color: white; box-shadow: var(--shadow); }
+    .standalone-panel h2 { margin: 0 0 6px; font-family: Georgia, "Times New Roman", serif; font-size: 2rem; font-weight: 500; }
+    .standalone-intro { margin: 0 0 20px; color: rgba(255,255,255,.65); }
+    #celebrationCanvas {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
-    .steps{
-      display:flex;
-      gap:6px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
+
+    .app {
+      width: min(100% - 28px, 980px);
+      margin: 0 auto;
+      padding: 28px 0 72px;
     }
-    .dot{
-      min-width:30px;
-      height:30px;
-      border-radius:999px;
-      display:grid;
-      place-items:center;
-      border:1px solid var(--line);
-      background:white;
-      color:var(--muted);
-      font-weight:800;
-      font-size:.82rem;
+
+    .topline {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
     }
-    .dot.active{background:var(--accent);color:white;border-color:var(--accent)}
-    .dot.done{background:var(--soft);color:var(--text)}
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px;
-      margin-bottom:14px;
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--rose-dark);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
     }
-    .step{display:none}
-    .step.active{display:block}
-    .intro{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:15px;
-      border-bottom:1px solid var(--line);
-      padding-bottom:14px;
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 7vw, 3.6rem);
+      font-weight: 500;
+      line-height: .98;
+      letter-spacing: -.035em;
     }
-    .step-number{
-      color:var(--accent2);
-      font-weight:900;
-      white-space:nowrap;
-      letter-spacing:.02em;
+
+    .reset-button, .text-button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
-    .money-grid{
-      display:grid;
-      grid-template-columns:repeat(5,minmax(0,1fr));
-      gap:10px;
-      margin-top:14px;
+
+    .reset-button {
+      flex: none;
+      padding: 8px 0;
+      font-size: .88rem;
     }
-    .money{
-      background:white;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      text-align:center;
-      min-height:88px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
+
+    .panel {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 253, 249, .78);
+      box-shadow: 0 8px 30px rgba(48, 39, 32, .05);
+      backdrop-filter: blur(10px);
     }
-    .money strong{font-size:1rem;color:var(--muted)}
-    .money span{color:var(--text);font-size:1.45rem;font-weight:900}
-    .input-row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      align-items:end;
-      margin-top:14px;
+
+    .level-panel { margin-bottom: 18px; }
+
+    .panel-label {
+      display: block;
+      margin: 0 0 12px;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
     }
-    label{
-      display:block;
-      font-weight:750;
-      margin-bottom:6px;
-      font-size:.92rem;
-      line-height:1.2;
+
+    .levels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
     }
-    input{
-      width:100%;
-      min-height:46px;
-      border:1px solid var(--line);
-      border-radius:13px;
-      padding:10px 12px;
-      font:inherit;
-      background:white;
-      color:var(--text);
+
+    .level-button {
+      min-height: 58px;
+      padding: 10px 8px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+      cursor: pointer;
+      transition: .18s ease;
     }
-    input:focus{
-      outline:3px solid rgba(183,111,123,.18);
-      border-color:var(--accent);
+
+    .level-button strong, .level-button small { display: block; }
+    .level-button strong { font-size: .98rem; }
+    .level-button small { margin-top: 2px; color: var(--muted); font-size: .72rem; }
+    .level-button.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+      transform: translateY(-1px);
     }
-    .big-input input{
-      min-height:58px;
-      font-size:1.5rem;
-      font-weight:850;
+    .level-button.active small { color: rgba(255,255,255,.68); }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 2px 14px;
+      color: var(--muted);
+      font-size: .9rem;
     }
-    .hint{color:var(--muted);font-size:.84rem;margin-top:6px}
-    .actions{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:18px;
-      flex-wrap:wrap;
+
+    .filter-wrap { margin: 0 0 14px; }
+
+    .filter-label {
+      display: block;
+      margin: 0 0 8px 2px;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
     }
-    .right-actions{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
-    button{
-      border:0;
-      border-radius:999px;
-      padding:12px 17px;
-      font:inherit;
-      font-weight:800;
-      cursor:pointer;
-      color:white;
-      background:var(--accent);
+
+    .filter-bar {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding: 2px 2px 6px;
+      scrollbar-width: thin;
     }
-    button:hover{background:var(--accent2)}
-    button.secondary{
-      background:white;
-      color:var(--text);
-      border:1px solid var(--line);
+
+    .filter-button {
+      flex: none;
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 253, 249, .76);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .78rem;
+      font-weight: 760;
+      white-space: nowrap;
     }
-    button.secondary:hover{background:var(--soft)}
-    button.ghost{
-      background:transparent;
-      color:var(--muted);
-      border:1px solid var(--line);
+
+    .filter-button.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
     }
-    button.danger{
-      color:var(--text);
-      background:transparent;
-      border:1px solid var(--line);
-      padding:9px 12px;
+
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e5ddd4;
     }
-    .checklist{
-      display:grid;
-      gap:10px;
-      margin-top:14px;
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--rose);
+      transition: width .25s ease;
     }
-    .check{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      background:white;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
+
+    .ingredient-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-auto-flow: dense;
+      gap: 10px;
+      align-items: stretch;
     }
-    .check b{
-      display:grid;
-      place-items:center;
-      flex:0 0 28px;
-      width:28px;
-      height:28px;
-      border-radius:999px;
-      background:var(--soft);
+
+    .ingredient-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 128px;
+      padding: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: 0 6px 22px rgba(48, 39, 32, .06);
+      cursor: pointer;
+      text-align: left;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
     }
-    .summary-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-      margin-bottom:14px;
+
+    .ingredient-card:hover {
+      transform: translateY(-3px);
+      border-color: #bdb1a7;
+      box-shadow: var(--shadow);
     }
-    .summary-grid.four{
-      grid-template-columns:repeat(4,minmax(0,1fr));
+
+    .ingredient-card:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid rgba(201, 125, 130, .55);
+      outline-offset: 3px;
     }
-    .sum{
-      background:white;
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-      min-width:0;
+
+    .ingredient-card::after {
+      content: "";
+      position: absolute;
+      right: -36px;
+      bottom: -47px;
+      width: 120px;
+      height: 90px;
+      border: 1px solid rgba(201, 125, 130, .27);
+      border-radius: 50%;
+      transform: rotate(-22deg);
     }
-    .sum strong{
-      display:block;
-      font-size:1.5rem;
-      margin-top:4px;
-      white-space:nowrap;
+
+    .size-long-large { grid-column: span 4; min-height: 136px; }
+    .size-long-small { grid-column: span 3; min-height: 128px; }
+    .size-large { grid-column: span 3; min-height: 136px; }
+    .size-medium { grid-column: span 2; min-height: 138px; }
+    .size-small { grid-column: span 2; min-height: 122px; }
+    .size-none { grid-column: span 2; min-height: 122px; border-style: dashed; }
+
+    .ingredient-card.category-meat { background: var(--meat-soft); border-color: #dfc5c1; }
+    .ingredient-card.category-cheese { background: var(--cheese-soft); border-color: #e2d2a7; }
+    .ingredient-card.category-vegetable { background: var(--vegetable-soft); border-color: #c4d9c6; }
+    .ingredient-card.category-sweet { background: var(--sweet-soft); border-color: #d9c3d7; }
+    .ingredient-card.category-cream { background: #f3e9dd; border-color: #dfccb7; }
+
+    .ingredient-card.category-meat .box-tag { background: rgba(155, 93, 88, .14); color: #77423e; }
+    .ingredient-card.category-cheese .box-tag { background: rgba(154, 113, 32, .14); color: #76530f; }
+    .ingredient-card.category-vegetable .box-tag { background: rgba(79, 118, 87, .14); color: #355c3d; }
+    .ingredient-card.category-sweet .box-tag { background: rgba(138, 95, 134, .14); color: #694665; }
+    .ingredient-card.category-cream .box-tag { background: rgba(157, 104, 34, .12); color: #79531f; }
+
+    .box-tag {
+      align-self: flex-start;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--rose-soft);
+      color: var(--rose-dark);
+      font-size: .72rem;
+      font-weight: 750;
     }
-    .sum.highlight{
-      background:rgba(183,111,123,.08);
-      border-color:rgba(183,111,123,.5);
+
+    .ingredient-name {
+      position: relative;
+      z-index: 1;
+      margin: 20px 0 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.18rem, 2.4vw, 1.62rem);
+      font-weight: 500;
+      line-height: 1.05;
     }
-    .sum.kitchen{
-      background:#fff7e8;
-      border-color:#ead1a2;
+
+    .card-action {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: .82rem;
     }
-    .red{
-      color:var(--red);
-      font-weight:900;
+
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 36px 18px;
+      border: 1px dashed var(--line);
+      border-radius: 20px;
+      color: var(--muted);
+      text-align: center;
     }
-    .green{
-      color:var(--green);
-      font-weight:900;
+
+    .summary {
+      display: none;
+      margin-top: 18px;
+      padding: clamp(20px, 5vw, 34px);
+      border-radius: 24px;
+      background: var(--ink);
+      color: white;
+      box-shadow: var(--shadow);
     }
-    .correction-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-top:14px;
+
+    .summary.visible { display: block; animation: rise .3s ease both; }
+    .summary h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.8rem, 5vw, 2.7rem);
+      font-weight: 500;
     }
-    .correction{
-      background:white;
-      border:2px solid rgba(184,51,51,.35);
-      border-radius:16px;
-      padding:14px;
+    .summary-intro { margin: 7px 0 22px; color: rgba(255,255,255,.66); }
+    .summary-filter-wrap { margin: 0 0 14px; }
+    .summary .filter-label { color: rgba(255,255,255,.58); }
+    .summary .filter-button {
+      border-color: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.76);
     }
-    .correction strong{
-      display:block;
-      font-size:1.8rem;
-      margin-top:4px;
+    .summary .filter-button.active { border-color: white; background: white; color: var(--ink); }
+    .prep-list, .checked-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+    .prep-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 15px;
+      background: rgba(255,255,255,.09);
     }
-    .cash-adjust{
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      gap:12px;
-      align-items:end;
-      margin-top:14px;
-      background:white;
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
+    .prep-item.category-meat { box-shadow: inset 4px 0 0 var(--meat); }
+    .prep-item.category-cheese { box-shadow: inset 4px 0 0 #c69a3c; }
+    .prep-item.category-vegetable { box-shadow: inset 4px 0 0 #6a9a74; }
+    .prep-item.category-sweet { box-shadow: inset 4px 0 0 #a679a2; }
+    .prep-item.category-cream { box-shadow: inset 4px 0 0 #c38a48; }
+    .prep-item.category-toppings { box-shadow: inset 4px 0 0 #d39a59; }
+    .prep-item.done { opacity: .55; }
+    .prep-check {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      gap: 13px;
+      cursor: pointer;
     }
-    .arrow{
-      font-size:1.8rem;
-      font-weight:900;
-      color:var(--accent2);
-      padding-bottom:8px;
+    .prep-check input {
+      width: 24px;
+      height: 24px;
+      flex: none;
+      margin: 0;
+      accent-color: var(--rose);
+      cursor: pointer;
     }
-    .edit-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
+    .prep-item.done .prep-text { text-decoration: line-through; }
+    .prep-number {
+      display: grid;
+      flex: none;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--rose);
+      font-weight: 850;
     }
-    .section-title{
-      margin:28px 0 14px;
-      padding-top:14px;
-      border-top:1px solid var(--line);
+    .all-good {
+      padding: 17px;
+      border-radius: 15px;
+      background: rgba(84, 153, 113, .22);
+      color: #d9f4e2;
     }
-    table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{border-bottom:1px solid var(--line);padding:9px 7px;text-align:left;vertical-align:top}
-    th{color:var(--muted);font-size:.8rem}
-    td input{min-height:40px}
-    .computed-hours,.payout{font-weight:850;white-space:nowrap;padding-top:8px}
-    .pause-note{color:var(--muted);font-size:.76rem;margin-top:2px;max-width:160px}
-    .calculated-box{
-      min-height:46px;
-      border:1px solid var(--line);
-      border-radius:13px;
-      padding:10px 12px;
-      background:rgba(255,255,255,.65);
-      display:flex;
-      align-items:center;
-      font-weight:900;
-      font-size:1.15rem;
+    .checked-wrap { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.16); }
+    .checked-title { margin: 0 0 10px; color: rgba(255,255,255,.64); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+    .toppings-wrap { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.16); }
+    .checked-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.1);
     }
-    .notice{
-      background:white;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      margin-top:12px;
+    .checked-item:last-child { border-bottom: 0; }
+    .checked-meta { color: rgba(255,255,255,.6); font-size: .82rem; }
+    .edit-button {
+      border: 0;
+      background: transparent;
+      color: #efb7bb;
+      cursor: pointer;
+      font-size: .84rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
-    .notice strong{font-size:1.12rem}
-    .small{font-size:.85rem}
-    .callout{
-      background:white;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      margin-top:12px;
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 20;
+      inset: 0;
+      display: none;
+      align-items: end;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(23, 21, 19, .58);
+      backdrop-filter: blur(5px);
     }
-    @media(max-width:800px){
-      .top{display:block}
-      .steps{justify-content:flex-start;margin-top:12px}
-      .intro{display:block}
-      .step-number{display:block;margin-bottom:6px}
-      .money-grid,.input-row,.summary-grid,.summary-grid.four,.edit-grid,.correction-grid,.cash-adjust{grid-template-columns:1fr}
-      .arrow{padding-bottom:0;text-align:center}
-      table,thead,tbody,tr,th,td{display:block}
-      thead{display:none}
-      tr{background:white;border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:10px}
-      td{border:0;padding:6px 0}
-      td::before{
-        content:attr(data-label);
-        display:block;
-        color:var(--muted);
-        font-size:.76rem;
-        font-weight:800;
-        margin-bottom:3px;
-      }
-      .computed-hours,.payout{padding-top:0}
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: min(100%, 580px);
+      max-height: min(90vh, 760px);
+      overflow: auto;
+      padding: 23px;
+      border-radius: 25px 25px 18px 18px;
+      background: var(--card);
+      box-shadow: 0 28px 90px rgba(0,0,0,.3);
+      animation: rise .22s ease both;
     }
-    @media print{
-      body{background:white}
-      .page{width:100%;padding:0}
-      .top,.actions,button{display:none!important}
-      .step{display:block!important}
-      .card{box-shadow:none;break-inside:avoid}
+
+    @keyframes rise { from { opacity: 0; transform: translateY(15px); } }
+
+    .modal-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 15px;
+    }
+    .modal h2 {
+      margin: 4px 0 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.15rem;
+      font-weight: 500;
+      line-height: 1;
+    }
+    .modal-box-label { margin: 8px 0 0; color: var(--muted); font-size: .86rem; }
+    .close-button {
+      display: grid;
+      flex: none;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .rule-note {
+      margin: 20px 0;
+      padding: 13px 15px;
+      border-radius: 14px;
+      background: #f0ebe5;
+      color: #504b47;
+      font-size: .9rem;
+      line-height: 1.45;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 13px;
+      font-weight: 760;
+    }
+    .field-label output { color: var(--rose-dark); font-size: 1.25rem; }
+    .slider { width: 100%; accent-color: var(--rose-dark); cursor: pointer; }
+    .slider-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .reserve-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 25px;
+      padding-top: 19px;
+      border-top: 1px solid var(--line);
+    }
+    .reserve-row strong, .reserve-row small { display: block; }
+    .reserve-row small { margin-top: 3px; color: var(--muted); }
+    .stepper { display: flex; align-items: center; gap: 10px; }
+    .step-button {
+      display: grid;
+      width: 39px;
+      height: 39px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      font-size: 1.25rem;
+    }
+    .step-value { min-width: 24px; text-align: center; font-size: 1.1rem; font-weight: 800; }
+
+    .binary-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stock-check {
+      margin-top: 22px;
+      padding-top: 19px;
+      border-top: 1px solid var(--line);
+    }
+    .stock-check .field-label { margin-bottom: 10px; }
+    .choice-button {
+      min-height: 62px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: white;
+      cursor: pointer;
+      font-weight: 750;
+    }
+    .choice-button.selected {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
+    .live-result {
+      margin: 22px 0 14px;
+      padding: 14px 15px;
+      border-radius: 14px;
+      background: var(--green-soft);
+      color: #21543d;
+      line-height: 1.35;
+    }
+    .live-result.needs-prep { background: var(--amber-soft); color: #75480d; }
+    .live-result strong { display: block; margin-bottom: 2px; }
+
+    .confirm-button {
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      border-radius: 15px;
+      background: var(--rose-dark);
+      color: white;
+      cursor: pointer;
+      font-weight: 820;
+      box-shadow: 0 7px 18px rgba(143, 76, 83, .2);
+    }
+
+    @media (min-width: 700px) {
+      .modal-backdrop { align-items: center; }
+      .modal { border-radius: 25px; }
+    }
+
+    @media (max-width: 620px) {
+      .app { width: min(100% - 20px, 980px); padding-top: 20px; }
+      .menu-grid { grid-template-columns: 1fr; }
+      .menu-card { min-height: 135px; }
+      .topline { align-items: center; }
+      .reset-button { max-width: 84px; }
+      .panel { padding: 13px; border-radius: 18px; }
+      .level-button { min-height: 61px; }
+      .level-button small { font-size: .66rem; }
+      .ingredient-grid { grid-template-columns: repeat(2, 1fr); gap: 9px; }
+      .size-long-large, .size-long-small, .size-large { grid-column: span 2; min-height: 128px; }
+      .size-medium, .size-small, .size-none { grid-column: span 1; min-height: 145px; }
+      .ingredient-card { padding: 14px; border-radius: 17px; }
+      .ingredient-name { font-size: 1.22rem; }
+      .box-tag { font-size: .66rem; }
+      .modal { padding: 19px; }
     }
   </style>
 </head>
 <body>
-  <main class="page">
-    <div class="top">
-      <div>
-        <h1>Tagesabrechnung</h1>
-        <p class="muted">Odoo-Kasse, Karte und Trinkgeld Schritt für Schritt.</p>
+  <main class="app">
+    <section class="screen" id="homeScreen">
+      <div class="topline">
+        <div>
+          <p class="eyebrow">Clauß · Flammkuchen</p>
+          <h1>Was möchtest<br>du machen?</h1>
+        </div>
       </div>
-      <div class="steps" id="stepDots"></div>
+      <p class="menu-intro">Wähle einen Arbeitsbereich. Deine Eingaben in den einzelnen Checklisten bleiben gespeichert, bis du sie zurücksetzt.</p>
+      <div class="menu-grid">
+        <button class="menu-card ready" type="button" data-open-screen="ingredientsScreen">
+          <strong>Küchenvorbereitung Zutaten</strong>
+          <span>Bestände erfassen und Vorbereitung berechnen</span>
+        </button>
+        <button class="menu-card ready" type="button" data-open-screen="toppingsScreen">
+          <strong>Küchenvorbereitung Toppings</strong>
+          <span>Toppings vollständig kontrollieren</span>
+        </button>
+        <button class="menu-card ready" type="button" data-open-screen="kitchenRoutineScreen">
+          <strong>Abendroutine Küche</strong>
+          <span>Tägliche Reinigung, Müll und Inventuren</span>
+        </button>
+        <button class="menu-card ready" type="button" data-open-screen="barRoutineScreen">
+          <strong>Abendroutine Bar</strong>
+          <span>Bar reinigen, auffüllen und abschließen</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="screen" id="ingredientsScreen" hidden>
+    <div class="topline">
+      <div>
+        <p class="eyebrow">Clauß · Flammkuchen</p>
+        <h1>Küchen&shy;vorbereitung</h1>
+      </div>
+      <div>
+        <button class="back-button" type="button" data-open-screen="homeScreen">← Menü</button>
+        <button class="reset-button" id="resetButton" type="button">Neu beginnen</button>
+      </div>
     </div>
 
-    <section class="card step active" data-title="Wechselgeld">
-      <div class="intro">
-        <div>
-          <span class="step-number">Schritt 1</span>
-          <h2>Bargeld sammeln</h2>
-          <p class="muted">Alles Bargeld aus allen Geldbeuteln zusammenwerfen. Danach kommt in jeden Geldbeutel wieder diese Stückelung:</p>
-        </div>
-      </div>
-
-      <div class="money-grid">
-        <div class="money"><strong>10×</strong><span>2 €</span></div>
-        <div class="money"><strong>10×</strong><span>1 €</span></div>
-        <div class="money"><strong>4×</strong><span>5 €</span></div>
-        <div class="money"><strong>5×</strong><span>10 €</span></div>
-        <div class="money"><strong>5×</strong><span>20 €</span></div>
-      </div>
-
-      <div class="callout">
-        <strong>Ergebnis pro Geldbeutel: 200 € Wechselgeld</strong>
-      </div>
-
-      <div class="actions">
-        <span></span>
-        <div class="right-actions"><button type="button" data-next>Weiter</button></div>
+    <section class="panel level-panel" aria-labelledby="levelLabel">
+      <span class="panel-label" id="levelLabel">Wie wird der Abend?</span>
+      <div class="levels" role="group" aria-label="Erwartete Gästezahl">
+        <button class="level-button" type="button" data-level="wenig">
+          <strong>Wenig</strong><small>ruhiger Abend</small>
+        </button>
+        <button class="level-button" type="button" data-level="normal">
+          <strong>Normal</strong><small>normaler Betrieb</small>
+        </button>
+        <button class="level-button" type="button" data-level="hustle">
+          <strong>Hustle</strong><small>volles Haus</small>
+        </button>
       </div>
     </section>
 
-    <section class="card step" data-title="Bargeld">
-      <div class="intro">
-        <div>
-          <span class="step-number">Schritt 2</span>
-          <h2>Bargeld zählen</h2>
-          <p class="muted">Jetzt das übrige Bargeld zählen und eintragen.</p>
-        </div>
-      </div>
+    <div class="progress-row" aria-live="polite">
+      <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+      <span id="progressText">0 von 36 geprüft</span>
+    </div>
 
-      <div class="big-input">
-        <label for="cashCountedStep">Bargeld gezählt</label>
-        <input id="cashCountedStep" type="text" inputmode="decimal" placeholder="z. B. 548">
-      </div>
+    <div class="filter-wrap">
+      <span class="filter-label">Zutaten filtern</span>
+      <div class="filter-bar" id="checkFilters" role="group" aria-label="Noch zu prüfende Zutaten filtern"></div>
+    </div>
 
-      <div class="actions">
-        <button class="secondary" type="button" data-prev>Zurück</button>
-        <div class="right-actions"><button type="button" data-next>Weiter</button></div>
-      </div>
-    </section>
+    <section class="ingredient-grid" id="ingredientGrid" aria-label="Noch zu prüfende Zutaten"></section>
 
-    <section class="card step" data-title="Karte">
-      <div class="intro">
-        <div>
-          <span class="step-number">Schritt 3</span>
-          <h2>Kartenumsatz eintragen</h2>
-          <p class="muted">Im Kartengerät unter <b>Mehr</b> und dann <b>Statistiken</b> den Tagesumsatz suchen und eintragen.</p>
-        </div>
+    <section class="summary" id="summary" aria-live="polite">
+      <h2>Alles geprüft.</h2>
+      <p class="summary-intro" id="summaryIntro"></p>
+      <div class="filter-wrap summary-filter-wrap" id="todoFilterWrap">
+        <span class="filter-label">To-dos filtern</span>
+        <div class="filter-bar" id="todoFilters" role="group" aria-label="Vorbereitungsaufgaben filtern"></div>
       </div>
-
-      <div class="big-input">
-        <label for="cardCountedStep">Karte gezählt / echter Kartenumsatz</label>
-        <input id="cardCountedStep" type="text" inputmode="decimal" placeholder="z. B. 1275">
-        <div class="hint">Mittwochs muss der Kartenumsatz vom Mittagstisch vorher vom Tagesumsatz abgezogen werden.</div>
-      </div>
-
-      <div class="actions">
-        <button class="secondary" type="button" data-prev>Zurück</button>
-        <div class="right-actions"><button type="button" data-next>Weiter</button></div>
+      <ul class="prep-list" id="prepList"></ul>
+      <div class="checked-wrap">
+        <p class="checked-title">Geprüfte Bestände</p>
+        <ul class="checked-list" id="checkedList"></ul>
       </div>
     </section>
-
-    <section class="card step" data-title="Kasse">
-      <div class="intro">
-        <div>
-          <span class="step-number">Schritt 4</span>
-          <h2>Zahlen aus der Odoo-Kasse holen</h2>
-          <p class="muted">Erst alle Aufträge beenden. Dann in der Odoo-Kasse auf "Kasse schließen" gehen und die zwei Werte für Bargeld und Karte übernehmen.</p>
-        </div>
-      </div>
-
-      <div class="checklist">
-        <div class="check"><b>1</b><div>Alle offenen Aufträge beenden.</div></div>
-        <div class="check"><b>2</b><div>Auf "Kasse schließen" gehen.</div></div>
-        <div class="check"><b>3</b><div>Die Werte unten aus der Übersicht eintragen.</div></div>
-      </div>
-
-      <div class="input-row">
-        <div>
-          <label for="cashSollStep">Ein-/Auszahlungen Bargeld</label>
-          <input id="cashSollStep" type="text" inputmode="decimal" placeholder="z. B. 500">
-          <div class="hint">Das ist der Bargeld-Soll-Wert aus der Odoo-Kasse.</div>
-        </div>
-        <div>
-          <label for="cardSollStep">Karte Anzahl</label>
-          <input id="cardSollStep" type="text" inputmode="decimal" placeholder="z. B. 1200">
-          <div class="hint">Das ist der Karten-Soll-Wert aus der Odoo-Kasse.</div>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="secondary" type="button" data-prev>Zurück</button>
-        <div class="right-actions"><button type="button" data-next>Weiter</button></div>
-      </div>
     </section>
 
-    <section class="card step" data-title="Abschluss">
-      <div class="intro">
+    <section class="screen" id="toppingsScreen" hidden>
+      <div class="topline">
         <div>
-          <span class="step-number">Schritt 5</span>
-          <h2>Odoo-Kasse schließen</h2>
-          <p class="muted">In der Odoo-Kasse den Kartenbetrag durch den echten Kartenbetrag ersetzen. Die Gegenbuchung kommt beim Bargeld rein.</p>
+          <p class="eyebrow">Küchenvorbereitung</p>
+          <h1>Toppings</h1>
         </div>
-      </div>
-
-      <div class="summary-grid">
-        <div class="sum">
-          Karte Anzahl
-          <strong id="closeCardSoll">0 €</strong>
-        </div>
-        <div class="sum">
-          Echter Kartenumsatz
-          <strong id="closeCardCounted">0 €</strong>
-        </div>
-        <div class="sum highlight">
-          Karten-Differenz
-          <strong id="closeCardDiff">0 €</strong>
-        </div>
-      </div>
-
-      <div class="correction-grid">
-        <div class="correction">
-          Kartenbetrag in der Odoo-Kasse
-          <strong id="cardCorrection" class="red">0,00 €</strong>
-        </div>
-        <div class="correction">
-          Barbetrag in der Odoo-Kasse
-          <strong id="cashCorrection" class="red">0,00 €</strong>
-        </div>
-      </div>
-
-      <div class="cash-adjust">
         <div>
-          <label for="currentCashStock">Aktueller Bargeldbestand in der Odoo-Kasse</label>
-          <input id="currentCashStock" type="text" inputmode="decimal" placeholder="z. B. 548,70">
-        </div>
-        <div class="arrow">→</div>
-        <div>
-          <label>Angepasster Bargeldbestand</label>
-          <div id="adjustedCashStock" class="calculated-box">0,00 €</div>
+          <button class="back-button" type="button" data-open-screen="homeScreen">← Menü</button>
+          <button class="reset-button" id="resetToppings" type="button">Neu beginnen</button>
         </div>
       </div>
-
-      <div class="notice">
-        <strong id="closeInstruction">Noch keine Kartenzahlen eingetragen.</strong>
-        <div class="hint">Die beiden roten Beträge müssen gleich hoch sein, aber mit unterschiedlichem Vorzeichen. Danach kann die Odoo-Kasse geschlossen werden.</div>
-      </div>
-
-      <div class="actions">
-        <button class="secondary" type="button" data-prev>Zurück</button>
-        <div class="right-actions"><button type="button" data-next>Zur Trinkgeldübersicht</button></div>
-      </div>
+      <section class="standalone-panel">
+        <h2>Checkliste</h2>
+        <p class="standalone-intro" id="toppingsProgress"></p>
+        <ul class="prep-list" id="toppingsList"></ul>
+      </section>
     </section>
 
-    <section class="card step" data-title="Trinkgeld">
-      <div class="intro">
+    <section class="screen" id="kitchenRoutineScreen" hidden>
+      <div class="topline">
+        <div><p class="eyebrow">Abendroutine</p><h1>Küche</h1></div>
         <div>
-          <span class="step-number">Schritt 6</span>
-          <h2>Trinkgeld verteilen</h2>
-          <p class="muted">Die Werte sind vorausgefüllt und können hier noch geändert werden. 15 % vom Trinkgeld gehen an die Küche, der Rest wird nach Arbeitszeit auf Service/Bar verteilt.</p>
+          <button class="back-button" type="button" data-open-screen="homeScreen">← Menü</button>
+          <button class="reset-button" id="resetKitchenRoutine" type="button">Neu beginnen</button>
         </div>
       </div>
+      <section class="standalone-panel">
+        <h2>Checkliste</h2>
+        <p class="standalone-intro" id="kitchenRoutineProgress"></p>
+        <ul class="prep-list" id="kitchenRoutineList"></ul>
+      </section>
+    </section>
 
-      <div class="summary-grid">
-        <div class="sum highlight">
-          Trinkgeld gesamt
-          <strong id="totalTip">0 €</strong>
-        </div>
-        <div class="sum kitchen">
-          Küche 15 %
-          <strong id="kitchenShare">0 €</strong>
-        </div>
-        <div class="sum">
-          Service/Bar
-          <strong id="staffShare">0 €</strong>
-        </div>
-
-      </div>
-
-      <h3 class="section-title">Bargeld</h3>
-      <div class="edit-grid">
+    <section class="screen" id="barRoutineScreen" hidden>
+      <div class="topline">
+        <div><p class="eyebrow">Abendroutine</p><h1>Bar</h1></div>
         <div>
-          <label for="cashSollFinal">Ein-/Auszahlungen Bargeld</label>
-          <input id="cashSollFinal" type="text" inputmode="decimal">
-        </div>
-        <div>
-          <label for="cashCountedFinal">Bargeld gezählt</label>
-          <input id="cashCountedFinal" type="text" inputmode="decimal">
-        </div>
-        <div>
-          <label>Bargeld-Trinkgeld</label>
-          <div id="cashTipDisplay" class="calculated-box">0 €</div>
+          <button class="back-button" type="button" data-open-screen="homeScreen">← Menü</button>
+          <button class="reset-button" id="resetBarRoutine" type="button">Neu beginnen</button>
         </div>
       </div>
-
-      <h3 class="section-title">Karte</h3>
-      <div class="edit-grid">
-        <div>
-          <label for="cardSollFinal">Karte Anzahl</label>
-          <input id="cardSollFinal" type="text" inputmode="decimal">
-        </div>
-        <div>
-          <label for="cardCountedFinal">Karte gezählt</label>
-          <input id="cardCountedFinal" type="text" inputmode="decimal">
-        </div>
-        <div>
-          <label>Karten-Trinkgeld</label>
-          <div id="cardTipDisplay" class="calculated-box">0 €</div>
-        </div>
-      </div>
-
-      <h3 class="section-title">Service/Bar</h3>
-      <div class="actions" style="margin-top:0">
-        <button id="addEmployee" type="button">+ Mitarbeiter</button>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Beginn</th>
-            <th>Ende</th>
-            <th>Stunden direkt</th>
-            <th>Stunden</th>
-            <th>Auszahlung</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="employeeBody"></tbody>
-      </table>
-
-      <div id="finalNotice" class="notice small"></div>
-
-      <div class="actions">
-        <button class="secondary" type="button" data-prev>Zurück</button>
-        <div class="right-actions">
-          <button id="resetAll" class="ghost" type="button">Alles leeren</button>
-        </div>
-      </div>
+      <section class="standalone-panel">
+        <h2>Checkliste</h2>
+        <p class="standalone-intro" id="barRoutineProgress"></p>
+        <ul class="prep-list" id="barRoutineList"></ul>
+      </section>
     </section>
   </main>
 
+  <canvas id="celebrationCanvas" hidden aria-hidden="true"></canvas>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle"></h2>
+          <p class="modal-box-label" id="modalBoxLabel"></p>
+        </div>
+        <button class="close-button" id="closeModal" type="button" aria-label="Schließen">×</button>
+      </div>
+
+      <p class="rule-note" id="ruleNote"></p>
+
+      <div id="sliderArea">
+        <label class="field-label" for="fillSlider">
+          <span id="fillLabel">Aktuelle Box gefüllt</span>
+          <output id="fillOutput">100 %</output>
+        </label>
+        <input class="slider" id="fillSlider" type="range" min="0" max="100" step="5" value="100">
+        <div class="slider-scale" id="sliderScale" aria-hidden="true"><span>leer</span><span>halbvoll</span><span>voll</span></div>
+
+        <div class="reserve-row" id="reserveRow">
+          <div><strong>Weitere Box vorhanden?</strong><small>Bereits vorbereiteter Vorrat</small></div>
+          <div class="stepper" aria-label="Anzahl weiterer Boxen">
+            <button class="step-button" id="reserveMinus" type="button" aria-label="Eine Box weniger">−</button>
+            <span class="step-value" id="reserveValue">0</span>
+            <button class="step-button" id="reservePlus" type="button" aria-label="Eine weitere Box">+</button>
+          </div>
+        </div>
+
+        <div class="stock-check" id="stockCheck" hidden>
+          <p class="field-label" id="stockCheckLabel"></p>
+          <div class="binary-choice">
+            <button class="choice-button" type="button" data-stock-ready="true">Ja, liegt bereit</button>
+            <button class="choice-button" type="button" data-stock-ready="false">Nein</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="binaryArea" hidden>
+        <p class="field-label">Liegt eine Packung bereit?</p>
+        <div class="binary-choice">
+          <button class="choice-button" id="readyYes" type="button" data-ready="true">Ja, bereit</button>
+          <button class="choice-button" id="readyNo" type="button" data-ready="false">Nein</button>
+        </div>
+      </div>
+
+      <div class="live-result" id="liveResult"></div>
+      <button class="confirm-button" id="confirmButton" type="button">Prüfung bestätigen</button>
+    </section>
+  </div>
+
   <script>
-    const euro0 = new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR",minimumFractionDigits:0,maximumFractionDigits:0});
-    const euro2 = new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
-    const hourFmt = new Intl.NumberFormat("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2});
-
-    const $ = id => document.getElementById(id);
-    const steps = Array.from(document.querySelectorAll(".step"));
-    const dots = $("stepDots");
-    let currentStep = 0;
-
-    function parseDecimal(value){
-      if(typeof value !== "string") return null;
-      const n = Number(value.trim().replace(/\s/g,"").replace(",","."));
-      return value.trim()==="" || !Number.isFinite(n) ? null : n;
-    }
-    function fmt0(v){ return euro0.format(Math.round(Number(v)||0)); }
-    function fmt2(v){ return euro2.format(Number(v)||0); }
-    function fmtH(v){ return hourFmt.format(Number(v)||0) + " h"; }
-    function signedEuro(v){
-      const rounded = Math.round(Number(v)||0);
-      if(rounded > 0) return "+" + fmt0(rounded);
-      if(rounded < 0) return "-" + fmt0(Math.abs(rounded));
-      return "0 €";
-    }
-    function signedEuro2(v){
-      const value = Number(v) || 0;
-      if(Math.abs(value) < 0.005) return "0,00 €";
-      if(value > 0) return "+" + fmt2(value);
-      return "-" + fmt2(Math.abs(value));
-    }
-
-    function makeDots(){
-      dots.innerHTML = steps.map((s,i)=>`<span class="dot" title="${s.dataset.title}">${i+1}</span>`).join("");
-    }
-
-    function showStep(index){
-      currentStep = Math.max(0, Math.min(index, steps.length-1));
-      steps.forEach((s,i)=>s.classList.toggle("active", i === currentStep));
-      Array.from(dots.children).forEach((d,i)=>{
-        d.classList.toggle("active", i === currentStep);
-        d.classList.toggle("done", i < currentStep);
-      });
-      syncFinalFields();
-      calculate();
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
-
-    function syncFinalFields(){
-      const pairs = [
-        ["cashCountedStep","cashCountedFinal"],
-        ["cardCountedStep","cardCountedFinal"],
-        ["cashSollStep","cashSollFinal"],
-        ["cardSollStep","cardSollFinal"]
-      ];
-      pairs.forEach(([from,to])=>{
-        if($(from) && $(to) && $(to).value.trim()==="") $(to).value = $(from).value;
-      });
-    }
-
-    function updateFromFinal(){
-      [["cashCountedFinal","cashCountedStep"],["cardCountedFinal","cardCountedStep"],["cashSollFinal","cashSollStep"],["cardSollFinal","cardSollStep"]]
-        .forEach(([from,to])=>{ if($(from).value.trim() !== "") $(to).value = $(from).value; });
-    }
-
-    function calculatedTip(prefix){
-      const soll = parseDecimal($(prefix+"SollFinal").value);
-      const counted = parseDecimal($(prefix+"CountedFinal").value);
-      if(soll !== null && counted !== null) return counted - soll;
-      return 0;
-    }
-
-    function timeToMinutes(t){
-      if(!t) return null;
-      const [h,m] = t.split(":").map(Number);
-      if(!Number.isFinite(h) || !Number.isFinite(m)) return null;
-      return h*60+m;
-    }
-
-    function employeeHours(row){
-      const direct = parseDecimal(row.querySelector(".direct-hours").value);
-      if(direct !== null && direct > 0) return {hours:direct,note:"direkt"};
-      const start = timeToMinutes(row.querySelector(".start-time").value);
-      const end = timeToMinutes(row.querySelector(".end-time").value);
-      if(start === null || end === null) return {hours:0,note:"Zeit fehlt"};
-      let minutes = end - start;
-      if(minutes <= 0) minutes += 1440;
-      const raw = minutes / 60;
-      let pause = 0;
-      if(raw > 9) pause = 0.75;
-      else if(raw > 6) pause = 0.5;
-      return {hours:Math.max(0, raw - pause), note: pause ? "Pause: " + fmtH(pause) : "keine Pause"};
-    }
-
-    function distribute(amount, employees){
-      const rounded = Math.max(0, Math.round(amount));
-      const payouts = Array(employees.length).fill(0);
-      const totalHours = employees.reduce((s,e)=>s+e.hours,0);
-      if(rounded <= 0 || totalHours <= 0) return payouts;
-      const parts = employees.map((e,i)=>{
-        const ideal = rounded * e.hours / totalHours;
-        return {i, base:Math.floor(ideal), rest:ideal-Math.floor(ideal), hours:e.hours};
-      });
-      parts.forEach(p=>payouts[p.i]=p.base);
-      let remaining = rounded - payouts.reduce((s,v)=>s+v,0);
-      parts.sort((a,b)=>b.rest-a.rest || b.hours-a.hours || a.i-b.i);
-      let pos=0;
-      while(remaining>0){
-        payouts[parts[pos % parts.length].i]++;
-        remaining--;
-        pos++;
-      }
-      return payouts;
-    }
-
-    function calculate(){
-      updateCloseHelp();
-
-      const cash = calculatedTip("cash");
-      const card = calculatedTip("card");
-      $("cashTipDisplay").textContent = fmt2(cash);
-      $("cardTipDisplay").textContent = fmt2(card);
-      const total = Math.max(0, Math.round(cash + card));
-      const kitchen = Math.round(total * 0.15);
-      const staff = total - kitchen;
-
-      $("totalTip").textContent = fmt0(total);
-      $("kitchenShare").textContent = fmt0(kitchen);
-      $("staffShare").textContent = fmt0(staff);
-
-      const rows = Array.from($("employeeBody").querySelectorAll("tr"));
-      const employeesAll = rows.map(row=>{
-        const h = employeeHours(row);
-        row.querySelector(".computed-hours").textContent = fmtH(h.hours);
-        row.querySelector(".pause-note").textContent = h.note;
-        return {row, hours:h.hours};
-      });
-
-      const active = employeesAll.filter(e=>e.hours > 0);
-      const payouts = distribute(staff, active);
-      let j = 0;
-      let payoutSum = 0;
-      employeesAll.forEach(e=>{
-        let p = 0;
-        if(e.hours > 0) p = payouts[j++] || 0;
-        payoutSum += p;
-        e.row.querySelector(".payout").textContent = fmt0(p);
-      });
-
-
-      let text = `Küche bekommt ${fmt0(kitchen)}. Für Service/Bar bleiben ${fmt0(staff)}.`;
-      if(staff > 0 && active.length === 0) text += " Bitte Mitarbeiterzeiten eintragen.";
-      $("finalNotice").textContent = text;
-    }
-
-    function updateCloseHelp(){
-      const cardSoll = parseDecimal($("cardSollStep").value);
-      const cardCounted = parseDecimal($("cardCountedStep").value);
-      const currentCashStock = parseDecimal($("currentCashStock").value);
-
-      $("closeCardSoll").textContent = fmt2(cardSoll || 0);
-      $("closeCardCounted").textContent = fmt2(cardCounted || 0);
-
-      if(cardSoll === null || cardCounted === null){
-        $("closeCardDiff").textContent = "0,00 €";
-        $("cardCorrection").textContent = "0,00 €";
-        $("cashCorrection").textContent = "0,00 €";
-        $("adjustedCashStock").textContent = currentCashStock === null ? "0,00 €" : fmt2(currentCashStock);
-        $("closeInstruction").textContent = "Noch keine Kartenzahlen eingetragen.";
-        return;
-      }
-
-      const diff = cardCounted - cardSoll;
-      const cashAdjustment = -diff;
-
-      $("closeCardDiff").textContent = signedEuro2(diff);
-      $("cardCorrection").textContent = signedEuro2(diff);
-      $("cashCorrection").textContent = signedEuro2(cashAdjustment);
-
-      if(currentCashStock === null){
-        $("adjustedCashStock").textContent = "0,00 €";
-      } else {
-        $("adjustedCashStock").textContent = fmt2(currentCashStock + cashAdjustment);
-      }
-
-      if(Math.abs(diff) < 0.005){
-        $("closeInstruction").textContent = "Karte passt. Beim Bargeld ist keine Korrektur nötig.";
-      } else if(diff > 0){
-        $("closeInstruction").textContent = `Kartenbetrag um ${fmt2(diff)} auf ${fmt2(cardCounted)} erhöhen und beim Bargeld ${fmt2(diff)} abziehen.`;
-      } else {
-        $("closeInstruction").textContent = `Kartenbetrag um ${fmt2(Math.abs(diff))} auf ${fmt2(cardCounted)} senken und beim Bargeld ${fmt2(Math.abs(diff))} addieren.`;
-      }
-    }
-    function addEmployee(data={}){
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td data-label="Name"><input class="employee-name" type="text" placeholder="Name" value="${data.name || ""}"></td>
-        <td data-label="Beginn"><input class="start-time" type="time" value="${data.start || ""}"></td>
-        <td data-label="Ende"><input class="end-time" type="time" value="${data.end || ""}"></td>
-        <td data-label="Stunden direkt"><input class="direct-hours" type="text" inputmode="decimal" placeholder="z. B. 5,5" value="${data.hours || ""}"></td>
-        <td data-label="Stunden"><div class="computed-hours">0,00 h</div><div class="pause-note">Zeit fehlt</div></td>
-        <td data-label="Auszahlung"><div class="payout">0 €</div></td>
-        <td data-label="Entfernen"><button class="danger remove" type="button">×</button></td>
-      `;
-      row.querySelector(".remove").addEventListener("click",()=>{ row.remove(); calculate(); });
-      $("employeeBody").appendChild(row);
-      calculate();
-    }
-
-    document.addEventListener("click", e=>{
-      if(e.target.matches("[data-next]")) showStep(currentStep+1);
-      if(e.target.matches("[data-prev]")) showStep(currentStep-1);
-    });
-
-    document.addEventListener("input", e=>{
-      if(e.target.matches("input")){
-        if(["cashCountedStep","cardCountedStep","cashSollStep","cardSollStep"].includes(e.target.id)){
-          const map = {
-            cashCountedStep:"cashCountedFinal",
-            cardCountedStep:"cardCountedFinal",
-            cashSollStep:"cashSollFinal",
-            cardSollStep:"cardSollFinal"
-          };
-          $(map[e.target.id]).value = e.target.value;
-          // Trinkgeld wird aus Soll/Gezählt automatisch berechnet.
+    const INGREDIENTS = [
+      {
+        id: "creme-herzhaft",
+        name: "Cremé herzhaft",
+        box: "Bestand in Eimern zählen",
+        size: "medium",
+        coverage: true,
+        countMode: true,
+        noReserve: true,
+        unit: "Eimer herzhafte Cremé vorbereiten",
+        pluralUnit: "Eimer herzhafte Cremé vorbereiten",
+        targets: { wenig: 6, normal: 7, hustle: 8 },
+        rules: {
+          wenig: "Mindestens 6 Eimer herzhafte Cremé. Zusammen mit der süßen Cremé wird auf volle Schmandeimer aufgerundet.",
+          normal: "Mindestens 7 Eimer herzhafte Cremé. Zusammen mit der süßen Cremé wird auf volle Schmandeimer aufgerundet.",
+          hustle: "Mindestens 8 Eimer herzhafte Cremé. Zusammen mit der süßen Cremé wird auf volle Schmandeimer aufgerundet."
+        },
+        demand: ({ coverage, level, ingredient }) => Math.max(ingredient.targets[level] - coverage, 0)
+      },
+      {
+        id: "creme-suess",
+        name: "Cremé süß",
+        box: "Bestand in Eimern zählen",
+        size: "medium",
+        coverage: true,
+        countMode: true,
+        noReserve: true,
+        unit: "Eimer süße Cremé vorbereiten",
+        pluralUnit: "Eimer süße Cremé vorbereiten",
+        targets: { wenig: 2, normal: 2, hustle: 3 },
+        rules: {
+          wenig: "Mindestens 2 Eimer süße Cremé. Zusammen mit der herzhaften Cremé wird auf volle Schmandeimer aufgerundet.",
+          normal: "Mindestens 2 Eimer süße Cremé. Zusammen mit der herzhaften Cremé wird auf volle Schmandeimer aufgerundet.",
+          hustle: "Mindestens 3 Eimer süße Cremé. Zusammen mit der herzhaften Cremé wird auf volle Schmandeimer aufgerundet."
+        },
+        demand: ({ coverage, level, ingredient }) => Math.max(ingredient.targets[level] - coverage, 0)
+      },
+      {
+        id: "speck",
+        name: "Speck",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Speck",
+        rules: {
+          wenig: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist.",
+          normal: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist.",
+          hustle: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "schinken",
+        name: "Schinken",
+        box: "Box mittel · 500-g-Pack",
+        size: "medium",
+        unit: "mittlere Box Schinken (1 × 500-g-Pack)",
+        thresholds: { wenig: 50, normal: 75, hustle: 95 },
+        rules: {
+          wenig: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 75 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Bei 95 % oder weniger wird eine volle Nachfüllbox vorbereitet."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "sucuk",
+        name: "Sucuk",
+        box: "Keine GN-Box · Packung",
+        size: "none",
+        binary: true,
+        unit: "Packung Sucuk bereitstellen",
+        rules: {
+          wenig: "Prüfen, ob eine Packung Sucuk im Kühlschrank bereitliegt.",
+          normal: "Prüfen, ob eine Packung Sucuk im Kühlschrank bereitliegt.",
+          hustle: "Prüfen, ob eine Packung Sucuk im Kühlschrank bereitliegt."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "thunfisch",
+        name: "Thunfisch",
+        box: "Box klein · 2 Dosen",
+        size: "small",
+        unit: "kleine Box Thunfisch (2 Dosen)",
+        thresholds: { wenig: 25, normal: 50, hustle: 75 },
+        rules: {
+          wenig: "Bei 25 % oder weniger wird eine volle Box aus 2 Dosen vorbereitet.",
+          normal: "Bei 50 % oder weniger wird eine volle Box aus 2 Dosen vorbereitet.",
+          hustle: "Bei 75 % oder weniger wird eine volle Box aus 2 Dosen vorbereitet."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "lachs",
+        name: "Lachs",
+        box: "Box lang klein · 1 ganzer Lachs",
+        size: "long-small",
+        unit: "lange kleine Box Lachs (1 ganzer Lachs)",
+        rules: {
+          wenig: "Bei 75 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Unabhängig vom Füllstand wird eine volle Nachfüllbox benötigt.",
+          hustle: "Unabhängig vom Füllstand wird eine volle Nachfüllbox benötigt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = level === "wenig" ? (fill <= 75 ? 1 : 0) : 1;
+          return Math.max(target - reserve, 0);
         }
-        // Finale Trinkgeldsummen bleiben reine Berechnung aus Soll/Gezählt.
-        calculate();
+      },
+      {
+        id: "maultaschen",
+        name: "Maultaschen klassisch",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Maultaschen klassisch",
+        pluralUnit: "große Boxen Maultaschen klassisch",
+        rules: {
+          wenig: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 75 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Bei 95 % oder weniger: 1 Box. Bei 25 % oder weniger: insgesamt 2 Boxen."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target = 0;
+          if (level === "wenig") target = fill <= 50 ? 1 : 0;
+          if (level === "normal") target = fill <= 75 ? 1 : 0;
+          if (level === "hustle") target = fill <= 25 ? 2 : (fill <= 95 ? 1 : 0);
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "maultaschen-vegetarisch",
+        name: "Maultaschen vegetarisch",
+        box: "Box klein",
+        size: "small",
+        unit: "kleine Box Maultaschen vegetarisch",
+        thresholds: { wenig: 25, normal: 50, hustle: 90 },
+        rules: {
+          wenig: "Bei 25 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Bei 90 % oder weniger wird eine volle Nachfüllbox vorbereitet."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "kaese",
+        name: "Käse",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Käse",
+        stockCheck: "Liegt eine Packung Käse im Küchen-Kühlschrank?",
+        rules: {
+          wenig: "Eine neue Box nur bei leerer Box. Bei 50 % oder weniger muss zusätzlich eine Packung Käse im Küchen-Kühlschrank liegen.",
+          normal: "Eine neue Box nur bei leerer Box. Bei 50 % oder weniger muss zusätzlich eine Packung Käse im Küchen-Kühlschrank liegen.",
+          hustle: "Eine neue Box nur bei leerer Box. Bei 50 % oder weniger muss zusätzlich eine Packung Käse im Küchen-Kühlschrank liegen."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ fill, stockReady }) => fill <= 50 && !stockReady
+          ? [{ code: "pack", text: "1 neue Packung Käse in den Küchen-Kühlschrank legen" }]
+          : []
+      },
+      {
+        id: "muensterkaese",
+        name: "Münsterkäse",
+        box: "Box klein · 2 Münsterkäse",
+        size: "small",
+        unit: "kleine Box Münsterkäse (2 Münsterkäse schneiden) – Schachtel in Regal sammeln für Nicole!",
+        thresholds: { wenig: 25, normal: 50, hustle: 90 },
+        rules: {
+          wenig: "Bei 25 % oder weniger werden 2 Münsterkäse für eine volle Box geschnitten.",
+          normal: "Bei 50 % oder weniger werden 2 Münsterkäse für eine volle Box geschnitten.",
+          hustle: "Bei 90 % oder weniger werden 2 Münsterkäse für eine volle Box geschnitten."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "mozzarella",
+        name: "Mozzarella",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Mozzarella",
+        stockCheck: "Liegt eine Packung Mozzarella als Vorrat im Kühlschrank?",
+        rules: {
+          wenig: "Eine neue Box nur vorbereiten, wenn die aktuelle Box leer ist. Zusätzlich muss immer eine Packung Mozzarella im Kühlschrank liegen.",
+          normal: "Eine neue Box nur vorbereiten, wenn die aktuelle Box leer ist. Zusätzlich muss immer eine Packung Mozzarella im Kühlschrank liegen.",
+          hustle: "Eine neue Box nur vorbereiten, wenn die aktuelle Box leer ist. Zusätzlich muss immer eine Packung Mozzarella im Kühlschrank liegen."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Packung Mozzarella als Vorrat in den Kühlschrank legen" }]
+          : []
+      },
+      {
+        id: "feta",
+        name: "Feta",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Feta",
+        pluralUnit: "lange große Boxen Feta",
+        rules: {
+          wenig: "Bei 60 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 90 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Immer 1 neue Box; bei 10 % oder weniger insgesamt 2 neue Boxen."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target = 0;
+          if (level === "wenig") target = fill <= 60 ? 1 : 0;
+          if (level === "normal") target = fill <= 90 ? 1 : 0;
+          if (level === "hustle") target = fill <= 10 ? 2 : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "raclettekaese",
+        name: "Raclettekäse",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Raclettekäse",
+        thresholds: { wenig: 50, normal: 70, hustle: 95 },
+        rules: {
+          wenig: "Bei 50 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          normal: "Bei 70 % oder weniger wird eine volle Nachfüllbox vorbereitet.",
+          hustle: "Bei 95 % oder weniger wird eine volle Nachfüllbox vorbereitet."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "camembert",
+        name: "Camembert",
+        box: "Box mittel · 4 Camembert",
+        size: "medium",
+        unit: "mittlere Box Camembert (4 Camembert schneiden)",
+        thresholds: { wenig: 20, normal: 30, hustle: 50 },
+        rules: {
+          wenig: "Bei 20 % oder weniger werden 4 Camembert für eine volle Box geschnitten.",
+          normal: "Bei 30 % oder weniger werden 4 Camembert für eine volle Box geschnitten.",
+          hustle: "Bei 50 % oder weniger werden 4 Camembert für eine volle Box geschnitten."
+        },
+        demand: ({ fill, reserve, level, ingredient }) => Math.max((fill <= ingredient.thresholds[level] ? 1 : 0) - reserve, 0)
+      },
+      {
+        id: "ziegenkaese",
+        name: "Ziegenkäse",
+        box: "Box mittel · 1 Packung",
+        size: "medium",
+        unit: "mittlere Box Ziegenkäse (1 ganze Packung schneiden)",
+        rules: {
+          wenig: "Bei 50 % oder weniger wird eine ganze Packung Ziegenkäse für eine neue Box geschnitten.",
+          normal: "Bei 80 % oder weniger wird eine ganze Packung Ziegenkäse für eine neue Box geschnitten.",
+          hustle: "Unabhängig vom Füllstand wird eine ganze Packung Ziegenkäse für eine neue Box geschnitten."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = level === "wenig" ? (fill <= 50 ? 1 : 0) :
+            level === "normal" ? (fill <= 80 ? 1 : 0) : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "zwiebeln",
+        name: "Zwiebeln",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Zwiebeln",
+        pluralUnit: "lange große Boxen Zwiebeln",
+        rules: {
+          wenig: "Über 50 % werden 2 neue Boxen vorbereitet, bei 50 % oder weniger 3 Boxen.",
+          normal: "Über 25 % werden 3 neue Boxen vorbereitet, bei 25 % oder weniger 4 Boxen.",
+          hustle: "Über 90 % werden 3 neue Boxen vorbereitet, sonst 4 Boxen."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target;
+          if (level === "wenig") target = fill > 50 ? 2 : 3;
+          if (level === "normal") target = fill > 25 ? 3 : 4;
+          if (level === "hustle") target = fill > 90 ? 3 : 4;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "rote-zwiebeln",
+        name: "Rote Zwiebeln",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box rote Zwiebeln",
+        pluralUnit: "lange große Boxen rote Zwiebeln",
+        rules: {
+          wenig: "1 neue Box vorbereiten, bei 50 % oder weniger 2 Boxen.",
+          normal: "Bei 90 % oder weniger 1 neue Box vorbereiten, sonst 2 Boxen.",
+          hustle: "Immer 2 neue Boxen vorbereiten, bei 30 % oder weniger 3 Boxen."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target;
+          if (level === "wenig") target = fill <= 50 ? 2 : 1;
+          if (level === "normal") target = fill <= 90 ? 1 : 2;
+          if (level === "hustle") target = fill <= 30 ? 3 : 2;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "lauchzwiebeln",
+        name: "Lauchzwiebeln",
+        box: "Box klein · 1 Bund = ½ Box",
+        size: "small",
+        unit: "Bund Lauchzwiebeln schneiden",
+        pluralUnit: "Bund Lauchzwiebeln schneiden",
+        rules: {
+          wenig: "Über 20 % muss nichts gemacht werden; bei 20 % oder weniger 1 Bund schneiden.",
+          normal: "Über 35 % muss nichts gemacht werden; bei 35 % oder weniger 1 Bund schneiden.",
+          hustle: "Immer 1 Bund schneiden; bei 25 % oder weniger 2 Bund schneiden."
+        },
+        demand: ({ fill, reserve, level }) => {
+          let target = 0;
+          if (level === "wenig") target = fill <= 20 ? 1 : 0;
+          if (level === "normal") target = fill <= 35 ? 1 : 0;
+          if (level === "hustle") target = fill <= 25 ? 2 : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "champignons",
+        name: "Champignons",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Champignons",
+        pluralUnit: "große Boxen Champignons",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 Boxen ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 2 Boxen ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 1, normal: 1.5, hustle: 2 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "paprika",
+        name: "Paprika",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Paprika",
+        pluralUnit: "große Boxen Paprika",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,75 Boxen ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 Boxen ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 0.75, normal: 1, hustle: 1.5 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "zucchini",
+        name: "Zucchini",
+        box: "Box lang klein",
+        size: "long-small",
+        unit: "Zucchini in eine neue lange kleine Box schneiden",
+        pluralUnit: "Zucchini in eine neue lange kleine Box schneiden",
+        rules: {
+          wenig: "Bei 30 % oder weniger 2 Zucchini in eine neue Box schneiden, sonst nichts.",
+          normal: "Bei 50 % oder weniger 3 Zucchini schneiden, sonst 2 Zucchini in eine neue Box schneiden.",
+          hustle: "Bei 25 % oder weniger 4 Zucchini schneiden, sonst 3 Zucchini in eine neue Box schneiden."
+        },
+        demand: ({ fill, reserve, level }) => {
+          if (reserve > 0) return 0;
+          if (level === "wenig") return fill <= 30 ? 2 : 0;
+          if (level === "normal") return fill <= 50 ? 3 : 2;
+          return fill <= 25 ? 4 : 3;
+        }
+      },
+      {
+        id: "tomaten",
+        name: "Tomaten",
+        box: "Box lang groß",
+        size: "long-large",
+        unit: "lange große Box Tomaten",
+        pluralUnit: "lange große Boxen Tomaten",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,5 Boxen ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 Boxen ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 0.5, normal: 1, hustle: 1.5 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "spinat",
+        name: "Spinat",
+        box: "Nachfülltüte · TK-Truhe",
+        size: "none",
+        binary: true,
+        unit: "Neue Nachfülltüte Spinat in die TK-Truhe legen",
+        readyQuestion: "Liegt eine neue Nachfülltüte in der TK-Truhe?",
+        rules: {
+          wenig: "Nur prüfen, ob eine neue Nachfülltüte Spinat in der TK-Truhe liegt.",
+          normal: "Nur prüfen, ob eine neue Nachfülltüte Spinat in der TK-Truhe liegt.",
+          hustle: "Nur prüfen, ob eine neue Nachfülltüte Spinat in der TK-Truhe liegt."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "knoblauch",
+        name: "Knoblauch",
+        box: "Vorratspackung",
+        size: "none",
+        binary: true,
+        unit: "Neue Packung Knoblauch bereitlegen",
+        readyQuestion: "Liegt eine neue Packung zum Nachfüllen bereit?",
+        rules: {
+          wenig: "Nur prüfen, ob eine neue Packung Knoblauch zum Nachfüllen bereitliegt.",
+          normal: "Nur prüfen, ob eine neue Packung Knoblauch zum Nachfüllen bereitliegt.",
+          hustle: "Nur prüfen, ob eine neue Packung Knoblauch zum Nachfüllen bereitliegt."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "chili",
+        name: "Chili",
+        box: "Box klein · 1,5 Chili je Flammkuchen",
+        size: "small",
+        coverage: true,
+        unit: "Chili schneiden",
+        pluralUnit: "Chilis schneiden",
+        targets: { wenig: 4, normal: 6, hustle: 8 },
+        rules: {
+          wenig: "Der Bestand soll für insgesamt 4 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Chili gerechnet und auf ganze Chilis aufgerundet.",
+          normal: "Der Bestand soll für insgesamt 6 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Chili gerechnet und auf ganze Chilis aufgerundet.",
+          hustle: "Der Bestand soll für insgesamt 8 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Chili gerechnet und auf ganze Chilis aufgerundet."
+        },
+        demand: ({ coverage, reserve, level, ingredient }) => reserve > 0
+          ? 0
+          : Math.ceil(Math.max(ingredient.targets[level] - coverage, 0) * 1.5)
+      },
+      {
+        id: "peperoni",
+        name: "Peperoni",
+        box: "Box klein · 1,5 Peperoni je Flammkuchen",
+        size: "small",
+        coverage: true,
+        unit: "Peperoni schneiden",
+        pluralUnit: "Peperoni schneiden",
+        targets: { wenig: 2, normal: 4, hustle: 6 },
+        rules: {
+          wenig: "Der Bestand soll für insgesamt 2 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Peperoni gerechnet und auf ganze Peperoni aufgerundet.",
+          normal: "Der Bestand soll für insgesamt 4 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Peperoni gerechnet und auf ganze Peperoni aufgerundet.",
+          hustle: "Der Bestand soll für insgesamt 6 Flammkuchen reichen. Pro fehlendem Flammkuchen werden 1,5 Peperoni gerechnet und auf ganze Peperoni aufgerundet."
+        },
+        demand: ({ coverage, reserve, level, ingredient }) => reserve > 0
+          ? 0
+          : Math.ceil(Math.max(ingredient.targets[level] - coverage, 0) * 1.5)
+      },
+      {
+        id: "oliven",
+        name: "Oliven",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Oliven",
+        rules: {
+          wenig: "Nur bei leerer Box wird eine neue Box vorbereitet.",
+          normal: "Nur bei leerer Box wird eine neue Box vorbereitet.",
+          hustle: "Bei 25 % oder weniger wird eine neue Box vorbereitet."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = level === "hustle" ? (fill <= 25 ? 1 : 0) : (fill === 0 ? 1 : 0);
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "ananas",
+        name: "Ananas",
+        box: "Box mittel · Geschmacksprobe",
+        size: "medium",
+        binary: true,
+        binaryLabels: { yes: "Noch gut", no: "Nicht mehr gut" },
+        unit: "Ananas wegwerfen und eine neue kleine Box auffüllen",
+        readyQuestion: "Mach eine Geschmacksprobe: Ist die Ananas noch gut?",
+        checkedText: ({ ready }) => ready ? "Geschmacksprobe: noch gut" : "Geschmacksprobe: nicht mehr gut",
+        rules: {
+          wenig: "Geschmacksprobe machen. Wenn die Ananas nicht mehr gut ist: wegwerfen und eine neue kleine Box auffüllen.",
+          normal: "Geschmacksprobe machen. Wenn die Ananas nicht mehr gut ist: wegwerfen und eine neue kleine Box auffüllen.",
+          hustle: "Geschmacksprobe machen. Wenn die Ananas nicht mehr gut ist: wegwerfen und eine neue kleine Box auffüllen."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "datteln",
+        name: "Datteln",
+        box: "Box mittel",
+        size: "medium",
+        unit: "mittlere Box Datteln",
+        pluralUnit: "mittlere Boxen Datteln",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,5 Boxen ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,75 Boxen ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1 Box ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 0.5, normal: 0.75, hustle: 1 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "apfel",
+        name: "Apfel",
+        box: "Box mittel · fein geschnitten",
+        size: "medium",
+        unit: "mittlere Box Apfel fein schneiden",
+        pluralUnit: "mittlere Boxen Apfel fein schneiden",
+        rules: {
+          wenig: "Aktuelle Box und Vorratsboxen werden auf insgesamt 0,75 fein geschnittene Boxen ergänzt.",
+          normal: "Aktuelle Box und Vorratsboxen werden auf insgesamt 1,5 fein geschnittene Boxen ergänzt.",
+          hustle: "Aktuelle Box und Vorratsboxen werden auf insgesamt 2 fein geschnittene Boxen ergänzt."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = { wenig: 0.75, normal: 1.5, hustle: 2 }[level];
+          return Math.max(target - fill / 100 - reserve, 0);
+        }
+      },
+      {
+        id: "banane",
+        name: "Banane",
+        box: "1 Staude · Kühlschrank",
+        size: "none",
+        binary: true,
+        unit: "1 Staude Bananen in den Kühlschrank bzw. griffbereit legen",
+        readyQuestion: "Liegt eine Staude Bananen im Kühlschrank bzw. griffbereit?",
+        checkedText: ({ ready }) => ready ? "1 Staude liegt griffbereit" : "Keine Staude griffbereit",
+        rules: {
+          wenig: "Prüfen, ob eine Staude Bananen im Kühlschrank bzw. griffbereit liegt.",
+          normal: "Prüfen, ob eine Staude Bananen im Kühlschrank bzw. griffbereit liegt.",
+          hustle: "Prüfen, ob eine Staude Bananen im Kühlschrank bzw. griffbereit liegt."
+        },
+        demand: ({ ready }) => ready ? 0 : 1
+      },
+      {
+        id: "beerenmischung",
+        name: "Beerenmischung",
+        box: "Box klein · TK",
+        size: "small",
+        unit: "kleine Box Beerenmischung auffüllen",
+        stockCheck: "Liegt ein Nachfüllpack Beerenmischung im TK?",
+        rules: {
+          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Nachfüllpack Beerenmischung in den TK legen" }]
+          : []
+      },
+      {
+        id: "himbeeren",
+        name: "Himbeeren",
+        box: "Box mittel · TK",
+        size: "medium",
+        unit: "mittlere Box Himbeeren auffüllen",
+        stockCheck: "Liegt ein Nachfüllpack Himbeeren im TK?",
+        rules: {
+          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Nachfüllpack Himbeeren in den TK legen" }]
+          : []
+      },
+      {
+        id: "biscoff-creme",
+        name: "Biscoff-Creme",
+        box: "Tube",
+        size: "none",
+        noReserve: true,
+        unit: "Tube Biscoff-Creme vollständig auffüllen",
+        rules: {
+          wenig: "Bei 80 % oder weniger wird die Tube vollständig aufgefüllt.",
+          normal: "Bei 80 % oder weniger wird die Tube vollständig aufgefüllt.",
+          hustle: "Bei 80 % oder weniger wird die Tube vollständig aufgefüllt."
+        },
+        demand: ({ fill }) => fill <= 80 ? 1 : 0
+      },
+      {
+        id: "weisse-schokolade",
+        name: "Weiße Schokolade",
+        box: "Box klein",
+        size: "small",
+        unit: "kleine Box weiße Schokolade auffüllen",
+        stockCheck: "Liegt ein Nachfüllpack weiße Schokolade bereit?",
+        rules: {
+          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack bereitliegt.",
+          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack bereitliegt.",
+          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack bereitliegt."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Nachfüllpack weiße Schokolade bereitstellen" }]
+          : []
+      },
+      {
+        id: "haehnchenkebab",
+        name: "Hähnchenkebab",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Hähnchenkebab vorbereiten",
+        rules: {
+          wenig: "Eine neue große Box vorbereiten, außer die aktuelle Box ist noch zu mindestens 80 % gefüllt.",
+          normal: "Unabhängig vom Füllstand eine neue große Box vorbereiten.",
+          hustle: "Unabhängig vom Füllstand eine neue große Box vorbereiten."
+        },
+        demand: ({ fill, reserve, level }) => {
+          const target = level === "wenig" && fill >= 80 ? 0 : 1;
+          return Math.max(target - reserve, 0);
+        }
+      },
+      {
+        id: "mango",
+        name: "Mango",
+        box: "Box klein · TK",
+        size: "small",
+        unit: "kleine Box Mango auffüllen",
+        stockCheck: "Liegt ein Nachfüllpack Mango im TK?",
+        rules: {
+          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
+          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt."
+        },
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "1 Nachfüllpack Mango in den TK legen" }]
+          : []
       }
+    ];
+
+    const FILTERS = [
+      { id: "all", label: "Alle" },
+      { id: "meat", label: "Fleisch/Fisch" },
+      { id: "cheese", label: "Käse" },
+      { id: "vegetable", label: "Gemüse" },
+      { id: "sweet", label: "Süß" },
+      { id: "cream", label: "Cremés" }
+    ];
+
+    const CATEGORY_IDS = {
+      meat: ["speck", "schinken", "sucuk", "thunfisch", "lachs", "maultaschen", "haehnchenkebab"],
+      cheese: ["kaese", "muensterkaese", "mozzarella", "feta", "raclettekaese", "camembert", "ziegenkaese"],
+      vegetable: ["maultaschen-vegetarisch", "zwiebeln", "rote-zwiebeln", "lauchzwiebeln", "champignons", "paprika", "zucchini", "tomaten", "spinat", "knoblauch", "chili", "peperoni", "oliven", "datteln"],
+      sweet: ["ananas", "apfel", "banane", "beerenmischung", "himbeeren", "biscoff-creme", "weisse-schokolade", "mango"],
+      cream: ["creme-herzhaft", "creme-suess"]
+    };
+
+    const CATEGORY_BY_ID = Object.fromEntries(
+      Object.entries(CATEGORY_IDS).flatMap(([category, ids]) => ids.map(id => [id, category]))
+    );
+
+    const TOPPINGS = [
+      "Sonnenblumenkerne", "Kürbiskerne", "Walnüsse", "Preiselbeeren", "Honig", "Pesto",
+      "Dressing", "Cocktailsoße", "Alioli", "getrocknete Tomaten", "Avocado", "Schnittlauch", "Petersilie", "Basilikum",
+      "Thymian", "Rucola", "Feldsalat", "Zimt & Zucker", "Nutella", "Lotus Kekse",
+      "Schokoraspeln", "Oreo Kekse", "Vanillesoße", "Vanilleeis", "Schokoeis", "Kokosraspeln",
+      "Temperaturkontrolle machen"
+    ];
+
+    const KITCHEN_ROUTINE_BASE = [
+      { id: "ausgabe", text: "Oberfläche Ausgabe reinigen" },
+      { id: "ofen-oberflaechen", text: "Oberflächen Ofen reinigen" },
+      { id: "belegstation", text: "Oberfläche Belegstation reinigen" },
+      { id: "belegstation-schubladen", text: "Schubladen Oberflächen Belegstation reinigen" },
+      { id: "kuehlschrank", text: "Kühlschrank Türen & Griffe reinigen" },
+      { id: "tk-truhe", text: "TK-Truhe Oberfläche reinigen" },
+      { id: "zwiebelmaschine", text: "Zwiebelmaschine reinigen" },
+      { id: "waschbecken", text: "Alle Waschbecken reinigen" },
+      { id: "spuelbereich", text: "Spülmaschine & Spülbecken reinigen" },
+      { id: "spuelmaschine-abpumpen", text: "Spülmaschine abpumpen" },
+      { id: "spuelmaschine-filter", text: "Filter Spülmaschine reinigen" },
+      { id: "biomuell", text: "Biomüll rausbringen" },
+      { id: "rest-und-wertstoff", text: "Restmüllsack & Wertstoff Säcke rausbringen" }
+    ];
+
+    const BAR_ROUTINE_BASE = [
+      { id: "bar-auffuellen", text: "Bar mit Getränken aus Kühlhaus auffüllen" },
+      { id: "zapfhahn", text: "Zapfhahn reinigen" },
+      { id: "kaffeemaschine", text: "Kaffeemaschine reinigen" },
+      { id: "bar-oberflaeche", text: "Oberfläche Bar reinigen" },
+      { id: "sirup-bereiche", text: "Gründlich in den beiden Sirup-Bereichen reinigen" },
+      { id: "fronten", text: "Fronten reinigen" },
+      { id: "deko-reinholen", text: "Deko reinholen" },
+      { id: "pflanzen-giessen", text: "Pflanzen gießen (je nach Wetter)" },
+      { id: "papiermuell", text: "Papiermüll klein machen & in blaue Tonne werfen" },
+      { id: "stuehle-hochstellen", text: "Stühle hochstellen (wo geputzt werden muss)" },
+      { id: "spuelmaschine-abpumpen", text: "Spülmaschine abpumpen" },
+      { id: "spuelmaschine-filter", text: "Filter Spülmaschine reinigen" },
+      { id: "spuele-oberflaeche", text: "Oberfläche Spüle reinigen" },
+      { id: "geraete-strom", text: "Geräte an Strom hängen" }
+    ];
+
+    const STORAGE_KEY = "clauss-arbeitsablaeufe-test-v2";
+    const defaultState = () => ({
+      level: "normal",
+      checks: {},
+      tasksDone: {},
+      toppingsDone: {},
+      kitchenRoutineDone: {},
+      barRoutineDone: {},
+      checkFilter: "all",
+      todoFilter: "all"
+    });
+    let state = loadState();
+    let activeId = null;
+    let draft = { fill: 100, reserve: 0, ready: true };
+
+    const grid = document.querySelector("#ingredientGrid");
+    const checkFilters = document.querySelector("#checkFilters");
+    const todoFilters = document.querySelector("#todoFilters");
+    const todoFilterWrap = document.querySelector("#todoFilterWrap");
+    const summary = document.querySelector("#summary");
+    const progressBar = document.querySelector("#progressBar");
+    const progressText = document.querySelector("#progressText");
+    const modalBackdrop = document.querySelector("#modalBackdrop");
+    const modalTitle = document.querySelector("#modalTitle");
+    const modalBoxLabel = document.querySelector("#modalBoxLabel");
+    const ruleNote = document.querySelector("#ruleNote");
+    const sliderArea = document.querySelector("#sliderArea");
+    const binaryArea = document.querySelector("#binaryArea");
+    const stockCheck = document.querySelector("#stockCheck");
+    const stockCheckLabel = document.querySelector("#stockCheckLabel");
+    const fillLabel = document.querySelector("#fillLabel");
+    const fillSlider = document.querySelector("#fillSlider");
+    const fillOutput = document.querySelector("#fillOutput");
+    const sliderScale = document.querySelector("#sliderScale");
+    const reserveRow = document.querySelector("#reserveRow");
+    const reserveValue = document.querySelector("#reserveValue");
+    const liveResult = document.querySelector("#liveResult");
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && ["wenig", "normal", "hustle"].includes(saved.level) && saved.checks) {
+          saved.tasksDone = saved.tasksDone || {};
+          saved.toppingsDone = saved.toppingsDone || {};
+          saved.kitchenRoutineDone = saved.kitchenRoutineDone || {};
+          saved.barRoutineDone = saved.barRoutineDone || {};
+          saved.checkFilter = FILTERS.some(filter => filter.id === saved.checkFilter) ? saved.checkFilter : "all";
+          saved.todoFilter = FILTERS.some(filter => filter.id === saved.todoFilter) ? saved.todoFilter : "all";
+          return saved;
+        }
+      } catch (_) {}
+      return defaultState();
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function ingredientById(id) {
+      return INGREDIENTS.find(item => item.id === id);
+    }
+
+    function categoryFor(ingredientOrId) {
+      const id = typeof ingredientOrId === "string" ? ingredientOrId : ingredientOrId.id;
+      return CATEGORY_BY_ID[id];
+    }
+
+    function matchesFilter(category, filter) {
+      return filter === "all" || category === filter;
+    }
+
+    function renderFilterButtons(container, activeFilter, onSelect) {
+      container.innerHTML = "";
+      FILTERS.forEach(filter => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `filter-button${filter.id === activeFilter ? " active" : ""}`;
+        button.textContent = filter.label;
+        button.setAttribute("aria-pressed", String(filter.id === activeFilter));
+        button.addEventListener("click", () => onSelect(filter.id));
+        container.appendChild(button);
+      });
+    }
+
+    function neededFor(ingredient, values) {
+      return ingredient.demand({ ...values, level: state.level, ingredient });
+    }
+
+    function quantityText(quantity, ingredient) {
+      if (!quantity) return "Nichts vorzubereiten";
+      if (ingredient.binary) return ingredient.unit;
+      const rounded = Math.round((quantity + Number.EPSILON) * 100) / 100;
+      const formatted = rounded.toLocaleString("de-DE", { maximumFractionDigits: 2 });
+      return `${formatted} ${rounded > 1 && ingredient.pluralUnit ? ingredient.pluralUnit : ingredient.unit}`;
+    }
+
+    function preparationsFor(ingredient, values) {
+      const actions = [];
+      const quantity = neededFor(ingredient, values);
+      if (quantity > 0) actions.push({
+        key: `${ingredient.id}:box`,
+        text: quantityText(quantity, ingredient),
+        category: categoryFor(ingredient)
+      });
+      if (ingredient.extraActions) {
+        ingredient.extraActions(values).forEach(action => actions.push({
+          key: `${ingredient.id}:${action.code}`,
+          text: action.text,
+          category: categoryFor(ingredient)
+        }));
+      }
+      return actions;
+    }
+
+    function creamPreparations(checks = state.checks) {
+      const hearty = ingredientById("creme-herzhaft");
+      const sweet = ingredientById("creme-suess");
+      const heartyCount = checks[hearty.id]?.coverage ?? hearty.targets[state.level];
+      const sweetCount = checks[sweet.id]?.coverage ?? sweet.targets[state.level];
+      let heartyNeeded = Math.max(hearty.targets[state.level] - heartyCount, 0);
+      const sweetNeeded = Math.max(sweet.targets[state.level] - sweetCount, 0);
+      if ((heartyNeeded + sweetNeeded) % 2 !== 0) heartyNeeded += 1;
+      const actions = [];
+      if (heartyNeeded > 0) actions.push({
+        key: "creme-herzhaft:box",
+        text: quantityText(heartyNeeded, hearty),
+        category: "cream"
+      });
+      if (sweetNeeded > 0) actions.push({
+        key: "creme-suess:box",
+        text: quantityText(sweetNeeded, sweet),
+        category: "cream"
+      });
+      return actions;
+    }
+
+    function allPreparations(checks = state.checks) {
+      return [
+        ...INGREDIENTS.filter(item => !item.id.startsWith("creme-")).flatMap(ingredient =>
+          preparationsFor(ingredient, checks[ingredient.id])
+        ),
+        ...creamPreparations(checks)
+      ];
+    }
+
+    function checkedDescription(ingredient, check) {
+      if (ingredient.checkedText) return ingredient.checkedText(check);
+      if (ingredient.binary) return check.ready ? "Packung liegt bereit" : "Keine Packung bereit";
+      if (ingredient.coverage) {
+        const reserveText = check.reserve === 1 ? "1 Vorratsbox" : `${check.reserve} Vorratsboxen`;
+        if (ingredient.countMode) return `${check.coverage} Eimer vorhanden`;
+        return `Bestand reicht für ${check.coverage} Flammkuchen · ${reserveText}`;
+      }
+      const reserveText = ingredient.noReserve
+        ? ""
+        : ` · ${check.reserve === 1 ? "1 Vorratsbox" : `${check.reserve} Vorratsboxen`}`;
+      const stockText = ingredient.stockCheck
+        ? ` · Vorratspackung ${check.stockReady ? "vorhanden" : "fehlt"}`
+        : "";
+      return `${check.fill} %${reserveText}${stockText}`;
+    }
+
+    function render() {
+      document.querySelectorAll("[data-level]").forEach(button => {
+        const active = button.dataset.level === state.level;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+
+      const completed = Object.keys(state.checks).filter(id => ingredientById(id)).length;
+      progressText.textContent = `${completed} von ${INGREDIENTS.length} geprüft`;
+      progressBar.style.width = `${completed / INGREDIENTS.length * 100}%`;
+
+      renderFilterButtons(checkFilters, state.checkFilter, filter => {
+        state.checkFilter = filter;
+        saveState();
+        render();
+      });
+
+      const remaining = INGREDIENTS.filter(item => !state.checks[item.id]);
+      const visibleIngredients = remaining.filter(item => matchesFilter(categoryFor(item), state.checkFilter));
+      grid.innerHTML = "";
+      visibleIngredients.forEach(ingredient => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = `ingredient-card size-${ingredient.size} category-${categoryFor(ingredient)}`;
+        card.dataset.ingredient = ingredient.id;
+        card.innerHTML = `
+          <span class="box-tag">${ingredient.box}</span>
+          <span class="ingredient-name">${ingredient.name}</span>
+          <span class="card-action">Jetzt prüfen →</span>
+        `;
+        card.addEventListener("click", () => openIngredient(ingredient.id));
+        grid.appendChild(card);
+      });
+
+      if (!visibleIngredients.length && remaining.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = "In dieser Kategorie sind keine Zutaten mehr offen.";
+        grid.appendChild(empty);
+      }
+
+      const complete = completed === INGREDIENTS.length;
+      summary.classList.toggle("visible", complete);
+      if (complete) renderSummary();
+    }
+
+    function renderSummary() {
+      const preparations = allPreparations();
+      const doneCount = preparations.filter(item => state.tasksDone[item.key]).length;
+      const visiblePreparations = preparations.filter(item => matchesFilter(item.category, state.todoFilter));
+
+      todoFilterWrap.hidden = preparations.length === 0;
+      renderFilterButtons(todoFilters, state.todoFilter, filter => {
+        state.todoFilter = filter;
+        saveState();
+        renderSummary();
+      });
+
+      document.querySelector("#summaryIntro").textContent = preparations.length
+        ? `${levelSummary(state.level)} ist Folgendes vorzubereiten (${doneCount} von ${preparations.length} erledigt):`
+        : "Die vorhandenen Bestände reichen für den erwarteten Abend aus.";
+
+      const prepList = document.querySelector("#prepList");
+      prepList.innerHTML = "";
+      if (!preparations.length) {
+        prepList.innerHTML = '<li class="all-good">✓ Aktuell muss nichts zusätzlich vorbereitet werden.</li>';
+      } else if (!visiblePreparations.length) {
+        prepList.innerHTML = '<li class="all-good">In dieser Kategorie gibt es aktuell keine Aufgaben.</li>';
+      } else {
+        visiblePreparations.forEach((preparation, index) => {
+          const li = document.createElement("li");
+          const done = Boolean(state.tasksDone[preparation.key]);
+          li.className = `prep-item category-${preparation.category}${done ? " done" : ""}`;
+          li.innerHTML = `
+            <label class="prep-check">
+              <input type="checkbox" data-task="${preparation.key}" ${done ? "checked" : ""}>
+              <span class="prep-number">${done ? "✓" : index + 1}</span>
+              <strong class="prep-text">${preparation.text}</strong>
+            </label>
+          `;
+          li.querySelector("input").addEventListener("change", event => {
+            state.tasksDone[preparation.key] = event.target.checked;
+            saveState();
+            if (event.target.checked && preparations.every(item => state.tasksDone[item.key])) celebrate();
+            renderSummary();
+          });
+          prepList.appendChild(li);
+        });
+      }
+
+      const checkedList = document.querySelector("#checkedList");
+      checkedList.innerHTML = "";
+      INGREDIENTS.forEach(ingredient => {
+        const li = document.createElement("li");
+        li.className = "checked-item";
+        li.innerHTML = `
+          <span><strong>${ingredient.name}</strong><br><span class="checked-meta">${checkedDescription(ingredient, state.checks[ingredient.id])}</span></span>
+          <button class="edit-button" type="button" data-edit="${ingredient.id}">Ändern</button>
+        `;
+        li.querySelector("button").addEventListener("click", () => openIngredient(ingredient.id));
+        checkedList.appendChild(li);
+      });
+    }
+
+    function levelName(level) {
+      return ({ wenig: "Wenig", normal: "Normal", hustle: "Hustle" })[level];
+    }
+
+    function levelSummary(level) {
+      return ({
+        wenig: "Für einen ruhigen Abend",
+        normal: "Für einen normalen Abend",
+        hustle: "Für einen Hustle-Abend"
+      })[level];
+    }
+
+    let celebrationFrame = null;
+    function celebrate() {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const canvas = document.querySelector("#celebrationCanvas");
+      const context = canvas.getContext("2d");
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(window.innerWidth * ratio);
+      canvas.height = Math.round(window.innerHeight * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      canvas.hidden = false;
+      if (celebrationFrame) cancelAnimationFrame(celebrationFrame);
+
+      const colors = ["#c97d82", "#f2bf62", "#67b98b", "#7fa9dd", "#d591cc", "#fff3cf"];
+      const particles = [];
+      for (let burst = 0; burst < 7; burst += 1) {
+        const centerX = window.innerWidth * (.12 + Math.random() * .76);
+        const centerY = window.innerHeight * (.12 + Math.random() * .42);
+        for (let index = 0; index < 38; index += 1) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 2 + Math.random() * 5;
+          particles.push({
+            x: centerX, y: centerY,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            size: 1.8 + Math.random() * 2.6,
+            life: 1,
+            decay: .012 + Math.random() * .012
+          });
+        }
+      }
+
+      function animate() {
+        context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        context.globalCompositeOperation = "lighter";
+        let alive = false;
+        particles.forEach(particle => {
+          if (particle.life <= 0) return;
+          alive = true;
+          particle.x += particle.vx;
+          particle.y += particle.vy;
+          particle.vy += .055;
+          particle.vx *= .992;
+          particle.life -= particle.decay;
+          context.globalAlpha = Math.max(particle.life, 0);
+          context.fillStyle = particle.color;
+          context.beginPath();
+          context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+          context.fill();
+        });
+        context.globalAlpha = 1;
+        if (alive) celebrationFrame = requestAnimationFrame(animate);
+        else {
+          canvas.hidden = true;
+          celebrationFrame = null;
+        }
+      }
+      animate();
+    }
+
+    function renderToppings() {
+      const toppingsList = document.querySelector("#toppingsList");
+      const doneCount = TOPPINGS.filter(topping => state.toppingsDone[topping]).length;
+      document.querySelector("#toppingsProgress").textContent = `${doneCount} von ${TOPPINGS.length} Toppings geprüft`;
+      toppingsList.innerHTML = "";
+      TOPPINGS.forEach(topping => {
+        const done = Boolean(state.toppingsDone[topping]);
+        const li = document.createElement("li");
+        li.className = `prep-item category-toppings${done ? " done" : ""}`;
+        li.innerHTML = `
+          <label class="prep-check">
+            <input type="checkbox" ${done ? "checked" : ""}>
+            <strong class="prep-text">${topping}</strong>
+          </label>
+        `;
+        li.querySelector("input").addEventListener("change", event => {
+          state.toppingsDone[topping] = event.target.checked;
+          saveState();
+          if (event.target.checked && TOPPINGS.every(item => state.toppingsDone[item])) celebrate();
+          renderToppings();
+        });
+        toppingsList.appendChild(li);
+      });
+    }
+
+    function localDateKey(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function isoWeek(date = new Date()) {
+      const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const weekday = utcDate.getUTCDay() || 7;
+      utcDate.setUTCDate(utcDate.getUTCDate() + 4 - weekday);
+      const yearStart = new Date(Date.UTC(utcDate.getUTCFullYear(), 0, 1));
+      return Math.ceil((((utcDate - yearStart) / 86400000) + 1) / 7);
+    }
+
+    function kitchenRoutineFor(date = new Date()) {
+      const weekday = date.getDay();
+      const week = isoWeek(date);
+      const tasks = KITCHEN_ROUTINE_BASE.slice(0, 11);
+
+      if ([1, 3, 5].includes(weekday)) {
+        tasks.push({ id: "zutaten-schubladen-innen", text: "Schubladen für Zutaten von innen reinigen" });
+      } else {
+        tasks.push({ id: "ofen-auffangblech-fliessband", text: "Ofen Auffangblech & Fließband reinigen" });
+      }
+
+      tasks.push(...KITCHEN_ROUTINE_BASE.slice(11));
+      if (weekday === 1 && week % 2 === 0) tasks.push({ id: "biotonne-strasse", text: "Biotonne an Straße stellen" });
+      if (weekday === 4) tasks.push({ id: "restmuelltonne-strasse", text: "Restmüll Tonne an Straße stellen" });
+      if (weekday === 0 && week % 2 === 1) tasks.push({ id: "wertstofftonne-strasse", text: "Wertstofftonne an Straße stellen" });
+      if ([0, 3].includes(weekday)) tasks.push({ id: "lebensmittel-inventur", text: "Lebensmittel Inventur machen" });
+      return tasks;
+    }
+
+    function barRoutineFor(date = new Date()) {
+      const tasks = [...BAR_ROUTINE_BASE];
+      if (date.getDay() === 1) {
+        tasks.unshift(
+          { id: "glaeser-auf-bar", text: "Alle Gläser auf Bar stellen" },
+          { id: "bar-komplett-reinigen", text: "Komplette Bar Oberfläche reinigen" }
+        );
+        tasks.push({ id: "getraenke-inventur", text: "Getränke Inventur machen" });
+      }
+      if (date.getDay() === 5) tasks.push({ id: "verbrauchsmittel-inventur", text: "Verbrauchsmittel Inventur machen" });
+      return tasks;
+    }
+
+    function renderRoutineList(container, tasks, doneMap, onChange) {
+      container.innerHTML = "";
+      tasks.forEach(task => {
+        const done = Boolean(doneMap[task.id]);
+        const li = document.createElement("li");
+        li.className = `prep-item category-toppings${done ? " done" : ""}`;
+        li.innerHTML = `
+          <label class="prep-check">
+            <input type="checkbox" ${done ? "checked" : ""}>
+            <strong class="prep-text">${task.text}</strong>
+          </label>
+        `;
+        li.querySelector("input").addEventListener("change", event => onChange(task.id, event.target.checked));
+        container.appendChild(li);
+      });
+    }
+
+    function renderKitchenRoutine(date = new Date()) {
+      const key = localDateKey(date);
+      const tasks = kitchenRoutineFor(date);
+      const doneMap = state.kitchenRoutineDone[key] || {};
+      const doneCount = tasks.filter(task => doneMap[task.id]).length;
+      const dateText = date.toLocaleDateString("de-DE", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" });
+      document.querySelector("#kitchenRoutineProgress").textContent = `${dateText} · KW ${isoWeek(date)} · ${doneCount} von ${tasks.length} erledigt`;
+      renderRoutineList(document.querySelector("#kitchenRoutineList"), tasks, doneMap, (id, checked) => {
+        state.kitchenRoutineDone[key] = state.kitchenRoutineDone[key] || {};
+        state.kitchenRoutineDone[key][id] = checked;
+        saveState();
+        if (checked && tasks.every(task => state.kitchenRoutineDone[key][task.id])) celebrate();
+        renderKitchenRoutine(date);
+      });
+    }
+
+    function renderBarRoutine(date = new Date()) {
+      const key = localDateKey(date);
+      const tasks = barRoutineFor(date);
+      const doneMap = state.barRoutineDone[key] || {};
+      const doneCount = tasks.filter(task => doneMap[task.id]).length;
+      const dateText = date.toLocaleDateString("de-DE", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" });
+      document.querySelector("#barRoutineProgress").textContent = `${dateText} · ${doneCount} von ${tasks.length} erledigt`;
+      renderRoutineList(document.querySelector("#barRoutineList"), tasks, doneMap, (id, checked) => {
+        state.barRoutineDone[key] = state.barRoutineDone[key] || {};
+        state.barRoutineDone[key][id] = checked;
+        saveState();
+        if (checked && tasks.every(task => state.barRoutineDone[key][task.id])) celebrate();
+        renderBarRoutine(date);
+      });
+    }
+
+    function openScreen(id) {
+      document.querySelectorAll(".screen").forEach(screen => {
+        screen.hidden = screen.id !== id;
+      });
+      if (id === "ingredientsScreen") render();
+      if (id === "toppingsScreen") renderToppings();
+      if (id === "kitchenRoutineScreen") renderKitchenRoutine();
+      if (id === "barRoutineScreen") renderBarRoutine();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openIngredient(id) {
+      const ingredient = ingredientById(id);
+      const saved = state.checks[id];
+      activeId = id;
+      draft = ingredient.binary
+        ? { ready: saved ? saved.ready : true }
+        : ingredient.coverage
+          ? {
+              coverage: saved ? saved.coverage : ingredient.targets[state.level],
+              reserve: saved ? (saved.reserve ?? 0) : 0
+            }
+        : {
+            fill: saved ? saved.fill : 100,
+            reserve: saved ? saved.reserve : 0,
+            stockReady: ingredient.stockCheck ? (saved ? saved.stockReady !== false : true) : undefined
+          };
+
+      modalTitle.textContent = ingredient.name;
+      modalBoxLabel.textContent = ingredient.box;
+      ruleNote.textContent = `${levelName(state.level)}: ${ingredient.rules[state.level]}`;
+      sliderArea.hidden = Boolean(ingredient.binary);
+      binaryArea.hidden = !ingredient.binary;
+      document.querySelector("#binaryArea .field-label").textContent = ingredient.readyQuestion || "Liegt eine Packung bereit?";
+      document.querySelector("#readyYes").textContent = ingredient.binaryLabels?.yes || "Ja, bereit";
+      document.querySelector("#readyNo").textContent = ingredient.binaryLabels?.no || "Nein";
+      stockCheck.hidden = !ingredient.stockCheck;
+      stockCheckLabel.textContent = ingredient.stockCheck || "";
+      const isCoverage = Boolean(ingredient.coverage);
+      fillLabel.textContent = ingredient.countMode ? "Wie viele Eimer sind vorhanden?" : isCoverage ? "Wie viele Flammkuchen kannst du noch belegen?" : "Aktuelle Box gefüllt";
+      fillSlider.min = "0";
+      fillSlider.max = isCoverage ? String(Math.max(ingredient.targets[state.level] + 4, 10)) : "100";
+      fillSlider.step = isCoverage ? "1" : "5";
+      fillSlider.value = isCoverage ? draft.coverage : (draft.fill ?? 100);
+      sliderScale.innerHTML = isCoverage
+        ? `<span>0</span><span>Soll: ${ingredient.targets[state.level]}</span><span>${fillSlider.max}</span>`
+        : "<span>leer</span><span>halbvoll</span><span>voll</span>";
+      reserveRow.hidden = Boolean(ingredient.noReserve);
+      reserveValue.textContent = draft.reserve ?? 0;
+      updateModal();
+      modalBackdrop.classList.add("open");
+      document.body.style.overflow = "hidden";
+      document.querySelector("#closeModal").focus();
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove("open");
+      document.body.style.overflow = "";
+      activeId = null;
+    }
+
+    function updateModal() {
+      const ingredient = ingredientById(activeId);
+      if (!ingredient) return;
+      fillOutput.textContent = ingredient.coverage
+        ? `${draft.coverage ?? 0} ${ingredient.countMode ? "Eimer" : "Flammkuchen"}`
+        : `${draft.fill ?? 100} %`;
+      reserveValue.textContent = draft.reserve ?? 0;
+      document.querySelectorAll("[data-ready]").forEach(button => {
+        button.classList.toggle("selected", String(draft.ready) === button.dataset.ready);
+      });
+      document.querySelectorAll("[data-stock-ready]").forEach(button => {
+        button.classList.toggle("selected", String(draft.stockReady) === button.dataset.stockReady);
+      });
+      const preparations = ingredient.id.startsWith("creme-")
+        ? creamPreparations({ ...state.checks, [ingredient.id]: draft })
+        : preparationsFor(ingredient, draft);
+      liveResult.classList.toggle("needs-prep", preparations.length > 0);
+      liveResult.innerHTML = preparations.length > 0
+        ? `<strong>Vorbereiten:</strong>${preparations.map(item => item.text).join("<br>")}`
+        : "<strong>Bestand reicht aus.</strong>Für diese Zutat ist nichts zusätzlich vorzubereiten.";
+    }
+
+    document.querySelectorAll("[data-level]").forEach(button => {
+      button.addEventListener("click", () => {
+        state.level = button.dataset.level;
+        state.tasksDone = {};
+        saveState();
+        render();
+      });
     });
 
-    $("addEmployee").addEventListener("click",()=>addEmployee());
-    $("resetAll").addEventListener("click",()=>{
-      if(!confirm("Alle Eingaben löschen?")) return;
-      document.querySelectorAll("input").forEach(i=>i.value="");
-      $("employeeBody").innerHTML = "";
-      addEmployee();
-      showStep(0);
+    fillSlider.addEventListener("input", () => {
+      const ingredient = ingredientById(activeId);
+      if (ingredient.coverage) draft.coverage = Number(fillSlider.value);
+      else draft.fill = Number(fillSlider.value);
+      updateModal();
     });
 
-    makeDots();
-    addEmployee();
-    showStep(0);
+    document.querySelector("#reserveMinus").addEventListener("click", () => {
+      draft.reserve = Math.max(0, (draft.reserve ?? 0) - 1);
+      updateModal();
+    });
+
+    document.querySelector("#reservePlus").addEventListener("click", () => {
+      draft.reserve = Math.min(9, (draft.reserve ?? 0) + 1);
+      updateModal();
+    });
+
+    document.querySelectorAll("[data-ready]").forEach(button => {
+      button.addEventListener("click", () => {
+        draft.ready = button.dataset.ready === "true";
+        updateModal();
+      });
+    });
+
+    document.querySelectorAll("[data-stock-ready]").forEach(button => {
+      button.addEventListener("click", () => {
+        draft.stockReady = button.dataset.stockReady === "true";
+        updateModal();
+      });
+    });
+
+    document.querySelector("#confirmButton").addEventListener("click", () => {
+      Object.keys(state.tasksDone).forEach(key => {
+        if (key.startsWith(`${activeId}:`)) delete state.tasksDone[key];
+      });
+      state.checks[activeId] = { ...draft };
+      saveState();
+      const allIngredientsChecked = INGREDIENTS.every(ingredient => state.checks[ingredient.id]);
+      if (allIngredientsChecked && allPreparations().length === 0) celebrate();
+      closeModal();
+      render();
+    });
+
+    document.querySelector("#closeModal").addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", event => {
+      if (event.target === modalBackdrop) closeModal();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && modalBackdrop.classList.contains("open")) closeModal();
+    });
+
+    document.querySelector("#resetButton").addEventListener("click", () => {
+      if (!confirm("Alle Eingaben löschen und neu beginnen?")) return;
+      state.checks = {};
+      state.tasksDone = {};
+      state.checkFilter = "all";
+      state.todoFilter = "all";
+      saveState();
+      render();
+    });
+
+    document.querySelector("#resetToppings").addEventListener("click", () => {
+      if (!confirm("Alle Toppings-Häkchen entfernen?")) return;
+      state.toppingsDone = {};
+      saveState();
+      renderToppings();
+    });
+
+    document.querySelector("#resetKitchenRoutine").addEventListener("click", () => {
+      if (!confirm("Die heutige Küchen-Abendroutine neu beginnen?")) return;
+      delete state.kitchenRoutineDone[localDateKey()];
+      saveState();
+      renderKitchenRoutine();
+    });
+
+    document.querySelector("#resetBarRoutine").addEventListener("click", () => {
+      if (!confirm("Die heutige Bar-Abendroutine neu beginnen?")) return;
+      delete state.barRoutineDone[localDateKey()];
+      saveState();
+      renderBarRoutine();
+    });
+
+    document.querySelectorAll("[data-open-screen]").forEach(button => {
+      button.addEventListener("click", () => openScreen(button.dataset.openScreen));
+    });
+
+    render();
+    renderToppings();
+    renderKitchenRoutine();
+    renderBarRoutine();
+    openScreen("homeScreen");
   </script>
 </body>
 </html>
