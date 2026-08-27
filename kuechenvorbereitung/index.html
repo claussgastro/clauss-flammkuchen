@@ -962,7 +962,7 @@
         name: "Münsterkäse",
         box: "Box klein · 2 Münsterkäse",
         size: "small",
-        unit: "kleine Box Münsterkäse (2 Münsterkäse schneiden)",
+        unit: "kleine Box Münsterkäse (2 Münsterkäse schneiden) – Schachtel in Regal sammeln für Nicole!",
         thresholds: { wenig: 25, normal: 50, hustle: 90 },
         rules: {
           wenig: "Bei 25 % oder weniger werden 2 Münsterkäse für eine volle Box geschnitten.",
@@ -1444,8 +1444,8 @@
     const CATEGORY_IDS = {
       meat: ["speck", "schinken", "sucuk", "thunfisch", "lachs", "maultaschen", "haehnchenkebab"],
       cheese: ["kaese", "muensterkaese", "mozzarella", "feta", "raclettekaese", "camembert", "ziegenkaese"],
-      vegetable: ["maultaschen-vegetarisch", "zwiebeln", "rote-zwiebeln", "lauchzwiebeln", "champignons", "paprika", "zucchini", "tomaten", "spinat", "knoblauch", "chili", "peperoni", "oliven"],
-      sweet: ["ananas", "datteln", "apfel", "banane", "beerenmischung", "himbeeren", "biscoff-creme", "weisse-schokolade", "mango"],
+      vegetable: ["maultaschen-vegetarisch", "zwiebeln", "rote-zwiebeln", "lauchzwiebeln", "champignons", "paprika", "zucchini", "tomaten", "spinat", "knoblauch", "chili", "peperoni", "oliven", "datteln"],
+      sweet: ["ananas", "apfel", "banane", "beerenmischung", "himbeeren", "biscoff-creme", "weisse-schokolade", "mango"],
       cream: ["creme-herzhaft", "creme-suess"]
     };
 
@@ -1457,7 +1457,8 @@
       "Sonnenblumenkerne", "Kürbiskerne", "Walnüsse", "Preiselbeeren", "Honig", "Pesto",
       "Dressing", "Cocktailsoße", "Alioli", "getrocknete Tomaten", "Avocado", "Schnittlauch", "Petersilie", "Basilikum",
       "Thymian", "Rucola", "Feldsalat", "Zimt & Zucker", "Nutella", "Lotus Kekse",
-      "Schokoraspeln", "Oreo Kekse", "Vanillesoße", "Vanilleeis", "Schokoeis", "Kokosraspeln"
+      "Schokoraspeln", "Oreo Kekse", "Vanillesoße", "Vanilleeis", "Schokoeis", "Kokosraspeln",
+      "Temperaturkontrolle machen"
     ];
 
     const KITCHEN_ROUTINE_BASE = [
@@ -1484,7 +1485,13 @@
       { id: "bar-auffuellen", text: "Bar mit Getränken aus Kühlhaus auffüllen" },
       { id: "sirup-bereiche", text: "Gründlich in den beiden Sirup-Bereichen reinigen" },
       { id: "spuelmaschine-abpumpen", text: "Spülmaschine abpumpen" },
-      { id: "spuelmaschine-filter", text: "Filter Spülmaschine reinigen" }
+      { id: "spuelmaschine-filter", text: "Filter Spülmaschine reinigen" },
+      { id: "fronten", text: "Fronten reinigen" },
+      { id: "deko-reinholen", text: "Deko reinholen" },
+      { id: "stuehle-hochstellen", text: "Stühle hochstellen (wo geputzt werden muss)" },
+      { id: "geraete-strom", text: "Geräte an Strom hängen" },
+      { id: "pflanzen-giessen", text: "Pflanzen gießen (je nach Wetter)" },
+      { id: "papiermuell", text: "Papiermüll klein machen & in blaue Tonne werfen" }
     ];
 
     const STORAGE_KEY = "clauss-arbeitsablaeufe-test-v2";
