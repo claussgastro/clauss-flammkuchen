@@ -288,6 +288,134 @@
       margin-top:10px;
       display:flex;
       justify-content:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .staff-block{
+      margin-top:22px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+    }
+    .staff-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .staff-head h3{
+      margin:0;
+      font-size:1.08rem;
+    }
+    .staff-list{
+      display:grid;
+      gap:12px;
+    }
+    .person-card{
+      background:white;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+    .person-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .person-title{
+      font-weight:900;
+      font-size:1.05rem;
+    }
+    .person-meta{
+      color:var(--muted);
+      font-size:.86rem;
+      margin-top:2px;
+    }
+    .person-pay{
+      text-align:right;
+      font-weight:900;
+      font-size:1.25rem;
+      white-space:nowrap;
+    }
+    .range-wrap{
+      position:relative;
+      height:54px;
+      margin-top:8px;
+    }
+    .range-track{
+      position:absolute;
+      left:0;
+      right:0;
+      top:23px;
+      height:8px;
+      border-radius:999px;
+      background:var(--soft);
+      border:1px solid var(--line);
+    }
+    .range-fill{
+      position:absolute;
+      top:23px;
+      height:8px;
+      border-radius:999px;
+      background:linear-gradient(90deg, var(--accent), #d895a0);
+      pointer-events:none;
+    }
+    input.time-range{
+      position:absolute;
+      left:0;
+      right:0;
+      top:7px;
+      width:100%;
+      height:40px;
+      padding:0;
+      margin:0;
+      background:transparent;
+      border:0;
+      border-radius:0;
+      pointer-events:none;
+      -webkit-appearance:none;
+      appearance:none;
+    }
+    input.time-range:focus{outline:none;}
+    input.time-range::-webkit-slider-runnable-track{
+      height:8px;
+      background:transparent;
+    }
+    input.time-range::-moz-range-track{
+      height:8px;
+      background:transparent;
+    }
+    input.time-range::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      appearance:none;
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      background:white;
+      border:3px solid var(--accent);
+      box-shadow:0 3px 10px rgba(60,40,30,.18);
+      pointer-events:auto;
+      cursor:pointer;
+      margin-top:-11px;
+    }
+    input.time-range::-moz-range-thumb{
+      width:26px;
+      height:26px;
+      border-radius:999px;
+      background:white;
+      border:3px solid var(--accent);
+      box-shadow:0 3px 10px rgba(60,40,30,.18);
+      pointer-events:auto;
+      cursor:pointer;
+    }
+    .scale{
+      display:flex;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:.75rem;
+      margin-top:3px;
     }
     .big-next{
       margin-top:18px;
@@ -473,7 +601,7 @@
 
       <div class="input-row">
         <div>
-          <label for="cashSollStep">Ein-/Auszahlungen Bargeld</label>
+          <label for="cashSollStep">Zahlungen in Bargeld</label>
           <input id="cashSollStep" type="text" inputmode="decimal" placeholder="z. B. 500">
           <div class="hint">Das ist der Bargeld-Soll-Wert aus der Odoo-Kasse.</div>
         </div>
@@ -566,7 +694,7 @@
         <div>
           <span class="step-number">Schritt 6</span>
           <h2>Trinkgeld verteilen</h2>
-          <p class="muted">Die Werte sind vorausgefüllt und können hier noch geändert werden. 15 % vom Trinkgeld gehen an die Küche, der Rest wird nach Arbeitszeit auf Service/Bar verteilt.</p>
+          <p class="muted">15 % vom Trinkgeld gehen an die Küche. Der Rest wird nach Arbeitszeit auf Service/Bar verteilt.</p>
         </div>
       </div>
 
@@ -583,63 +711,29 @@
           Service/Bar
           <strong id="staffShare">0 €</strong>
         </div>
-
       </div>
 
-      <h3 class="section-title">Bargeld</h3>
-      <div class="edit-grid">
-        <div>
-          <label for="cashSollFinal">Ein-/Auszahlungen Bargeld</label>
-          <input id="cashSollFinal" type="text" inputmode="decimal">
+      <div class="staff-block">
+        <div class="staff-head">
+          <div>
+            <h3>Küche</h3>
+            <div class="hint">Zeitbereich: 14:00 bis 01:00 Uhr</div>
+          </div>
+          <button id="addKitchen" type="button">+ Küche</button>
         </div>
-        <div>
-          <label for="cashCountedFinal">Bargeld gezählt</label>
-          <input id="cashCountedFinal" type="text" inputmode="decimal">
-        </div>
-        <div>
-          <label>Bargeld-Trinkgeld</label>
-          <div id="cashTipDisplay" class="calculated-box">0 €</div>
-        </div>
+        <div id="kitchenList" class="staff-list"></div>
       </div>
 
-      <h3 class="section-title">Karte</h3>
-      <div class="edit-grid">
-        <div>
-          <label for="cardSollFinal">Karte Anzahl</label>
-          <input id="cardSollFinal" type="text" inputmode="decimal">
+      <div class="staff-block">
+        <div class="staff-head">
+          <div>
+            <h3>Service/Bar</h3>
+            <div class="hint">Zeitbereich: 16:00 bis 01:00 Uhr</div>
+          </div>
+          <button id="addService" type="button">+ Service</button>
         </div>
-        <div>
-          <label for="cardCountedFinal">Karte gezählt</label>
-          <input id="cardCountedFinal" type="text" inputmode="decimal">
-        </div>
-        <div>
-          <label>Karten-Trinkgeld</label>
-          <div id="cardTipDisplay" class="calculated-box">0 €</div>
-        </div>
+        <div id="serviceList" class="staff-list"></div>
       </div>
-
-      <h3 class="section-title">Service/Bar</h3>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Beginn</th>
-            <th>Ende</th>
-            <th>Stunden direkt</th>
-            <th>Stunden</th>
-            <th>Auszahlung</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="employeeBody"></tbody>
-      </table>
-
-      <div class="employee-add-row">
-        <button id="addEmployee" type="button">+ Mitarbeiter</button>
-      </div>
-
-      <div id="finalNotice" class="notice small"></div>
 
       <div class="actions">
         <button class="secondary" type="button" data-prev>Zurück</button>
@@ -668,12 +762,6 @@
     function fmt0(v){ return euro0.format(Math.round(Number(v)||0)); }
     function fmt2(v){ return euro2.format(Number(v)||0); }
     function fmtH(v){ return hourFmt.format(Number(v)||0) + " h"; }
-    function signedEuro(v){
-      const rounded = Math.round(Number(v)||0);
-      if(rounded > 0) return "+" + fmt0(rounded);
-      if(rounded < 0) return "-" + fmt0(Math.abs(rounded));
-      return "0 €";
-    }
     function signedEuro2(v){
       const value = Number(v) || 0;
       if(Math.abs(value) < 0.005) return "0,00 €";
@@ -692,117 +780,15 @@
         d.classList.toggle("active", i === currentStep);
         d.classList.toggle("done", i < currentStep);
       });
-      syncFinalFields();
       calculate();
       window.scrollTo({top:0,behavior:"smooth"});
     }
 
-    function syncFinalFields(){
-      const pairs = [
-        ["cashCountedStep","cashCountedFinal"],
-        ["cardCountedStep","cardCountedFinal"],
-        ["cashSollStep","cashSollFinal"],
-        ["cardSollStep","cardSollFinal"]
-      ];
-      pairs.forEach(([from,to])=>{
-        if($(from) && $(to) && $(to).value.trim()==="") $(to).value = $(from).value;
-      });
-    }
-
-    function updateFromFinal(){
-      [["cashCountedFinal","cashCountedStep"],["cardCountedFinal","cardCountedStep"],["cashSollFinal","cashSollStep"],["cardSollFinal","cardSollStep"]]
-        .forEach(([from,to])=>{ if($(from).value.trim() !== "") $(to).value = $(from).value; });
-    }
-
     function calculatedTip(prefix){
-      const soll = parseDecimal($(prefix+"SollFinal").value);
-      const counted = parseDecimal($(prefix+"CountedFinal").value);
+      const soll = parseDecimal($(prefix+"SollStep").value);
+      const counted = parseDecimal($(prefix+"CountedStep").value);
       if(soll !== null && counted !== null) return counted - soll;
       return 0;
-    }
-
-    function timeToMinutes(t){
-      if(!t) return null;
-      const [h,m] = t.split(":").map(Number);
-      if(!Number.isFinite(h) || !Number.isFinite(m)) return null;
-      return h*60+m;
-    }
-
-    function employeeHours(row){
-      const direct = parseDecimal(row.querySelector(".direct-hours").value);
-      if(direct !== null && direct > 0) return {hours:direct,note:"direkt"};
-      const start = timeToMinutes(row.querySelector(".start-time").value);
-      const end = timeToMinutes(row.querySelector(".end-time").value);
-      if(start === null || end === null) return {hours:0,note:"Zeit fehlt"};
-      let minutes = end - start;
-      if(minutes <= 0) minutes += 1440;
-      const raw = minutes / 60;
-      let pause = 0;
-      if(raw > 9) pause = 0.75;
-      else if(raw > 6) pause = 0.5;
-      return {hours:Math.max(0, raw - pause), note: pause ? "Pause: " + fmtH(pause) : "keine Pause"};
-    }
-
-    function distribute(amount, employees){
-      const rounded = Math.max(0, Math.round(amount));
-      const payouts = Array(employees.length).fill(0);
-      const totalHours = employees.reduce((s,e)=>s+e.hours,0);
-      if(rounded <= 0 || totalHours <= 0) return payouts;
-      const parts = employees.map((e,i)=>{
-        const ideal = rounded * e.hours / totalHours;
-        return {i, base:Math.floor(ideal), rest:ideal-Math.floor(ideal), hours:e.hours};
-      });
-      parts.forEach(p=>payouts[p.i]=p.base);
-      let remaining = rounded - payouts.reduce((s,v)=>s+v,0);
-      parts.sort((a,b)=>b.rest-a.rest || b.hours-a.hours || a.i-b.i);
-      let pos=0;
-      while(remaining>0){
-        payouts[parts[pos % parts.length].i]++;
-        remaining--;
-        pos++;
-      }
-      return payouts;
-    }
-
-    function calculate(){
-      updateCloseHelp();
-      updateTipPreview();
-
-      const cash = calculatedTip("cash");
-      const card = calculatedTip("card");
-      $("cashTipDisplay").textContent = fmt2(cash);
-      $("cardTipDisplay").textContent = fmt2(card);
-      const total = Math.max(0, Math.round(cash + card));
-      const kitchen = Math.round(total * 0.15);
-      const staff = total - kitchen;
-
-      $("totalTip").textContent = fmt0(total);
-      $("kitchenShare").textContent = fmt0(kitchen);
-      $("staffShare").textContent = fmt0(staff);
-
-      const rows = Array.from($("employeeBody").querySelectorAll("tr"));
-      const employeesAll = rows.map(row=>{
-        const h = employeeHours(row);
-        row.querySelector(".computed-hours").textContent = fmtH(h.hours);
-        row.querySelector(".pause-note").textContent = h.note;
-        return {row, hours:h.hours};
-      });
-
-      const active = employeesAll.filter(e=>e.hours > 0);
-      const payouts = distribute(staff, active);
-      let j = 0;
-      let payoutSum = 0;
-      employeesAll.forEach(e=>{
-        let p = 0;
-        if(e.hours > 0) p = payouts[j++] || 0;
-        payoutSum += p;
-        e.row.querySelector(".payout").textContent = fmt0(p);
-      });
-
-
-      let text = `Küche bekommt ${fmt0(kitchen)}. Für Service/Bar bleiben ${fmt0(staff)}.`;
-      if(staff > 0 && active.length === 0) text += " Bitte Mitarbeiterzeiten eintragen.";
-      $("finalNotice").textContent = text;
     }
 
     function updateTipPreview(){
@@ -858,20 +844,193 @@
         $("closeInstruction").textContent = `Bei Karte Anzahl ${fmt2(cardCounted)} eintragen. Dadurch entsteht eine Kartendifferenz von ${signedEuro2(diff)}. Beim Bargeld muss ${fmt2(Math.abs(diff))} addiert werden.`;
       }
     }
-    function addEmployee(data={}){
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td data-label="Name"><input class="employee-name" type="text" placeholder="Name" value="${data.name || ""}"></td>
-        <td data-label="Beginn"><input class="start-time" type="time" value="${data.start || ""}"></td>
-        <td data-label="Ende"><input class="end-time" type="time" value="${data.end || ""}"></td>
-        <td data-label="Stunden direkt"><input class="direct-hours" type="text" inputmode="decimal" placeholder="z. B. 5,5" value="${data.hours || ""}"></td>
-        <td data-label="Stunden"><div class="computed-hours">0,00 h</div><div class="pause-note">Zeit fehlt</div></td>
-        <td data-label="Auszahlung"><div class="payout">0 €</div></td>
-        <td data-label="Entfernen"><button class="danger remove" type="button">×</button></td>
+
+    function distribute(amount, people){
+      const rounded = Math.max(0, Math.round(amount));
+      const payouts = Array(people.length).fill(0);
+      const totalHours = people.reduce((s,p)=>s+p.hours,0);
+      if(rounded <= 0 || totalHours <= 0) return payouts;
+
+      const parts = people.map((p,i)=>{
+        const ideal = rounded * p.hours / totalHours;
+        return {i, base:Math.floor(ideal), rest:ideal-Math.floor(ideal), hours:p.hours};
+      });
+
+      parts.forEach(p=>payouts[p.i]=p.base);
+      let remaining = rounded - payouts.reduce((s,v)=>s+v,0);
+      parts.sort((a,b)=>b.rest-a.rest || b.hours-a.hours || a.i-b.i);
+
+      let pos=0;
+      while(remaining>0){
+        payouts[parts[pos % parts.length].i]++;
+        remaining--;
+        pos++;
+      }
+      return payouts;
+    }
+
+    function minutesToTime(total){
+      total = Math.round(total);
+      const h = Math.floor(total / 60) % 24;
+      const m = total % 60;
+      return String(h).padStart(2,"0") + ":" + String(m).padStart(2,"0");
+    }
+
+    function formatDuration(hours){
+      return hourFmt.format(hours) + " h";
+    }
+
+    function makePersonCard(type){
+      const list = type === "service" ? $("serviceList") : $("kitchenList");
+      const min = type === "service" ? 16 * 60 : 14 * 60;
+      const max = 25 * 60;
+      const defaultStart = type === "service" ? 17 * 60 : 15 * 60;
+      const defaultEnd = 23 * 60;
+
+      const card = document.createElement("div");
+      card.className = "person-card";
+      card.dataset.type = type;
+      card.dataset.min = min;
+      card.dataset.max = max;
+      card.innerHTML = `
+        <div class="person-top">
+          <div>
+            <div class="person-title"></div>
+            <div class="person-meta"></div>
+          </div>
+          <div>
+            <div class="person-pay">0 €</div>
+            <button class="danger remove-person" type="button">×</button>
+          </div>
+        </div>
+        <div class="range-wrap">
+          <div class="range-track"></div>
+          <div class="range-fill"></div>
+          <input class="time-range start-range" type="range" min="${min}" max="${max}" step="15" value="${defaultStart}">
+          <input class="time-range end-range" type="range" min="${min}" max="${max}" step="15" value="${defaultEnd}">
+        </div>
+        <div class="scale">
+          <span>${minutesToTime(min)}</span>
+          <span>${minutesToTime((min + max) / 2)}</span>
+          <span>01:00</span>
+        </div>
       `;
-      row.querySelector(".remove").addEventListener("click",()=>{ row.remove(); calculate(); });
-      $("employeeBody").appendChild(row);
+
+      card.querySelector(".remove-person").addEventListener("click", () => {
+        card.remove();
+        renumberPeople();
+        calculate();
+      });
+
+      card.querySelectorAll(".time-range").forEach(input => {
+        input.addEventListener("input", () => {
+          keepRangeOrder(card, input.classList.contains("start-range") ? "start" : "end");
+          calculate();
+        });
+      });
+
+      list.appendChild(card);
+      renumberPeople();
       calculate();
+    }
+
+    function keepRangeOrder(card, moved){
+      const startInput = card.querySelector(".start-range");
+      const endInput = card.querySelector(".end-range");
+      let start = Number(startInput.value);
+      let end = Number(endInput.value);
+
+      if(start >= end){
+        if(moved === "start"){
+          start = end - 15;
+          startInput.value = start;
+        } else {
+          end = start + 15;
+          endInput.value = end;
+        }
+      }
+    }
+
+    function personHours(card){
+      const start = Number(card.querySelector(".start-range").value);
+      const end = Number(card.querySelector(".end-range").value);
+      const raw = Math.max(0, (end - start) / 60);
+      let pause = 0;
+      if(raw > 9) pause = 0.75;
+      else if(raw > 6) pause = 0.5;
+      return {
+        start,
+        end,
+        pause,
+        hours: Math.max(0, raw - pause)
+      };
+    }
+
+    function updatePersonCard(card, payout){
+      const info = personHours(card);
+      const min = Number(card.dataset.min);
+      const max = Number(card.dataset.max);
+      const span = max - min;
+      const left = ((info.start - min) / span) * 100;
+      const right = ((info.end - min) / span) * 100;
+
+      const fill = card.querySelector(".range-fill");
+      fill.style.left = left + "%";
+      fill.style.width = Math.max(0, right - left) + "%";
+
+      const pauseText = info.pause > 0 ? ` · Pause ${formatDuration(info.pause)}` : "";
+      card.querySelector(".person-meta").textContent =
+        `${minutesToTime(info.start)} – ${minutesToTime(info.end)} · ${formatDuration(info.hours)}${pauseText}`;
+      card.querySelector(".person-pay").textContent = fmt0(payout || 0);
+    }
+
+    function renumberPeople(){
+      ["kitchen", "service"].forEach(type => {
+        const list = type === "service" ? $("serviceList") : $("kitchenList");
+        const label = type === "service" ? "Service" : "Küche";
+        Array.from(list.children).forEach((card, i) => {
+          card.querySelector(".person-title").textContent = `${label} ${i + 1}`;
+        });
+      });
+    }
+
+    function getPeople(type){
+      const list = type === "service" ? $("serviceList") : $("kitchenList");
+      return Array.from(list.children).map(card => {
+        const h = personHours(card);
+        return {card, hours:h.hours};
+      }).filter(p => p.hours > 0);
+    }
+
+    function calculate(){
+      updateCloseHelp();
+      updateTipPreview();
+
+      const cash = calculatedTip("cash");
+      const card = calculatedTip("card");
+      const total = Math.max(0, Math.round(cash + card));
+      const kitchen = Math.round(total * 0.15);
+      const staff = total - kitchen;
+
+      $("totalTip").textContent = fmt0(total);
+      $("kitchenShare").textContent = fmt0(kitchen);
+      $("staffShare").textContent = fmt0(staff);
+
+      const kitchenPeople = getPeople("kitchen");
+      const servicePeople = getPeople("service");
+
+      const kitchenPayouts = distribute(kitchen, kitchenPeople);
+      const servicePayouts = distribute(staff, servicePeople);
+
+      kitchenPeople.forEach((p,i) => updatePersonCard(p.card, kitchenPayouts[i] || 0));
+      servicePeople.forEach((p,i) => updatePersonCard(p.card, servicePayouts[i] || 0));
+
+      Array.from($("kitchenList").children).forEach(card => {
+        if(!kitchenPeople.some(p => p.card === card)) updatePersonCard(card, 0);
+      });
+      Array.from($("serviceList").children).forEach(card => {
+        if(!servicePeople.some(p => p.card === card)) updatePersonCard(card, 0);
+      });
     }
 
     document.addEventListener("click", e=>{
@@ -881,32 +1040,25 @@
 
     document.addEventListener("input", e=>{
       if(e.target.matches("input")){
-        if(["cashCountedStep","cardCountedStep","cashSollStep","cardSollStep"].includes(e.target.id)){
-          const map = {
-            cashCountedStep:"cashCountedFinal",
-            cardCountedStep:"cardCountedFinal",
-            cashSollStep:"cashSollFinal",
-            cardSollStep:"cardSollFinal"
-          };
-          $(map[e.target.id]).value = e.target.value;
-          // Trinkgeld wird aus Soll/Gezählt automatisch berechnet.
-        }
-        // Finale Trinkgeldsummen bleiben reine Berechnung aus Soll/Gezählt.
         calculate();
       }
     });
 
-    $("addEmployee").addEventListener("click",()=>addEmployee());
+    $("addKitchen").addEventListener("click",()=>makePersonCard("kitchen"));
+    $("addService").addEventListener("click",()=>makePersonCard("service"));
     $("resetAll").addEventListener("click",()=>{
       if(!confirm("Alle Eingaben löschen?")) return;
       document.querySelectorAll("input").forEach(i=>i.value="");
-      $("employeeBody").innerHTML = "";
-      addEmployee();
+      $("serviceList").innerHTML = "";
+      $("kitchenList").innerHTML = "";
+      makePersonCard("kitchen");
+      makePersonCard("service");
       showStep(0);
     });
 
     makeDots();
-    addEmployee();
+    makePersonCard("kitchen");
+    makePersonCard("service");
     showStep(0);
   </script>
 </body>
