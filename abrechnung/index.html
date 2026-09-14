@@ -621,7 +621,7 @@
         <div class="preview-box">
           Erwartetes Trinkgeld
           <strong id="expectedTip">0 €</strong>
-          <div class="hint">8 % vom Odoo-Umsatz, gerundet.</div>
+          <div class="hint">7 % vom Odoo-Umsatz, gerundet.</div>
         </div>
       </div>
 
@@ -798,7 +798,7 @@
       const cardCounted = parseDecimal($("cardCountedStep").value);
 
       const odooRevenue = (cashSoll || 0) + (cardSoll || 0);
-      const expected = Math.round(odooRevenue * 0.08);
+      const expected = Math.round(odooRevenue * 0.07);
 
       let preview = 0;
       if(cashSoll !== null && cardSoll !== null && cashCounted !== null && cardCounted !== null){
@@ -880,12 +880,38 @@
       return hourFmt.format(hours) + " h";
     }
 
+    function currentRoundedMinutes(){
+      const now = new Date();
+      let minutes = now.getHours() * 60 + now.getMinutes();
+      minutes = Math.round(minutes / 15) * 15;
+      if(minutes < 6 * 60) minutes += 24 * 60;
+      return minutes;
+    }
+
     function makePersonCard(type){
       const list = type === "service" ? $("serviceList") : $("kitchenList");
       const min = type === "service" ? 16 * 60 : 14 * 60;
       const max = 25 * 60;
-      const defaultStart = type === "service" ? 17 * 60 : 15 * 60;
-      const defaultEnd = 23 * 60;
+      const existingCount = list.children.length;
+
+      let defaultStart;
+      let defaultEnd;
+
+      if(type === "kitchen"){
+        defaultStart = 15 * 60;
+        defaultEnd = currentRoundedMinutes();
+      } else {
+        if(existingCount >= 2){
+          defaultStart = 18 * 60;
+          defaultEnd = 21 * 60;
+        } else {
+          defaultStart = 16 * 60 + 30;
+          defaultEnd = currentRoundedMinutes();
+        }
+      }
+
+      defaultStart = Math.max(min, Math.min(defaultStart, max - 15));
+      defaultEnd = Math.max(defaultStart + 15, Math.min(defaultEnd, max));
 
       const card = document.createElement("div");
       card.className = "person-card";
@@ -933,7 +959,6 @@
       renumberPeople();
       calculate();
     }
-
     function keepRangeOrder(card, moved){
       const startInput = card.querySelector(".start-range");
       const endInput = card.querySelector(".end-range");
@@ -1053,11 +1078,13 @@
       $("kitchenList").innerHTML = "";
       makePersonCard("kitchen");
       makePersonCard("service");
+      makePersonCard("service");
       showStep(0);
     });
 
     makeDots();
     makePersonCard("kitchen");
+    makePersonCard("service");
     makePersonCard("service");
     showStep(0);
   </script>
