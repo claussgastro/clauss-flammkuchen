@@ -1689,12 +1689,16 @@ h1 { font-size:clamp(1.75rem,4.4vw,2.65rem); line-height:1.12; }
         box: "Box lang groß",
         size: "long-large",
         unit: "lange große Box Speck",
+        stockCheck: "Liegt ein Nachfüllpack Speck bereit?",
         rules: {
-          wenig: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist.",
-          normal: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist.",
-          hustle: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist."
+          wenig: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist. Zusätzlich prüfen, ob ein Nachfüllpack bereitliegt.",
+          normal: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist. Zusätzlich prüfen, ob ein Nachfüllpack bereitliegt.",
+          hustle: "Nur vorbereiten, wenn die aktuelle Box ganz leer und keine Vorratsbox vorhanden ist. Zusätzlich prüfen, ob ein Nachfüllpack bereitliegt."
         },
-        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0)
+        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
+        extraActions: ({ stockReady }) => !stockReady
+          ? [{ code: "pack", text: "Speck Nachfüllpack bereitlegen" }]
+          : []
       },
       {
         id: "schinken",
@@ -1930,13 +1934,13 @@ h1 { font-size:clamp(1.75rem,4.4vw,2.65rem); line-height:1.12; }
         pluralUnit: "lange große Boxen rote Zwiebeln",
         rules: {
           wenig: "1 neue Box vorbereiten, bei 50 % oder weniger 2 Boxen.",
-          normal: "Bei 90 % oder weniger 1 neue Box vorbereiten, sonst 2 Boxen.",
+          normal: "Über 90 % 1 neue Box vorbereiten, bei 90 % oder weniger 2 Boxen.",
           hustle: "Immer 2 neue Boxen vorbereiten, bei 30 % oder weniger 3 Boxen."
         },
         demand: ({ fill, reserve, level }) => {
           let target;
           if (level === "wenig") target = fill <= 50 ? 2 : 1;
-          if (level === "normal") target = fill <= 90 ? 1 : 2;
+          if (level === "normal") target = fill > 90 ? 1 : 2;
           if (level === "hustle") target = fill <= 30 ? 3 : 2;
           return Math.max(target - reserve, 0);
         }
@@ -2262,21 +2266,17 @@ h1 { font-size:clamp(1.75rem,4.4vw,2.65rem); line-height:1.12; }
         }
       },
       {
-        id: "mango",
-        name: "Mango",
-        box: "Box klein · TK",
-        size: "small",
-        unit: "kleine Box Mango auffüllen",
-        stockCheck: "Liegt ein Nachfüllpack Mango im TK?",
+        id: "crispy-chicken",
+        name: "Crispy Chicken",
+        box: "Box groß",
+        size: "large",
+        unit: "große Box Crispy Chicken vorbereiten",
         rules: {
-          wenig: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
-          normal: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt.",
-          hustle: "Bei leerer Box auffüllen und prüfen, ob ein Nachfüllpack im TK liegt."
+          wenig: "Bei weniger als 90 % eine neue große Box vorbereiten.",
+          normal: "Bei weniger als 90 % eine neue große Box vorbereiten.",
+          hustle: "Bei weniger als 90 % eine neue große Box vorbereiten."
         },
-        demand: ({ fill, reserve }) => Math.max((fill === 0 ? 1 : 0) - reserve, 0),
-        extraActions: ({ stockReady }) => !stockReady
-          ? [{ code: "pack", text: "1 Nachfüllpack Mango in den TK legen" }]
-          : []
+        demand: ({ fill, reserve }) => Math.max((fill < 90 ? 1 : 0) - reserve, 0)
       }
     ];
 
@@ -2290,10 +2290,10 @@ h1 { font-size:clamp(1.75rem,4.4vw,2.65rem); line-height:1.12; }
     ];
 
     const CATEGORY_IDS = {
-      meat: ["speck", "schinken", "sucuk", "thunfisch", "lachs", "maultaschen", "haehnchenkebab"],
+      meat: ["speck", "schinken", "sucuk", "thunfisch", "lachs", "maultaschen", "haehnchenkebab", "crispy-chicken"],
       cheese: ["kaese", "muensterkaese", "mozzarella", "feta", "raclettekaese", "camembert", "ziegenkaese"],
       vegetable: ["maultaschen-vegetarisch", "zwiebeln", "rote-zwiebeln", "lauchzwiebeln", "champignons", "paprika", "zucchini", "tomaten", "spinat", "knoblauch", "chili", "peperoni", "oliven", "datteln"],
-      sweet: ["ananas", "apfel", "banane", "beerenmischung", "himbeeren", "biscoff-creme", "weisse-schokolade", "mango"],
+      sweet: ["ananas", "apfel", "banane", "beerenmischung", "himbeeren", "biscoff-creme", "weisse-schokolade"],
       other: ["creme-herzhaft", "creme-suess"]
     };
 
@@ -2303,9 +2303,9 @@ h1 { font-size:clamp(1.75rem,4.4vw,2.65rem); line-height:1.12; }
 
     const TOPPINGS = [
       "Sonnenblumenkerne", "Kürbiskerne", "Walnüsse", "Preiselbeeren", "Honig", "Pesto",
-      "Dressing", "Cocktailsoße", "Alioli", "getrocknete Tomaten", "Avocado", "Schnittlauch", "Petersilie", "Basilikum",
-      "Thymian", "Rucola", "Feldsalat", "Zimt & Zucker", "Nutella", "Lotus Kekse",
-      "Schokoraspeln", "Oreo Kekse", "Vanillesoße", "Vanilleeis", "Schokoeis", "Kokosraspeln"
+      "Dressing", "Caesar Dressing", "Parmesan", "Cocktailsoße", "Alioli", "getrocknete Tomaten", "Avocado", "Schnittlauch", "Petersilie", "Basilikum",
+      "Thymian", "Rucola", "Feldsalat", "Eisbergsalat", "Zimt & Zucker", "Nutella", "Lotus Kekse",
+      "Schokoraspeln", "Oreo Kekse", "Vanillesoße", "Vanilleeis", "Smarties", "Cookies"
     ];
 
     const KITCHEN_ROUTINE_BASE = [
@@ -2340,7 +2340,8 @@ h1 { font-size:clamp(1.75rem,4.4vw,2.65rem); line-height:1.12; }
       { id: "spuelmaschine-abpumpen", text: "Spülmaschine abpumpen" },
       { id: "spuelmaschine-filter", text: "Filter Spülmaschine reinigen" },
       { id: "spuele-oberflaeche", text: "Oberfläche Spüle reinigen" },
-      { id: "geraete-strom", text: "Geräte an Strom hängen" }
+      { id: "geraete-strom", text: "Geräte an Strom hängen" },
+      { id: "bad-spiegellicht-aus", text: "Spiegel Licht im Bad ausschalten" }
     ];
 
     const STORAGE_KEY = "clauss-arbeitsablaeufe-test-v2";
@@ -2823,7 +2824,8 @@ h1 { font-size:clamp(1.75rem,4.4vw,2.65rem); line-height:1.12; }
       { id: "minze", text: "Minze vorbereiten (bei Bedarf)" },
       { id: "tische-verschieben", text: "Tische verschieben (je nach Reservierungen)" },
       { id: "tische-eindecken", text: "Tische eindecken" },
-      { id: "deko", text: "Deko rausstellen" }
+      { id: "deko", text: "Deko rausstellen" },
+      { id: "bad-spiegellicht-an", text: "Spiegel Licht im Bad anschalten" }
     ];
     function renderBarPrep(date = new Date()) {
       const key = localDateKey(date);
