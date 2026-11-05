@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Iglu reservieren | Clauß Flammkuchen in Bretten</title>
-<meta name="description" content="Reserviert unser Glas-Iglu auf der Terrasse bei Clauß in Bretten.">
+<meta name="description" content="Reserviert unser Iglu auf der Terrasse bei Clauß in Bretten, den ganzen Abend nur für euch.">
 <style>
 /* Farben und Schriften wie auf clauss-flammkuchen.de */
 :root {
@@ -31,9 +31,18 @@ body {
 a { color: inherit; text-underline-offset: 3px; }
 :focus-visible { outline: 2px solid var(--tinte); outline-offset: 2px; }
 
+/* exakt wie .promo-bar auf der Startseite */
 .balken {
-  background: var(--rosa); text-align: center; padding: 9px 16px;
-  font-family: var(--serif); font-size: 16px;
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(216, 179, 193, .7); color: var(--tinte); text-align: center;
+  padding: 14px 20px; font-family: var(--serif); font-size: clamp(1rem, 1.8vw, 1.2rem); line-height: 1.3;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(17, 17, 17, .12);
+}
+.balken a { text-decoration: underline; text-underline-offset: .12em; }
+.balken a:hover { opacity: .65; }
+@media (max-width: 560px) {
+  .balken { padding: 14px 18px; font-size: 1rem; }
 }
 .kopf { max-width: 980px; margin: 0 auto; padding: 22px 16px 16px; text-align: center; border-bottom: 1px solid var(--linie); }
 .logo { display: inline-block; text-decoration: none; }
@@ -48,19 +57,21 @@ a { color: inherit; text-underline-offset: 3px; }
   max-width: 980px; margin: 0 auto; padding: 28px 16px 56px;
   display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; align-items: start;
 }
-.buehne { position: sticky; top: 24px; text-align: center; }
+.buehne { position: sticky; top: 76px; text-align: center; }
 .kuppel { display: block; width: 100%; max-width: 380px; margin: 0 auto 14px; overflow: visible; }
 .facette {
-  fill: transparent; stroke: var(--tinte); stroke-width: 1.5; stroke-linejoin: round;
+  fill: transparent; stroke: var(--tinte); stroke-width: 1.3; stroke-linejoin: round;
   transition: fill .45s ease var(--v, 0ms);
 }
 .facette.an { fill: var(--rosa); }
+.facette.grund { stroke: none; }
+.kuppel-rand { fill: none; stroke: var(--tinte); stroke-width: 2; }
 .kuppel .strich { stroke: var(--tinte); stroke-width: 1.5; stroke-linecap: round; fill: none; }
-.buehne .lead { font: 21px/1.35 var(--serif); margin: 4px auto 0; max-width: 24em; }
-.fakten { color: var(--grau); margin: 10px auto 0; max-width: 26em; font-size: 16px; }
-.hinweis-gast { margin: 14px auto 0; max-width: 26em; font: 17px/1.4 var(--serif); }
+.buehne .lead { font: 21px/1.35 var(--serif); margin: 4px auto 0; max-width: 24em; text-wrap: balance; }
+.fakten { color: var(--grau); margin: 10px auto 0; max-width: 26em; font-size: 16px; text-wrap: balance; }
+.hinweis-gast { margin: 6px auto 0; max-width: 26em; font: 17px/1.4 var(--serif); }
 
-.schritt { padding: 0 0 26px; margin: 0 0 26px; border-bottom: 1px solid var(--linie); }
+.schritt { scroll-margin-top: 66px; padding: 0 0 26px; margin: 0 0 26px; border-bottom: 1px solid var(--linie); }
 .schritt:last-child { border-bottom: 0; margin-bottom: 0; }
 .schritt h2 { font: 400 15px/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; margin: 0 0 14px; }
 .schritt .gewaehlt { font: 21px/1.3 var(--serif); letter-spacing: 0; text-transform: none; display: block; margin-top: 2px; }
@@ -73,6 +84,25 @@ a { color: inherit; text-underline-offset: 3px; }
 }
 .pfeil:disabled { color: var(--linie); cursor: default; }
 .kalender { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.kalender-rahmen { position: relative; }
+.kalender-rahmen:has(.lader:not([hidden])) { min-height: 340px; }
+.kalender.laedt { opacity: .3; }
+.lader {
+  position: absolute; left: 50%; top: 110px; transform: translate(-50%, -50%);
+  display: flex; align-items: center; gap: 12px; white-space: nowrap;
+  background: var(--papier); border: 1px solid var(--tinte); padding: 12px 18px;
+  font: 19px/1.2 var(--serif);
+}
+.waben-lader { flex: none; width: 46px; height: 46px; overflow: visible; }
+.waben-lader polygon {
+  fill: transparent; stroke: var(--tinte); stroke-width: 2; stroke-linejoin: round;
+  animation: wabe 3s step-end infinite; animation-delay: var(--v);
+}
+.laed-zeile { display: flex; align-items: center; gap: 12px; }
+@keyframes wabe {
+  0% { fill: var(--rosa); }
+  16.67% { fill: transparent; }
+}
 .wt { text-align: center; color: var(--grau); font-size: 14px; padding-bottom: 4px; }
 .tag {
   aspect-ratio: 1; min-height: 42px; border: 0; background: none; color: var(--tinte);
@@ -108,7 +138,7 @@ a { color: inherit; text-underline-offset: 3px; }
 .stepper output { min-width: 52px; display: flex; align-items: center; justify-content: center; font: 20px/1 var(--serif); border-inline: 1px solid var(--linie); }
 
 .knopf {
-  display: inline-block; min-height: 50px; padding: 12px 22px; border: 1px solid var(--tinte);
+  display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 12px 22px; border: 1px solid var(--tinte);
   background: var(--tinte); color: var(--papier); font: 19px/1.2 var(--serif); cursor: pointer; text-decoration: none;
 }
 .knopf:hover:not(:disabled) { background: #33302c; }
@@ -121,6 +151,7 @@ a { color: inherit; text-underline-offset: 3px; }
 .fehler { color: var(--fehler); margin: 0 0 12px; }
 .falle { position: absolute; left: -9999px; height: 1px; overflow: hidden; }
 
+.ergebnis { scroll-margin-top: 66px; outline: none; }
 .ergebnis h2 { font: 400 30px/1.2 var(--serif); margin: 0 0 12px; }
 .termin { font: 21px/1.4 var(--serif); margin: 0 0 14px; }
 
@@ -185,11 +216,12 @@ dialog h2 { font: 400 25px/1.2 var(--serif); margin: 0 0 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .facette { transition: none; }
+  .waben-lader polygon { animation: none; fill: var(--rosa); }
 }
 </style>
 </head>
 <body>
-<div class="balken">Normale Tische reserviert ihr <a href="https://clauss-flammkuchen-bretten.odoo.com/book/reservierung">hier</a>.</div>
+<div class="balken" id="balken">Normale Tische reserviert ihr <a href="https://clauss-flammkuchen-bretten.odoo.com/book/reservierung">hier</a>.</div>
 <header class="kopf">
   <a class="logo" href="https://www.clauss-flammkuchen.de/" aria-label="Clauß Flammkuchen, zur Startseite">
     <img src="https://www.clauss-flammkuchen.de/ClaussLogo.svg" alt="Clauß Flammkuchen" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-text',textContent:'Clauß Flammkuchen'}))">
@@ -198,12 +230,11 @@ dialog h2 { font: 400 25px/1.2 var(--serif); margin: 0 0 14px; }
 
 <main class="seite">
   <aside class="buehne">
-    <svg class="kuppel" id="kuppel" viewBox="0 0 400 232" role="img" aria-label="Zeichnung des Glas-Iglus">
+    <svg class="kuppel" id="kuppel" viewBox="0 0 400 232" role="img" aria-label="Zeichnung des Iglus">
       <path class="strich" d="M6 214 H394"/>
-      <path class="strich" d="M170 214 V189 M230 214 V189 M152 187 H248 M183 187 V177 M183 177 q5 -7 0 -12 q-5 5 0 12"/>
     </svg>
     <h1 class="marke">Unser Iglu</h1>
-    <p class="lead">Eure Glaskuppel auf der Terrasse, ganz für euch.</p>
+    <p class="lead">Unsere Terrasse macht keine Winterpause. Dafür gibt’s das Iglu.</p>
     <p class="fakten" id="fakten"></p>
     <p class="hinweis-gast" id="hinweis" hidden></p>
   </aside>
@@ -216,7 +247,10 @@ dialog h2 { font: 400 25px/1.2 var(--serif); margin: 0 0 14px; }
         <div class="monatsname" id="monatsname" aria-live="polite"></div>
         <button type="button" class="pfeil" id="vor" aria-label="Nächster Monat">›</button>
       </div>
-      <div class="kalender" id="kalender"></div>
+      <div class="kalender-rahmen">
+        <div class="kalender" id="kalender"></div>
+        <div class="lader" id="lader" role="status">Freie Tage werden geladen …</div>
+      </div>
       <p class="legende">Durchgestrichene Tage sind ausgebucht.</p>
       <p class="fehler" id="fehler-kalender" hidden></p>
     </div>
@@ -232,7 +266,7 @@ dialog h2 { font: 400 25px/1.2 var(--serif); margin: 0 0 14px; }
         <span id="pers-label">Personen</span>
         <div class="stepper" role="group" aria-labelledby="pers-label">
           <button type="button" id="weniger" aria-label="Eine Person weniger">−</button>
-          <output id="personen">2</output>
+          <output id="personen">4</output>
           <button type="button" id="mehr" aria-label="Eine Person mehr">+</button>
         </div>
       </div>
@@ -328,51 +362,69 @@ window.Iglu = (function () {
     try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* ohne Speicher geht es auch */ }
   }
 
-  /** Zeichnet die Kuppel als Federzeichnung. Drei Bänder, je eines pro Schritt. */
+  /** Zeichnet die Kuppel als Wabenmuster wie bei der GeoDomeX: ein Wabengitter, auf die Halbkugel gelegt. */
   function kuppel(svg) {
     const NS = 'http://www.w3.org/2000/svg';
-    const cx = 200, boden = 214, R = 170;
-    const ringe = [
-      { w: 0, n: 11, band: 0 }, { w: 24, n: 10, band: 0 }, { w: 48, n: 8, band: 1 }, { w: 70, n: 5, band: 2 }, { w: 90, n: 1, band: 2 },
-    ];
-    let saat = 7;
-    const zufall = function () { saat = (saat * 16807) % 2147483647; return saat / 2147483647 - 0.5; };
-    const punkte = ringe.map(function (r, ri) {
-      const phi = r.w * Math.PI / 180;
-      if (r.n === 1) return [{ x: cx, y: boden - R, t: 0.5 }];
-      return Array.from({ length: r.n }, function (_, j) {
-        const t = j / (r.n - 1);
-        const th = Math.PI * t;
-        const rand = j === 0 || j === r.n - 1;
-        const wackel = rand ? 0 : 1.6;
-        return {
-          x: cx - R * Math.cos(phi) * Math.cos(th) + (ri ? zufall() * wackel : zufall() * wackel),
-          y: boden - R * Math.sin(phi) + (ri ? zufall() * wackel : 0),
-          t: t,
-        };
-      });
-    });
-    const gruppe = document.createElementNS(NS, 'g');
-    let nr = 0;
-    for (let ri = 0; ri < ringe.length - 1; ri++) {
-      const a = punkte[ri], b = punkte[ri + 1];
-      let i = 0, j = 0;
-      while (i < a.length - 1 || j < b.length - 1) {
-        const naechstA = i < a.length - 1 ? a[i + 1].t : 9;
-        const naechstB = j < b.length - 1 ? b[j + 1].t : 9;
-        let dreieck;
-        if (naechstA <= naechstB) { dreieck = [a[i], a[i + 1], b[j]]; i++; }
-        else { dreieck = [a[i], b[j + 1], b[j]]; j++; }
-        const p = document.createElementNS(NS, 'polygon');
-        p.setAttribute('points', dreieck.map(function (q) { return q.x.toFixed(1) + ',' + q.y.toFixed(1); }).join(' '));
-        p.setAttribute('class', 'facette');
-        p.dataset.band = ringe[ri].band;
-        p.style.setProperty('--v', (nr % 9) * 28 + 'ms');
-        gruppe.append(p);
-        nr++;
+    const cx = 200, boden = 214, R = 196;
+    const WABE = 0.235; // Kantenlänge einer Wabe im Bogenmaß
+    const clipId = 'kuppel-clip';
+    const neu = function (tag, attr) {
+      const el = document.createElementNS(NS, tag);
+      Object.keys(attr).forEach(function (k) { el.setAttribute(k, attr[k]); });
+      return el;
+    };
+    // Punkt im flachen Gitter auf die Kugel legen (Mitte des Gitters = Spitze der Kuppel)
+    const aufKugel = function (a, b) {
+      const r = Math.hypot(a, b), w = Math.atan2(b, a);
+      const s = r ? Math.sin(r) : 0;
+      return { x: s * Math.cos(w), tiefe: s * Math.sin(w), hoehe: Math.cos(r) };
+    };
+    const rand = 'M' + (cx - R) + ' ' + boden + ' A' + R + ' ' + R + ' 0 0 1 ' + (cx + R) + ' ' + boden + ' Z';
+    const defs = neu('defs', {});
+    const clip = neu('clipPath', { id: clipId });
+    clip.append(neu('path', { d: rand }));
+    defs.append(clip);
+    const gruppe = neu('g', { 'clip-path': 'url(#' + clipId + ')' });
+    // Grundflächen, damit das Rosa lückenlos bis an den Rand reicht
+    const grundUnten = neu('rect', { x: cx - R, y: boden - R * 0.42, width: 2 * R, height: R * 0.42, class: 'facette grund' });
+    grundUnten.dataset.band = 0;
+    const grundGanz = neu('path', { d: rand, class: 'facette grund' });
+    grundGanz.dataset.band = 1;
+    gruppe.append(grundUnten, grundGanz);
+    const dx = Math.sqrt(3) * WABE, dy = 1.5 * WABE;
+    const reihen = Math.ceil(2 / dy);
+    const waben = [];
+    for (let z = -reihen; z <= reihen; z++) {
+      for (let sp = -reihen; sp <= reihen; sp++) {
+        const ma = sp * dx + (z % 2 ? dx / 2 : 0);
+        const mb = z * dy;
+        const mitte = aufKugel(ma, mb);
+        if (Math.hypot(ma, mb) > 1.85 || mitte.tiefe < -0.32) continue;
+        const ecken = [];
+        for (let e = 0; e < 6; e++) {
+          const w = Math.PI / 6 + e * Math.PI / 3;
+          ecken.push(aufKugel(ma + WABE * Math.cos(w), mb + WABE * Math.sin(w)));
+        }
+        // nur die Vorderseite der Kuppel zeigen
+        if (ecken.filter(function (q) { return q.tiefe > 0; }).length === 0) continue;
+        waben.push({ mitte: mitte, ecken: ecken });
       }
     }
-    svg.prepend(gruppe);
+    waben.sort(function (x, y) { return x.mitte.hoehe - y.mitte.hoehe; });
+    waben.forEach(function (w, nr) {
+      const punkte = w.ecken.map(function (q) {
+        // Ecken auf der Rückseite auf die Außenkante der Kuppel ziehen
+        const breite = q.tiefe < 0 ? Math.sign(q.x || 1) * Math.sqrt(Math.max(0, 1 - q.hoehe * q.hoehe)) : q.x;
+        return (cx + R * breite).toFixed(1) + ',' + (boden - R * q.hoehe).toFixed(1);
+      }).join(' ');
+      const p = neu('polygon', { points: punkte, class: 'facette' });
+      p.dataset.band = w.mitte.hoehe < 0.5 ? 0 : 1;
+      p.style.setProperty('--v', (nr % 10) * 24 + 'ms');
+      gruppe.append(p);
+    });
+    const umriss = neu('path', { d: rand, class: 'kuppel-rand' });
+    svg.prepend(defs, gruppe);
+    svg.append(umriss);
     return function leuchten(stufe) {
       svg.querySelectorAll('.facette').forEach(function (f) {
         f.classList.toggle('an', Number(f.dataset.band) < stufe);
@@ -380,15 +432,44 @@ window.Iglu = (function () {
     };
   }
 
-  return { api, ApiFehler, datumLang, plusTage, h, speicherLesen, speicherSchreiben, kuppel, WOCHENTAGE, MONATE };
+  /** Lade-Animation: sechs Waben im Kreis, die nacheinander rosa werden. */
+  function ladeWaben() {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '-34 -34 68 68');
+    svg.setAttribute('class', 'waben-lader');
+    svg.setAttribute('aria-hidden', 'true');
+    const r = 10, abstand = Math.sqrt(3) * r + 1.5;
+    const mitten = [];
+    for (let i = 0; i < 6; i++) {
+      const w = i * Math.PI / 3 - Math.PI / 2;
+      mitten.push([abstand * Math.cos(w), abstand * Math.sin(w)]);
+    }
+    mitten.forEach(function (m, nr) {
+      const ecken = [];
+      for (let e = 0; e < 6; e++) {
+        const w = e * Math.PI / 3;
+        ecken.push((m[0] + r * Math.cos(w)).toFixed(2) + ',' + (m[1] + r * Math.sin(w)).toFixed(2));
+      }
+      const p = document.createElementNS(NS, 'polygon');
+      p.setAttribute('points', ecken.join(' '));
+      p.style.setProperty('--v', (nr * 0.5).toFixed(1) + 's');
+      svg.append(p);
+    });
+    return svg;
+  }
+
+  return { api, ApiFehler, datumLang, plusTage, h, speicherLesen, speicherSchreiben, kuppel, ladeWaben, WOCHENTAGE, MONATE };
 })();
 </script>
 <script>
 (function () {
   const { api, datumLang, plusTage, h, kuppel, MONATE } = Iglu;
+  const personenText = function (n) { return n + (Number(n) === 1 ? ' Person' : ' Personen'); };
   const $ = function (id) { return document.getElementById(id); };
   const leuchten = kuppel($('kuppel'));
-  const zustand = { info: null, monat: null, tage: {}, datum: null, zeit: null, personen: 2 };
+  $('lader').prepend(Iglu.ladeWaben());
+  const zustand = { info: null, monat: null, tage: {}, datum: null, zeit: null, personen: 4 };
 
   function telLink(t) { return 'tel:' + t.replace(/[^+\d]/g, '').replace(/^0/, '+49'); }
 
@@ -406,6 +487,11 @@ window.Iglu = (function () {
     return d.toISOString().slice(0, 7);
   }
 
+  function ladenZeigen(an) {
+    $('lader').hidden = !an;
+    $('kalender').classList.toggle('laedt', an);
+  }
+
   async function monatZeigen(monat, neuLaden) {
     zustand.monat = monat;
     const p = monat.split('-').map(Number);
@@ -414,17 +500,22 @@ window.Iglu = (function () {
     $('zurueck').disabled = monat <= zustand.info.heute.slice(0, 7);
     $('vor').disabled = monat >= letzter;
     if (!zustand.tage[monat] || neuLaden) {
+      ladenZeigen(true);
       kalenderZeichnen(monat, null);
       try {
         zustand.tage[monat] = (await api('monat', { monat: monat })).tage;
       } catch (e) {
+        ladenZeigen(false);
         $('fehler-kalender').textContent = e.message;
         $('fehler-kalender').hidden = false;
         return;
       }
     }
     $('fehler-kalender').hidden = true;
-    if (zustand.monat === monat) kalenderZeichnen(monat, zustand.tage[monat]);
+    if (zustand.monat === monat) {
+      ladenZeigen(false);
+      kalenderZeichnen(monat, zustand.tage[monat]);
+    }
   }
 
   function kalenderZeichnen(monat, tage) {
@@ -460,7 +551,7 @@ window.Iglu = (function () {
     kalenderZeichnen(zustand.monat, zustand.tage[zustand.monat]);
     $('schritt-zeit').hidden = false;
     const z = $('zeiten');
-    z.replaceChildren(h('p', { class: 'leer', text: 'Freie Zeiten werden geladen …' }));
+    z.replaceChildren(h('p', { class: 'leer laed-zeile', role: 'status' }, Iglu.ladeWaben(), 'Freie Zeiten werden geladen …'));
     if (innerWidth <= 760) $('schritt-zeit').scrollIntoView({ behavior: 'smooth', block: 'start' });
     let zeiten;
     try {
@@ -548,8 +639,8 @@ window.Iglu = (function () {
     leuchten(3);
     ergebnisZeigen([
       h('h2', { text: 'Euer Iglu ist reserviert.' }),
-      h('p', { class: 'termin' }, datumLang(r.datum), h('br'), r.von + ' bis ' + r.bis + ' Uhr, ' + r.personen + ' Personen'),
-      h('p', { text: 'Die Bestätigung geht an ' + r.email + '. Darin findet ihr auch den Link zum Stornieren.' }),
+      h('p', { class: 'termin' }, datumLang(r.datum), h('br'), 'ab ' + r.von + ' Uhr, ' + personenText(r.personen)),
+      h('p', { text: 'Das Iglu gehört den ganzen Abend euch. Die Bestätigung geht an ' + r.email + '. Darin findet ihr auch den Link zum Stornieren.' }),
       h('p', { text: 'Wir freuen uns auf euch!' }),
     ]);
   }
@@ -564,7 +655,7 @@ window.Iglu = (function () {
       ergebnisZeigen([h('h2', { text: 'Reservierung nicht gefunden' }), h('p', { text: e.message })]);
       return;
     }
-    const termin = h('p', { class: 'termin' }, datumLang(r.datum), h('br'), r.von + ' bis ' + r.bis + ' Uhr, ' + r.personen + ' Personen');
+    const termin = h('p', { class: 'termin' }, datumLang(r.datum), h('br'), 'ab ' + r.von + ' Uhr, ' + personenText(r.personen));
     if (r.status !== 'aktiv') {
       leuchten(0);
       ergebnisZeigen([h('h2', { text: 'Diese Reservierung ist schon storniert.' }), termin]);
@@ -608,15 +699,15 @@ window.Iglu = (function () {
     try {
       zustand.info = await api('info');
     } catch (e) {
+      ladenZeigen(false);
       $('fehler-kalender').textContent = e.message;
       $('fehler-kalender').hidden = false;
       return;
     }
     const i = zustand.info;
-    $('fakten').textContent = 'Für ' + i.personenMin + ' bis ' + i.personenMax + ' Personen, ' +
-      (i.dauer % 60 === 0 ? (i.dauer / 60) + ' Stunden' : i.dauer + ' Minuten') + ' pro Reservierung.';
+    $('fakten').textContent = 'Für bis zu ' + i.personenMax + ' Personen. Das Iglu gehört den ganzen Abend euch, ohne Zeitlimit.';
     if (i.hinweis) { $('hinweis').textContent = i.hinweis; $('hinweis').hidden = false; }
-    personenSetzen(i.personenMin);
+    personenSetzen(4);
     $('weniger').onclick = function () { personenSetzen(zustand.personen - 1); };
     $('mehr').onclick = function () { personenSetzen(zustand.personen + 1); };
     $('zurueck').onclick = function () { monatZeigen(monatPlus(zustand.monat, -1)); };
