@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Iglu Team | Clauß</title>
+<style>
+/* Farben und Schriften wie auf clauss-flammkuchen.de */
+:root {
+  color-scheme: light;
+  --papier: #efe9df;
+  --papier-tief: #e8e0d4;
+  --tinte: #111111;
+  --grau: #655f58;
+  --rosa: #d8b3c1;
+  --rosa-hell: #ecd9e0;
+  --linie: rgba(17, 17, 17, .28);
+  --fehler: #8c2a2a;
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--papier); color: var(--tinte);
+  font: 17px/1.5 var(--sans);
+}
+[hidden] { display: none !important; }
+a { color: inherit; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--tinte); outline-offset: 2px; }
+
+.balken {
+  background: var(--rosa); text-align: center; padding: 9px 16px;
+  font-family: var(--serif); font-size: 16px;
+}
+.kopf { max-width: 980px; margin: 0 auto; padding: 22px 16px 16px; text-align: center; border-bottom: 1px solid var(--linie); }
+.logo { display: inline-block; text-decoration: none; }
+.logo img { display: block; width: 230px; max-width: 62vw; height: auto; }
+.logo-text { font: 30px/1.1 var(--serif); }
+
+.marke { font-size: 15px; letter-spacing: .1em; text-transform: uppercase; margin: 0; font-weight: 400; }
+.serif { font-family: var(--serif); }
+
+/* Kundenseite */
+.seite {
+  max-width: 980px; margin: 0 auto; padding: 28px 16px 56px;
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; align-items: start;
+}
+.buehne { position: sticky; top: 24px; text-align: center; }
+.kuppel { display: block; width: 100%; max-width: 380px; margin: 0 auto 14px; overflow: visible; }
+.facette {
+  fill: transparent; stroke: var(--tinte); stroke-width: 1.5; stroke-linejoin: round;
+  transition: fill .45s ease var(--v, 0ms);
+}
+.facette.an { fill: var(--rosa); }
+.kuppel .strich { stroke: var(--tinte); stroke-width: 1.5; stroke-linecap: round; fill: none; }
+.buehne .lead { font: 21px/1.35 var(--serif); margin: 4px auto 0; max-width: 24em; }
+.fakten { color: var(--grau); margin: 10px auto 0; max-width: 26em; font-size: 16px; }
+.hinweis-gast { margin: 14px auto 0; max-width: 26em; font: 17px/1.4 var(--serif); }
+
+.schritt { padding: 0 0 26px; margin: 0 0 26px; border-bottom: 1px solid var(--linie); }
+.schritt:last-child { border-bottom: 0; margin-bottom: 0; }
+.schritt h2 { font: 400 15px/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; margin: 0 0 14px; }
+.schritt .gewaehlt { font: 21px/1.3 var(--serif); letter-spacing: 0; text-transform: none; display: block; margin-top: 2px; }
+
+.monatskopf { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.monatsname { font: 21px/1.3 var(--serif); }
+.pfeil {
+  width: 44px; height: 44px; background: none; border: 0; color: var(--tinte);
+  font: 26px/1 var(--serif); cursor: pointer;
+}
+.pfeil:disabled { color: var(--linie); cursor: default; }
+.kalender { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.wt { text-align: center; color: var(--grau); font-size: 14px; padding-bottom: 4px; }
+.tag {
+  aspect-ratio: 1; min-height: 42px; border: 0; background: none; color: var(--tinte);
+  font: 19px/1 var(--serif); cursor: pointer; padding: 0;
+}
+.tag:hover:not(:disabled) { background: var(--rosa-hell); }
+.tag:disabled { color: rgba(101, 95, 88, .55); cursor: default; }
+.tag.voll { text-decoration: line-through; }
+.tag.heute { box-shadow: inset 0 0 0 1px var(--linie); }
+.tag.aktiv, .tag.aktiv:hover { background: var(--tinte); color: var(--papier); }
+.legende { color: var(--grau); font-size: 15px; margin: 10px 0 0; }
+
+.zeiten { display: flex; flex-wrap: wrap; gap: 8px; }
+.zeit {
+  min-width: 78px; min-height: 46px; padding: 0 14px; background: none; cursor: pointer;
+  border: 1px solid var(--tinte); color: var(--tinte); font: 19px/1 var(--serif);
+}
+.zeit:hover { background: var(--rosa-hell); }
+.zeit[aria-pressed="true"], .zeit[aria-pressed="true"]:hover { background: var(--tinte); color: var(--papier); }
+.leer { color: var(--grau); margin: 0; }
+
+.feld { display: block; margin: 0 0 14px; }
+.feld > span { display: block; font-size: 15px; color: var(--grau); margin-bottom: 3px; }
+.feld input, .feld textarea, .feld select {
+  width: 100%; min-height: 46px; padding: 9px 11px; border: 1px solid var(--tinte); border-radius: 0;
+  background: #f7f3ec; color: var(--tinte); font: 17px/1.3 var(--sans);
+}
+.feld textarea { min-height: 76px; resize: vertical; }
+.zweispaltig { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+.stepper { display: inline-flex; align-items: stretch; border: 1px solid var(--tinte); }
+.stepper button { width: 48px; height: 46px; border: 0; background: none; font: 22px/1 var(--serif); color: var(--tinte); cursor: pointer; }
+.stepper button:disabled { color: var(--linie); cursor: default; }
+.stepper output { min-width: 52px; display: flex; align-items: center; justify-content: center; font: 20px/1 var(--serif); border-inline: 1px solid var(--linie); }
+
+.knopf {
+  display: inline-block; min-height: 50px; padding: 12px 22px; border: 1px solid var(--tinte);
+  background: var(--tinte); color: var(--papier); font: 19px/1.2 var(--serif); cursor: pointer; text-decoration: none;
+}
+.knopf:hover:not(:disabled) { background: #33302c; }
+.knopf:disabled { opacity: .55; cursor: wait; }
+.knopf.breit { width: 100%; }
+.knopf.leise { background: none; color: var(--tinte); }
+.knopf.leise:hover:not(:disabled) { background: var(--rosa-hell); }
+.knopf.klein { min-height: 42px; padding: 7px 14px; font-size: 17px; }
+.klein-text { color: var(--grau); font-size: 15px; margin: 12px 0 0; }
+.fehler { color: var(--fehler); margin: 0 0 12px; }
+.falle { position: absolute; left: -9999px; height: 1px; overflow: hidden; }
+
+.ergebnis h2 { font: 400 30px/1.2 var(--serif); margin: 0 0 12px; }
+.termin { font: 21px/1.4 var(--serif); margin: 0 0 14px; }
+
+.fuss {
+  max-width: 980px; margin: 0 auto; padding: 18px 16px 34px; border-top: 1px solid var(--linie);
+  display: flex; flex-wrap: wrap; gap: 6px 22px; color: var(--grau); font-size: 15px;
+}
+
+@media (max-width: 760px) {
+  .seite { grid-template-columns: minmax(0, 1fr); gap: 26px; padding-top: 20px; }
+  .buehne { position: static; }
+  .kuppel { max-width: 230px; }
+  .buehne .lead { font-size: 19px; }
+  .kopf { padding-top: 16px; }
+}
+
+/* Teamseite */
+.team { max-width: 760px; margin: 0 auto; padding: 18px 16px 72px; }
+.teamkopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; max-width: 760px; margin: 0 auto; border-bottom: 1px solid var(--linie); }
+.teamkopf h1 { font: 400 23px/1.2 var(--serif); margin: 0; }
+.teamkopf button { background: none; border: 0; color: var(--grau); font: 15px var(--sans); text-decoration: underline; cursor: pointer; min-height: 44px; }
+.anmelden { max-width: 320px; margin: 48px auto; padding: 0 16px; }
+.leiste { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.umschalter { display: flex; gap: 18px; margin: 16px 0 0; }
+.umschalter button {
+  background: none; border: 0; border-bottom: 2px solid transparent; padding: 6px 0; font: 17px var(--sans);
+  color: var(--grau); cursor: pointer; min-height: 40px;
+}
+.umschalter button[aria-pressed="true"] { color: var(--tinte); border-bottom-color: var(--tinte); }
+.stand { color: var(--grau); font-size: 14px; margin: 8px 0 0; }
+.tagkopf { font: 400 22px/1.3 var(--serif); margin: 26px 0 0; padding-bottom: 6px; border-bottom: 1px solid var(--tinte); }
+.eintrag { padding: 14px 0; border-bottom: 1px solid var(--linie); display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 2px 14px; }
+.eintrag.neu { background: var(--rosa-hell); box-shadow: -10px 0 0 var(--rosa-hell), 10px 0 0 var(--rosa-hell); }
+.eintrag .uhr { font: 21px/1.25 var(--serif); }
+.eintrag .wer { font-size: 18px; font-weight: 600; overflow-wrap: anywhere; }
+.eintrag .mehr { color: var(--grau); overflow-wrap: anywhere; }
+.eintrag .notiz { font-family: var(--serif); margin-top: 3px; overflow-wrap: anywhere; }
+.eintrag .warnung { color: var(--fehler); margin-top: 3px; }
+.eintrag .aktionen { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.eintrag.storniert .uhr, .eintrag.storniert .wer { text-decoration: line-through; color: var(--grau); }
+.eintrag.sperre { color: var(--grau); }
+.marke-neu { display: inline-block; background: var(--tinte); color: var(--papier); font-size: 13px; font-weight: 400; padding: 1px 7px; margin-left: 6px; vertical-align: 2px; }
+.leer-gross { padding: 34px 0; font: 21px/1.4 var(--serif); }
+
+dialog {
+  width: min(520px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); border: 1px solid var(--tinte);
+  background: var(--papier); color: var(--tinte); padding: 20px 18px;
+}
+dialog::backdrop { background: rgba(17, 17, 17, .45); }
+dialog h2 { font: 400 25px/1.2 var(--serif); margin: 0 0 14px; }
+.haken { display: flex; gap: 10px; align-items: center; margin: 0 0 14px; min-height: 30px; }
+.haken input { width: 21px; height: 21px; accent-color: var(--tinte); }
+.dialog-knoepfe { display: flex; flex-wrap: wrap; gap: 10px; }
+.toast {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--tinte); color: var(--papier);
+  padding: 10px 16px; max-width: calc(100vw - 32px); z-index: 20;
+}
+
+@media (max-width: 520px) {
+  .eintrag { grid-template-columns: minmax(0, 1fr); }
+  .eintrag .aktionen { grid-column: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .facette { transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="teamkopf">
+  <h1>Iglu-Reservierungen</h1>
+  <button type="button" id="abmelden" hidden>Abmelden</button>
+</header>
+
+<form class="anmelden" id="anmelden" hidden>
+  <label class="feld"><span>Team-PIN</span><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" required></label>
+  <p class="fehler" id="login-fehler" role="alert" hidden></p>
+  <button class="knopf breit" type="submit" id="login-knopf">Anmelden</button>
+</form>
+
+<main class="team" id="team" hidden>
+  <div class="leiste">
+    <button class="knopf klein" type="button" id="neu">Neue Reservierung</button>
+    <button class="knopf klein leise" type="button" id="sperren">Zeit sperren</button>
+  </div>
+  <div class="umschalter">
+    <button type="button" id="kommend" aria-pressed="true">Kommende</button>
+    <button type="button" id="vergangen" aria-pressed="false">Vergangene</button>
+  </div>
+  <p class="stand" id="stand" aria-live="polite"></p>
+  <div id="liste"></div>
+</main>
+
+<dialog id="dlg-res">
+  <form id="form-res" novalidate>
+    <h2 id="res-titel">Neue Reservierung</h2>
+    <label class="feld"><span>Datum</span><input type="date" name="datum" required></label>
+    <div class="zweispaltig">
+      <label class="feld"><span>Von</span><input type="time" name="von" required></label>
+      <label class="feld"><span>Bis</span><input type="time" name="bis" required></label>
+    </div>
+    <div class="zweispaltig">
+      <label class="feld"><span>Personen</span><input type="number" name="personen" min="1" max="50" inputmode="numeric" required></label>
+      <label class="feld" id="iglu-feld"><span>Iglu</span><select name="iglu"></select></label>
+    </div>
+    <label class="feld"><span>Name</span><input name="name" required maxlength="80"></label>
+    <label class="feld"><span>Telefon</span><input name="telefon" type="tel" maxlength="25"></label>
+    <label class="feld"><span>E-Mail</span><input name="email" type="email" maxlength="120"></label>
+    <label class="feld"><span>Anmerkung</span><textarea name="anmerkung" maxlength="500"></textarea></label>
+    <label class="haken" id="res-info"><input type="checkbox" name="benachrichtigen"> <span>Gast per E-Mail informieren</span></label>
+    <p class="fehler" id="res-fehler" role="alert" hidden></p>
+    <div class="dialog-knoepfe">
+      <button class="knopf klein" type="submit" id="res-speichern">Speichern</button>
+      <button class="knopf klein leise" type="button" data-schliessen>Abbrechen</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-loeschen">
+  <h2>Reservierung löschen?</h2>
+  <p class="termin" id="loeschen-text"></p>
+  <label class="haken" id="loeschen-info"><input type="checkbox" id="loeschen-mail"> <span>Gast per E-Mail über die Absage informieren</span></label>
+  <p class="fehler" id="loeschen-fehler" role="alert" hidden></p>
+  <div class="dialog-knoepfe">
+    <button class="knopf klein" type="button" id="loeschen-ok">Löschen</button>
+    <button class="knopf klein leise" type="button" data-schliessen>Abbrechen</button>
+  </div>
+</dialog>
+
+<dialog id="dlg-sperre">
+  <form id="form-sperre" novalidate>
+    <h2>Zeit sperren</h2>
+    <p class="klein-text" style="margin-top:-6px">Gäste können in dieser Zeit nicht online reservieren.</p>
+    <label class="feld" style="margin-top:12px"><span>Datum</span><input type="date" name="datum" required></label>
+    <label class="haken"><input type="checkbox" name="ganztag" checked> <span>Ganzer Tag</span></label>
+    <div class="zweispaltig" id="sperre-zeit" hidden>
+      <label class="feld"><span>Von</span><input type="time" name="von"></label>
+      <label class="feld"><span>Bis</span><input type="time" name="bis"></label>
+    </div>
+    <label class="feld" id="sperre-iglu-feld"><span>Iglu</span><select name="iglu"></select></label>
+    <label class="feld"><span>Grund (nur für euch)</span><input name="grund" maxlength="120"></label>
+    <p class="fehler" id="sperre-fehler" role="alert" hidden></p>
+    <div class="dialog-knoepfe">
+      <button class="knopf klein" type="submit" id="sperre-speichern">Zeit sperren</button>
+      <button class="knopf klein leise" type="button" data-schliessen>Abbrechen</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>window.IGLU_API_URL = "https://script.google.com/macros/s/AKfycbwLN0J2xGm38SIRSpG6go5uSfAZ7HRWvkXdjFxDdcFbx_BbxTDif49tKMUvEmo67I8/exec";</script>
+<script>
+/* Gemeinsame Helfer für Kunden- und Teamseite */
+window.Iglu = (function () {
+  const WOCHENTAGE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  const MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+
+  class ApiFehler extends Error {
+    constructor(text, code) { super(text); this.code = code || ''; }
+  }
+
+  async function api(aktion, daten) {
+    const koerper = Object.assign({ aktion: aktion }, daten || {});
+    let antwort;
+    if (window.IGLU_DEMO) {
+      antwort = await window.IGLU_DEMO(koerper);
+    } else {
+      const url = window.IGLU_API_URL;
+      if (!url || !/^https:/.test(url)) throw new ApiFehler('Die Seite ist noch nicht eingerichtet: In config.js fehlt die Adresse der Web-App.');
+      const stopp = new AbortController();
+      const uhr = setTimeout(function () { stopp.abort(); }, 40000);
+      try {
+        // text/plain, damit der Browser ohne Vorabfrage (CORS) direkt an Apps Script senden kann
+        const r = await fetch(url, {
+          method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(koerper), redirect: 'follow', signal: stopp.signal,
+        });
+        antwort = await r.json();
+      } catch (e) {
+        throw new ApiFehler('Keine Verbindung. Bitte prüft das Internet und versucht es nochmal.', 'netz');
+      } finally {
+        clearTimeout(uhr);
+      }
+    }
+    if (!antwort.ok) throw new ApiFehler(antwort.fehler, antwort.code);
+    return antwort;
+  }
+
+  function teile(datum) { return datum.split('-').map(Number); }
+  function dUtc(datum) { const p = teile(datum); return new Date(Date.UTC(p[0], p[1] - 1, p[2])); }
+  function datumLang(datum) {
+    const d = dUtc(datum);
+    return WOCHENTAGE[d.getUTCDay()] + ', ' + d.getUTCDate() + '. ' + MONATE[d.getUTCMonth()];
+  }
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  function plusTage(datum, n) { return iso(new Date(dUtc(datum).getTime() + n * 864e5)); }
+
+  /** Baut Elemente sicher: Texte werden nie als HTML ausgewertet. */
+  function h(tag, attr) {
+    const el = document.createElement(tag);
+    Object.entries(attr || {}).forEach(function (e) {
+      const k = e[0], v = e[1];
+      if (v === false || v === null || v === undefined) return;
+      if (k === 'text') el.textContent = v;
+      else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), v);
+      else if (k === 'class') el.className = v;
+      else if (v === true) el.setAttribute(k, '');
+      else el.setAttribute(k, v);
+    });
+    Array.prototype.slice.call(arguments, 2).flat().forEach(function (k) {
+      if (k === null || k === undefined || k === false) return;
+      el.append(k);
+    });
+    return el;
+  }
+
+  function speicherLesen(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function speicherSchreiben(k, v) {
+    try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* ohne Speicher geht es auch */ }
+  }
+
+  /** Zeichnet die Kuppel als Federzeichnung. Drei Bänder, je eines pro Schritt. */
+  function kuppel(svg) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const cx = 200, boden = 214, R = 170;
+    const ringe = [
+      { w: 0, n: 11, band: 0 }, { w: 24, n: 10, band: 0 }, { w: 48, n: 8, band: 1 }, { w: 70, n: 5, band: 2 }, { w: 90, n: 1, band: 2 },
+    ];
+    let saat = 7;
+    const zufall = function () { saat = (saat * 16807) % 2147483647; return saat / 2147483647 - 0.5; };
+    const punkte = ringe.map(function (r, ri) {
+      const phi = r.w * Math.PI / 180;
+      if (r.n === 1) return [{ x: cx, y: boden - R, t: 0.5 }];
+      return Array.from({ length: r.n }, function (_, j) {
+        const t = j / (r.n - 1);
+        const th = Math.PI * t;
+        const rand = j === 0 || j === r.n - 1;
+        const wackel = rand ? 0 : 1.6;
+        return {
+          x: cx - R * Math.cos(phi) * Math.cos(th) + (ri ? zufall() * wackel : zufall() * wackel),
+          y: boden - R * Math.sin(phi) + (ri ? zufall() * wackel : 0),
+          t: t,
+        };
+      });
+    });
+    const gruppe = document.createElementNS(NS, 'g');
+    let nr = 0;
+    for (let ri = 0; ri < ringe.length - 1; ri++) {
+      const a = punkte[ri], b = punkte[ri + 1];
+      let i = 0, j = 0;
+      while (i < a.length - 1 || j < b.length - 1) {
+        const naechstA = i < a.length - 1 ? a[i + 1].t : 9;
+        const naechstB = j < b.length - 1 ? b[j + 1].t : 9;
+        let dreieck;
+        if (naechstA <= naechstB) { dreieck = [a[i], a[i + 1], b[j]]; i++; }
+        else { dreieck = [a[i], b[j + 1], b[j]]; j++; }
+        const p = document.createElementNS(NS, 'polygon');
+        p.setAttribute('points', dreieck.map(function (q) { return q.x.toFixed(1) + ',' + q.y.toFixed(1); }).join(' '));
+        p.setAttribute('class', 'facette');
+        p.dataset.band = ringe[ri].band;
+        p.style.setProperty('--v', (nr % 9) * 28 + 'ms');
+        gruppe.append(p);
+        nr++;
+      }
+    }
+    svg.prepend(gruppe);
+    return function leuchten(stufe) {
+      svg.querySelectorAll('.facette').forEach(function (f) {
+        f.classList.toggle('an', Number(f.dataset.band) < stufe);
+      });
+    };
+  }
+
+  return { api, ApiFehler, datumLang, plusTage, h, speicherLesen, speicherSchreiben, kuppel, WOCHENTAGE, MONATE };
+})();
+</script>
+<script>
+(function () {
+  const { api, datumLang, plusTage, h, speicherLesen, speicherSchreiben } = Iglu;
+  const $ = function (id) { return document.getElementById(id); };
+  const zustand = { token: speicherLesen('iglu_token'), daten: null, vergangen: false, bearbeite: null, loesche: null, neuIds: new Set(), laedt: false };
+  let toastUhr;
+
+  function toast(text) {
+    const t = $('toast');
+    t.textContent = text;
+    t.hidden = false;
+    clearTimeout(toastUhr);
+    toastUhr = setTimeout(function () { t.hidden = true; }, 3500);
+  }
+
+  function fehler(id, text) {
+    $(id).textContent = text || '';
+    $(id).hidden = !text;
+  }
+
+  function tel(t) { return 'tel:' + t.replace(/[^+\d]/g, ''); }
+
+  function ansicht(angemeldet) {
+    $('anmelden').hidden = angemeldet;
+    $('team').hidden = !angemeldet;
+    $('abmelden').hidden = !angemeldet;
+    if (!angemeldet) $('pin').focus();
+  }
+
+  function abmelden() {
+    zustand.token = null;
+    speicherSchreiben('iglu_token', null);
+    zustand.daten = null;
+    ansicht(false);
+  }
+
+  async function teamApi(aktion, daten) {
+    try {
+      return await api(aktion, Object.assign({ token: zustand.token }, daten));
+    } catch (e) {
+      if (e.code === 'login') abmelden();
+      throw e;
+    }
+  }
+
+  async function laden(still) {
+    if (zustand.laedt) return;
+    zustand.laedt = true;
+    if (!still) $('stand').textContent = 'Wird geladen …';
+    try {
+      const d = await teamApi('team_liste', { vergangen: zustand.vergangen });
+      zustand.daten = d;
+      neueMerken(d);
+      zeichnen();
+      $('stand').textContent = 'Stand ' + d.jetzt.slice(11, 16) + ' Uhr, aktualisiert sich jede Minute';
+    } catch (e) {
+      $('stand').textContent = e.message;
+    } finally {
+      zustand.laedt = false;
+    }
+  }
+
+  function neueMerken(d) {
+    if (zustand.vergangen) return;
+    const gesehen = speicherLesen('iglu_gesehen');
+    let spaetester = gesehen || '';
+    d.reservierungen.forEach(function (r) {
+      if (r.quelle === 'Online' && r.status === 'aktiv' && gesehen && r.erstellt > gesehen) zustand.neuIds.add(r.id);
+      if (r.erstellt > spaetester) spaetester = r.erstellt;
+    });
+    speicherSchreiben('iglu_gesehen', spaetester || d.jetzt);
+  }
+
+  function tagName(datum) {
+    const heute = zustand.daten.heute;
+    if (datum === heute) return 'Heute, ' + datumLang(datum);
+    if (datum === plusTage(heute, 1)) return 'Morgen, ' + datumLang(datum);
+    return datumLang(datum);
+  }
+
+  function zeichnen() {
+    const d = zustand.daten;
+    const tage = {};
+    const zu = function (datum) { return tage[datum] || (tage[datum] = { res: [], sperren: [] }); };
+    d.reservierungen.forEach(function (r) { zu(r.datum).res.push(r); });
+    d.sperren.forEach(function (s) { zu(s.datum).sperren.push(s); });
+    const folge = Object.keys(tage).sort();
+    if (zustand.vergangen) folge.reverse();
+    const liste = $('liste');
+    if (!folge.length) {
+      liste.replaceChildren(h('p', { class: 'leer-gross', text: zustand.vergangen ? 'In den letzten 60 Tagen gab es keine Reservierungen.' : 'Noch keine Reservierungen. Sobald ein Gast bucht, steht es hier.' }));
+      return;
+    }
+    const mehrereIglus = d.iglus.length > 1;
+    liste.replaceChildren.apply(liste, folge.flatMap(function (datum) {
+      const t = tage[datum];
+      return [h('h2', { class: 'tagkopf', text: tagName(datum) })]
+        .concat(t.sperren.map(function (s) { return sperreZeile(s, mehrereIglus); }))
+        .concat(t.res.map(function (r) { return resZeile(r, mehrereIglus); }));
+    }));
+  }
+
+  function resZeile(r, mehrereIglus) {
+    const storniert = r.status === 'storniert';
+    const neu = zustand.neuIds.has(r.id);
+    const infos = [r.personen + (r.personen === 1 ? ' Person' : ' Personen')];
+    if (mehrereIglus) infos.push(r.iglu);
+    if (r.quelle === 'Team') infos.push('vom Team eingetragen');
+    const fehlgeschlagen = /E-Mail FEHLER/.test(r.benachrichtigung || '');
+    return h('article', { class: 'eintrag' + (neu ? ' neu' : '') + (storniert ? ' storniert' : '') },
+      h('div', { class: 'uhr', text: r.von + '–' + r.bis }),
+      h('div', {},
+        h('div', { class: 'wer' }, r.name, neu ? h('span', { class: 'marke-neu', text: 'Neu' }) : null),
+        storniert ? h('div', { class: 'warnung', text: 'Vom Gast storniert' }) : null,
+        h('div', { class: 'mehr', text: infos.join(', ') }),
+        r.telefon ? h('div', {}, h('a', { href: tel(r.telefon), text: r.telefon })) : null,
+        r.email ? h('div', { class: 'mehr' }, h('a', { href: 'mailto:' + r.email, text: r.email })) : null,
+        r.anmerkung ? h('div', { class: 'notiz', text: r.anmerkung }) : null,
+        fehlgeschlagen ? h('div', { class: 'warnung', text: 'Die E-Mail an den Gast ging nicht raus. Bitte anrufen.' }) : null),
+      h('div', { class: 'aktionen' },
+        storniert ? null : h('button', { class: 'knopf klein leise', type: 'button', text: 'Ändern', onclick: function () { resDialog(r); } }),
+        h('button', { class: 'knopf klein leise', type: 'button', text: 'Löschen', onclick: function () { loeschenDialog(r); } })));
+  }
+
+  function sperreZeile(s, mehrereIglus) {
+    const zeit = s.von ? s.von + '–' + s.bis : 'Ganzer Tag';
+    const text = 'Gesperrt' + (mehrereIglus ? ' (' + (s.iglu || 'alle Iglus') + ')' : '') + (s.grund ? ': ' + s.grund : '');
+    return h('article', { class: 'eintrag sperre' },
+      h('div', { class: 'uhr', text: zeit }),
+      h('div', { class: 'mehr', text: text }),
+      h('div', { class: 'aktionen' }, h('button', {
+        class: 'knopf klein leise', type: 'button', text: 'Sperre aufheben',
+        onclick: async function (ev) {
+          ev.currentTarget.disabled = true;
+          try {
+            await teamApi('team_sperre_loeschen', { id: s.id });
+            toast('Sperre aufgehoben');
+          } catch (e) { toast(e.message); }
+          laden(true);
+        },
+      })));
+  }
+
+  function zeitPlus(von, minuten) {
+    const p = von.split(':').map(Number);
+    const m = Math.min(p[0] * 60 + p[1] + minuten, 1439);
+    return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+  }
+
+  function igluAuswahl(select, feld, mitAlle) {
+    const iglus = zustand.daten.iglus;
+    select.replaceChildren.apply(select, (mitAlle ? [h('option', { value: '', text: 'Alle Iglus' })] : [])
+      .concat(iglus.map(function (i) { return h('option', { value: i, text: i }); })));
+    feld.hidden = iglus.length < 2;
+  }
+
+  function resDialog(r) {
+    const f = $('form-res');
+    f.reset();
+    fehler('res-fehler');
+    zustand.bearbeite = r || null;
+    igluAuswahl(f.iglu, $('iglu-feld'), false);
+    $('res-titel').textContent = r ? 'Reservierung ändern' : 'Neue Reservierung';
+    if (r) {
+      ['datum', 'von', 'bis', 'personen', 'name', 'telefon', 'email', 'anmerkung', 'iglu'].forEach(function (k) { f[k].value = r[k]; });
+    } else {
+      f.datum.value = zustand.daten.heute;
+      f.personen.value = 2;
+    }
+    infoHaken();
+    $('dlg-res').showModal();
+  }
+
+  function infoHaken() {
+    const f = $('form-res');
+    const r = zustand.bearbeite;
+    const hatMail = f.email.value.trim() !== '';
+    $('res-info').hidden = !hatMail;
+    const geaendert = !r || r.datum !== f.datum.value || r.von !== f.von.value || r.bis !== f.bis.value || r.iglu !== f.iglu.value;
+    f.benachrichtigen.checked = hatMail && geaendert;
+  }
+
+  async function resSpeichern(ev) {
+    ev.preventDefault();
+    const f = ev.target;
+    const r = zustand.bearbeite;
+    if (!f.datum.value || !f.von.value || !f.bis.value) { fehler('res-fehler', 'Bitte Datum, Von und Bis ausfüllen.'); return; }
+    if (f.name.value.trim().length < 2) { fehler('res-fehler', 'Bitte einen Namen eintragen.'); f.name.focus(); return; }
+    const daten = {
+      datum: f.datum.value, von: f.von.value, bis: f.bis.value, personen: Number(f.personen.value), iglu: f.iglu.value,
+      name: f.name.value, telefon: f.telefon.value, email: f.email.value, anmerkung: f.anmerkung.value,
+      benachrichtigen: f.benachrichtigen.checked && !$('res-info').hidden,
+    };
+    const knopf = $('res-speichern');
+    knopf.disabled = true;
+    fehler('res-fehler');
+    try {
+      const a = r
+        ? await teamApi('team_aendern', Object.assign(daten, { id: r.id, stand: r.geaendert }))
+        : await teamApi('team_anlegen', daten);
+      $('dlg-res').close();
+      toast(/FEHLER/.test(a.benachrichtigung || '') ? 'Gespeichert, aber die E-Mail ging nicht raus' : 'Gespeichert');
+      laden(true);
+    } catch (e) {
+      fehler('res-fehler', e.message);
+      if (e.code === 'veraltet') laden(true);
+    } finally {
+      knopf.disabled = false;
+    }
+  }
+
+  function loeschenDialog(r) {
+    zustand.loesche = r;
+    fehler('loeschen-fehler');
+    $('loeschen-text').textContent = datumLang(r.datum) + ', ' + r.von + ' Uhr, ' + r.name;
+    const anbieten = !!r.email && r.status === 'aktiv';
+    $('loeschen-info').hidden = !anbieten;
+    $('loeschen-mail').checked = anbieten;
+    $('dlg-loeschen').showModal();
+  }
+
+  async function loeschen() {
+    const r = zustand.loesche;
+    const knopf = $('loeschen-ok');
+    knopf.disabled = true;
+    try {
+      const a = await teamApi('team_loeschen', { id: r.id, benachrichtigen: !$('loeschen-info').hidden && $('loeschen-mail').checked });
+      $('dlg-loeschen').close();
+      zustand.neuIds.delete(r.id);
+      toast(/FEHLER/.test(a.benachrichtigung || '') ? 'Gelöscht, aber die E-Mail ging nicht raus' : 'Gelöscht');
+      laden(true);
+    } catch (e) {
+      fehler('loeschen-fehler', e.message);
+    } finally {
+      knopf.disabled = false;
+    }
+  }
+
+  function sperreDialog() {
+    const f = $('form-sperre');
+    f.reset();
+    fehler('sperre-fehler');
+    f.datum.value = zustand.daten.heute;
+    igluAuswahl(f.iglu, $('sperre-iglu-feld'), true);
+    $('sperre-zeit').hidden = true;
+    $('dlg-sperre').showModal();
+  }
+
+  async function sperreSpeichern(ev) {
+    ev.preventDefault();
+    const f = ev.target;
+    const knopf = $('sperre-speichern');
+    knopf.disabled = true;
+    fehler('sperre-fehler');
+    try {
+      const a = await teamApi('team_sperre_anlegen', {
+        datum: f.datum.value, von: f.ganztag.checked ? '' : f.von.value, bis: f.ganztag.checked ? '' : f.bis.value,
+        iglu: f.iglu.value, grund: f.grund.value,
+      });
+      $('dlg-sperre').close();
+      toast(a.betroffen ? 'Gesperrt. Achtung: ' + a.betroffen + ' Reservierung(en) liegen in dieser Zeit.' : 'Gesperrt');
+      laden(true);
+    } catch (e) {
+      fehler('sperre-fehler', e.message);
+    } finally {
+      knopf.disabled = false;
+    }
+  }
+
+  function umschalten(vergangen) {
+    zustand.vergangen = vergangen;
+    $('kommend').setAttribute('aria-pressed', String(!vergangen));
+    $('vergangen').setAttribute('aria-pressed', String(vergangen));
+    $('liste').replaceChildren();
+    laden();
+  }
+
+  $('anmelden').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    const knopf = $('login-knopf');
+    knopf.disabled = true;
+    fehler('login-fehler');
+    try {
+      const a = await api('login', { pin: $('pin').value });
+      zustand.token = a.token;
+      speicherSchreiben('iglu_token', a.token);
+      $('pin').value = '';
+      ansicht(true);
+      await laden();
+    } catch (e) {
+      fehler('login-fehler', e.message);
+    } finally {
+      knopf.disabled = false;
+    }
+  });
+  $('abmelden').onclick = abmelden;
+  $('neu').onclick = function () { resDialog(null); };
+  $('sperren').onclick = sperreDialog;
+  $('kommend').onclick = function () { umschalten(false); };
+  $('vergangen').onclick = function () { umschalten(true); };
+  $('form-res').addEventListener('submit', resSpeichern);
+  $('form-sperre').addEventListener('submit', sperreSpeichern);
+  $('loeschen-ok').onclick = loeschen;
+  $('form-res').email.addEventListener('input', infoHaken);
+  ['datum', 'bis', 'iglu'].forEach(function (k) { $('form-res')[k].addEventListener('change', infoHaken); });
+  $('form-res').von.addEventListener('change', function (ev) {
+    const f = ev.target.form;
+    if (!zustand.bearbeite && f.von.value) f.bis.value = zeitPlus(f.von.value, zustand.daten.dauer);
+    infoHaken();
+  });
+  $('form-sperre').ganztag.addEventListener('change', function (ev) { $('sperre-zeit').hidden = ev.target.checked; });
+  document.querySelectorAll('[data-schliessen]').forEach(function (b) {
+    b.onclick = function () { b.closest('dialog').close(); };
+  });
+
+  const dialogOffen = function () { return !!document.querySelector('dialog[open]'); };
+  setInterval(function () {
+    if (zustand.token && document.visibilityState === 'visible' && !dialogOffen()) laden(true);
+  }, 60000);
+  document.addEventListener('visibilitychange', function () {
+    if (zustand.token && document.visibilityState === 'visible' && !dialogOffen()) laden(true);
+  });
+
+  if (zustand.token) { ansicht(true); laden(); } else { ansicht(false); }
+})();
+</script>
+</body>
+</html>
