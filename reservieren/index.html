@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reservieren | Clauß Flammkuchen in Bretten</title>
+<meta name="description" content="Tisch im Innenbereich oder Iglu im Außenbereich reservieren.">
+<style>
+/* Farben und Schriften wie auf clauss-flammkuchen.de und der Iglu-Seite */
+:root {
+  color-scheme: light;
+  --papier: #efe9df;
+  --tinte: #111111;
+  --grau: #655f58;
+  --rosa: #d8b3c1;
+  --linie: rgba(17, 17, 17, .28);
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--papier); color: var(--tinte); font: 17px/1.5 var(--sans); }
+a { color: inherit; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--tinte); outline-offset: 2px; }
+
+.kopf { max-width: 980px; margin: 0 auto; padding: 22px 16px 16px; text-align: center; border-bottom: 1px solid var(--linie); }
+.logo { display: inline-block; text-decoration: none; font: 30px/1.1 var(--serif); }
+.logo img { display: block; width: 230px; max-width: 62vw; height: auto; }
+
+.auswahl { max-width: 980px; margin: 0 auto; padding: 40px 16px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+.feld { display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; }
+.skizze { display: block; width: 100%; max-width: 380px; margin-bottom: 20px; overflow: visible; fill: none; stroke: var(--tinte); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.skizze .facette { stroke-width: 1.3; }
+.skizze .rand { stroke-width: 2; }
+.skizze .voll { fill: var(--papier); }
+.skizze .fein { stroke-width: 1; }
+.feld h2 { font: 400 26px/1.25 var(--serif); margin: 0; }
+.mindest { font: 19px/1.4 var(--serif); margin: 6px 0 20px; }
+.knopf { margin-top: auto; padding: 10px 26px; border: 1px solid var(--tinte); }
+.feld:hover .knopf { background: var(--rosa); }
+
+.fuss { max-width: 980px; margin: 0 auto; padding: 18px 16px 28px; border-top: 1px solid var(--linie); color: var(--grau); font-size: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 20px; }
+
+@media (max-width: 680px) {
+  .auswahl { grid-template-columns: 1fr; gap: 44px; padding-top: 28px; }
+  .feld h2 { margin-bottom: 20px; }
+  .feld h2:has(+ .mindest) { margin-bottom: 0; }
+}
+</style>
+</head>
+<body>
+
+<header class="kopf">
+  <a class="logo" href="https://www.clauss-flammkuchen.de/"><img src="https://www.clauss-flammkuchen.de/ClaussLogo.svg" alt="Clauß Flammkuchen"></a>
+</header>
+
+<main class="auswahl">
+
+  <a class="feld" href="https://clauss-flammkuchen-bretten.odoo.com/book/reservierung">
+    <svg class="skizze" viewBox="0 0 400 232" role="img" aria-label="Zeichnung des Innenbereichs: runder Marmortisch, zwei Polstersessel und eine Lampe">
+      <defs><clipPath id="sessel-clip"><path id="sessel-form" d="M62 106 C46 107 40 130 43 152 C45 168 53 177 68 177 L90 177 L90 152 L116 152 C125 152 127 138 116 136 L90 134 C84 124 78 108 71 106 C68 105 65 105.5 62 106 Z"/></clipPath></defs>
+      
+      <g id="lampe">
+        <path d="M200 0 V50"/>
+        <path class="voll" d="M176 50 H224 L246 86 H154 Z"/>
+        <path class="fein" d="M188 50 L177 86 M200 50 V86 M212 50 L223 86"/>
+      </g>
+      <g id="sessel">
+        <path d="M72 177 L60 214 M116 177 L126 214"/>
+        <path class="voll" d="M90 154 H124 C131 154 133 160 133 165 C133 173 129 177 122 177 H90 Z"/>
+        <use href="#sessel-form" class="voll"/>
+        <path class="fein" clip-path="url(#sessel-clip)" d="M58 100 C50 125 52 160 62 182 M70 100 C62 125 64 160 74 182 M82 112 C74 130 76 160 84 182"/>
+        <use href="#sessel-form" class="rand"/>
+      </g>
+      <use href="#sessel" transform="matrix(-1 0 0 1 400 0)"/>
+      <g>
+        <path class="voll" d="M196 150 H204 V204 C204 208 214 209 230 214 H170 C186 209 196 208 196 204 Z"/>
+        <path class="voll" d="M124 140 V145 C124 150 158 155 200 155 C242 155 276 150 276 145 V140 Z"/>
+        <ellipse class="voll rand" cx="200" cy="140" rx="76" ry="10"/>
+        <ellipse class="fein" cx="200" cy="140" rx="71" ry="8"/>
+        <path class="fein" d="M146 141 C160 136 172 143 186 138 M214 144 C226 139 238 143 252 138"/>
+      </g>
+      <g id="glas">
+        <path class="voll" d="M170 114 C168 124 171 128 176 128 C181 128 184 124 182 114 Z"/>
+        <path d="M176 128 V139 M171 140 H181 M170.500 120 H181.500"/>
+      </g>
+      <use href="#glas" transform="matrix(-1 0 0 1 400 0)"/>
+      <path d="M6 214 H394"/>
+    </svg>
+    <h2>Innenbereich</h2>
+    <span class="knopf">Reservieren</span>
+  </a>
+
+  <a class="feld" href="https://www.clauss-flammkuchen.de/iglu">
+    <svg class="skizze" viewBox="0 0 400 232" role="img" aria-label="Zeichnung des Iglus">
+      <defs><clipPath id="kuppel-clip"><path d="M4 214 A196 196 0 0 1 396 214 Z"/></clipPath></defs>
+      <g class="facette" clip-path="url(#kuppel-clip)"><polygon points="30.7,228.5 38.3,273.6 38.0,297.0 24.9,281.7 13.1,238.2 18.9,208.2"/><polygon points="362.0,297.0 361.7,273.6 369.3,228.5 381.1,208.2 386.9,238.2 375.1,281.7"/><polygon points="59.8,238.2 63.8,281.7 56.0,297.0 38.3,273.6 30.7,228.5 44.8,208.2"/><polygon points="344.0,297.0 336.2,281.7 340.2,238.2 355.2,208.2 369.3,228.5 361.7,273.6"/><polygon points="200.0,273.6 182.0,297.0 161.1,281.7 153.3,238.2 174.1,208.2 200.0,228.5"/><polygon points="238.9,281.7 218.0,297.0 200.0,273.6 200.0,228.5 225.9,208.2 246.7,238.2"/><polygon points="6.6,186.4 6.5,228.5 11.2,265.3 10.8,265.3 4.5,228.5 6.0,186.4"/><polygon points="388.8,265.3 393.5,228.5 393.4,186.4 394.0,186.4 395.5,228.5 389.2,265.3"/><polygon points="127.5,228.5 116.1,265.3 95.1,265.3 79.1,228.5 89.5,186.4 117.1,186.4"/><polygon points="304.9,265.3 283.9,265.3 272.5,228.5 282.9,186.4 310.5,186.4 320.9,228.5"/><polygon points="23.3,163.2 18.9,208.2 13.1,238.2 6.5,228.5 6.6,186.4 17.7,151.0"/><polygon points="386.9,238.2 381.1,208.2 376.7,163.2 382.3,151.0 393.4,186.4 393.5,228.5"/><polygon points="89.5,186.4 79.1,228.5 59.8,238.2 44.8,208.2 52.8,163.2 78.5,151.0"/><polygon points="340.2,238.2 320.9,228.5 310.5,186.4 321.5,151.0 347.2,163.2 355.2,208.2"/><polygon points="174.1,208.2 153.3,238.2 127.5,228.5 117.1,186.4 139.2,151.0 170.6,163.2"/><polygon points="272.5,228.5 246.7,238.2 225.9,208.2 229.4,163.2 260.8,151.0 282.9,186.4"/><polygon points="52.8,163.2 44.8,208.2 30.7,228.5 18.9,208.2 23.3,163.2 43.4,138.4"/><polygon points="369.3,228.5 355.2,208.2 347.2,163.2 356.6,138.4 376.7,163.2 381.1,208.2"/><polygon points="225.9,208.2 200.0,228.5 174.1,208.2 170.6,163.2 200.0,138.4 229.4,163.2"/><polygon points="33.6,112.1 17.7,151.0 6.6,186.4 6.0,186.4 14.4,151.0 32.5,112.1"/><polygon points="393.4,186.4 382.3,151.0 366.4,112.1 367.5,112.1 385.6,151.0 394.0,186.4"/><polygon points="139.2,151.0 117.1,186.4 89.5,186.4 78.5,151.0 100.2,112.1 133.5,112.1"/><polygon points="310.5,186.4 282.9,186.4 260.8,151.0 266.5,112.1 299.8,112.1 321.5,151.0"/><polygon points="100.2,112.1 78.5,151.0 52.8,163.2 43.4,138.4 62.9,98.4 94.1,84.2"/><polygon points="347.2,163.2 321.5,151.0 299.8,112.1 305.9,84.2 337.1,98.4 356.6,138.4"/><polygon points="200.0,138.4 170.6,163.2 139.2,151.0 133.5,112.1 164.7,84.2 200.0,98.4"/><polygon points="260.8,151.0 229.4,163.2 200.0,138.4 200.0,98.4 235.3,84.2 266.5,112.1"/><polygon points="62.9,98.4 43.4,138.4 23.3,163.2 17.7,151.0 33.6,112.1 58.9,84.2"/><polygon points="376.7,163.2 356.6,138.4 337.1,98.4 341.1,84.2 366.4,112.1 382.3,151.0"/><polygon points="87.9,54.7 58.9,84.2 33.6,112.1 32.5,112.1 53.1,84.2 85.8,54.7"/><polygon points="366.4,112.1 341.1,84.2 312.1,54.7 314.2,54.7 346.9,84.2 367.5,112.1"/><polygon points="164.7,84.2 133.5,112.1 100.2,112.1 94.1,84.2 125.3,54.7 162.6,54.7"/><polygon points="299.8,112.1 266.5,112.1 235.3,84.2 237.4,54.7 274.7,54.7 305.9,84.2"/><polygon points="125.3,54.7 94.1,84.2 62.9,98.4 58.9,84.2 87.9,54.7 123.1,39.3"/><polygon points="337.1,98.4 305.9,84.2 274.7,54.7 276.9,39.3 312.1,54.7 341.1,84.2"/><polygon points="235.3,84.2 200.0,98.4 164.7,84.2 162.6,54.7 200.0,39.3 237.4,54.7"/><polygon points="160.5,23.4 123.1,39.3 87.9,54.7 85.8,54.7 111.2,39.3 154.4,23.4"/><polygon points="312.1,54.7 276.9,39.3 239.5,23.4 245.6,23.4 288.8,39.3 314.2,54.7"/><polygon points="200.0,39.3 162.6,54.7 125.3,54.7 123.1,39.3 160.5,23.4 200.0,23.4"/><polygon points="274.7,54.7 237.4,54.7 200.0,39.3 200.0,23.4 239.5,23.4 276.9,39.3"/><polygon points="239.5,23.4 200.0,23.4 160.5,23.4 154.4,23.4 154.4,23.4 245.6,23.4"/></g>
+      <path d="M6 214 H394"/>
+      <path class="rand" d="M4 214 A196 196 0 0 1 396 214 Z"/>
+    </svg>
+    <h2>Außenbereich mit Iglu</h2>
+    <p class="mindest">Bis 6 Personen, Mindestverzehr 80 €</p>
+    <span class="knopf">Reservieren</span>
+  </a>
+
+</main>
+
+<footer class="fuss">
+  <span>Hermann-Beuttenmüllerstraße 10, 75015 Bretten</span>
+  <a href="tel:+4972529009234">07252 9009234</a>
+  <a href="https://www.clauss-flammkuchen.de/impressum/">Impressum</a>
+  <a href="https://www.clauss-flammkuchen.de/datenschutz/">Datenschutz</a>
+</footer>
+
+</body>
+</html>
